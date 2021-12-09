@@ -1,0 +1,10 @@
+{
+    "name": "expressionish",
+    "author": "SReject",
+    "version": "0.0.1",
+    "private": true,
+    "license": "ISC",
+    "devDependencies": {
+        "mocha": "^9.1.3"
+    }
+}
