@@ -231,50 +231,60 @@ export default {
         example: 'v1 !regex /a/i',
         evaluator: (v1, v2) => !(isRegexMatch(v1, v2))
     },
-
-    // Wildcard
     'wildcard': {
         type: 'condition',
         left: true,
         right: true,
+        description: "Left side matches the right side wildcard pattern",
+        example: 'v1 wildcard ?1',
         evaluator: isWildcardMatch
     },
     '!wildcard': {
         type: 'condition',
         left: true,
         right: true,
+        description: "Left side does not match the right side wildcard pattern",
+        example: 'v1 !wildcard a?',
         evaluator: (v1, v2) => !(isWildcardMatch(v1, v2))
     },
     'wildcardcs': {
         type: 'condition',
         left: true,
         right: true,
+        description: "Left side matches the right side wildcard pattern; case sensitive",
+        example: 'v1 wildcardcs V?',
         evaluator: (v1, v2) => isWildcardMatchCaseSensitive(v1, v2)
     },
     '!wildcardcs': {
         type: 'condition',
         left: true,
         right: true,
+        description: "Left side does not match the right side wildcard pattern; case sensitive",
+        example: 'v1 !wildcardcs v?',
         evaluator: (v1, v2) => !(isWildcardMatchCaseSensitive(v1, v2))
     },
-
-    // Logic Operators
     'AND': {
         type: 'operator',
         left: true,
         right: true,
+        description: 'Both conditions must be true for the whole condition to be true',
+        example: '[a == a] AND [b == b]',
         evaluator: (v1, v2) => (v1 && v2)
     },
     'OR': {
         type: 'operator',
         left: true,
         right: true,
+        description: 'Atleast one condition must be true for the whole condition to be true',
+        example: '[a == b] OR [c == c]',
         evaluator: (v1, v2) => (v1 || v2)
     },
     'NOT': {
         type: 'operator',
         left: false,
         right: true,
+        description: 'The following condition must not be true for the whole condition to be true',
+        example: 'NOT [a == b]',
         evaluator: (v1) => (!v1)
     }
 };
