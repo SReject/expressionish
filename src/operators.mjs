@@ -1,6 +1,12 @@
 import wildcardToRegExp from './wildcard-to-regexp.mjs';
 
-/** If both inputs are numerical, returns them as numbers, otherwise leaves them as-is*/
+const isRange = /^((?:[+-]?\d+(?:\.\d+)?)|(?:[+-]?\.\d+))-((?:[+-]?\d+(?:\.\d+)?)|(?:[+-]?\.\d+))$/;
+
+/** If both inputs are numerical, returns them as numbers, otherwise leaves them as-is
+ * @param {string} v1
+ * @param {string} v2
+ * @private
+ * */
 const toNumber = (v1, v2) => {
     const v1Num = Number(v1);
     if (Number.isNaN(v1Num)) {
@@ -13,9 +19,22 @@ const toNumber = (v1, v2) => {
     return [v1Num, v2Num];
 }
 
+/**Inputs are equal without manipulations to the values
+ * @param {string} v1
+ * @param {string} v2
+ * @private
+ * @returns {boolean}
+ */
 const isStrictEqual = (v1, v2) => {
     return v1 === v2;
 };
+
+/**Inputs are equal when ignoring lowercase or converted to numbers
+ * @param {string} v1
+ * @param {string} v2
+ * @private
+ * @returns {boolean}
+ */
 const isLooseEqual = (v1, v2) => {
     if (v1 === v2) {
         return true;
@@ -26,6 +45,13 @@ const isLooseEqual = (v1, v2) => {
     const [v1Num, v2Num] = toNumber(v1, v2);
     return v1Num === v2Num;
 };
+
+/**The first input is less than the second
+ * @param {string} v1
+ * @param {string} v2
+ * @private
+ * @returns {boolean}
+ */
 const isLessThan = (v1, v2) => {
     [v1, v2] = toNumber(v1, v2);
     if (Number.isNaN(v1) || Number.isNaN(v2)) {
@@ -33,6 +59,13 @@ const isLessThan = (v1, v2) => {
     }
     return v1 < v2;
 };
+
+/**The first input is less than or equal to the second
+ * @param {string} v1
+ * @param {string} v2
+ * @private
+ * @returns {boolean}
+ */
 const isLessThanOrEqual = (v1, v2) => {
     [v1, v2] = toNumber(v1, v2);
     if (Number.isNaN(v1) || Number.isNaN(v2)) {
@@ -40,6 +73,13 @@ const isLessThanOrEqual = (v1, v2) => {
     }
     return v1 <= v2;
 };
+
+/**The first input is greater than the second
+ * @param {string} v1
+ * @param {string} v2
+ * @private
+ * @returns {boolean}
+ */
 const isGreaterThan = (v1, v2) => {
     [v1, v2] = toNumber(v1, v2);
     if (Number.isNaN(v1) || Number.isNaN(v2)) {
@@ -47,6 +87,13 @@ const isGreaterThan = (v1, v2) => {
     }
     return v1 > v2;
 };
+
+/**The first input is greater than or equal to the second
+ * @param {string} v1
+ * @param {string} v2
+ * @private
+ * @returns {boolean}
+ */
 const isGreaterThanOrEqual = (v1, v2) => {
     [v1, v2] = toNumber(v1, v2);
     if (Number.isNaN(v1) || Number.isNaN(v2)) {
@@ -54,10 +101,22 @@ const isGreaterThanOrEqual = (v1, v2) => {
     }
     return v1 >= v2;
 };
+
+/**The input is not null or an empty string
+ * @param {string} v1
+ * @private
+ * @returns {boolean}
+ */
 const exists = (v1) => {
     return v1 != null && v1 !== '';
 };
-const isRange = /^((?:[+-]?\d+(?:\.\d+)?)|(?:[+-]?\.\d+))(?:-((?:[+-]?\d+(?:\.\d+)?)|(?:[+-]?\.\d+)))?$/;
+
+/**The first input is a number. If the second input is specified, the first input must fall within the second argument's range
+ * @param {string} v1
+ * @param {string} [v2] Range formatted as N-N2, where N is the lower bound and N2 is the upperbound (inclusive)
+ * @private
+ * @returns {boolean}
+ */
 const isNumber = (v1, v2) => {
     v1 = Number(v1);
     if (Number.isNaN(v1)) {
@@ -84,6 +143,13 @@ const isNumber = (v1, v2) => {
     }
     return (r1 <= v1 && v1 <= r1);
 };
+
+/**The first input matches the regexp pattern of the second input
+ * @param {string} v1
+ * @param {string} v2
+ * @private
+ * @returns {boolean}
+ */
 const isRegexMatch = (v1, v2) => {
     const parts = /^\/(.*)\/([a-z]*)$/i.exec(v2);
     if (parts) {
@@ -91,12 +157,26 @@ const isRegexMatch = (v1, v2) => {
     }
     return (new RegExp(v2)).test(v1);
 };
+
+/**The first input matches the wildcard pattern of the second input
+ * @param {string} v1
+ * @param {string} v2
+ * @private
+ * @returns {boolean}
+ */
 const isWildcardMatch = (v1, v2) => {
     if (v2 === null || v2 == '') {
         return false;
     }
     return wildcardToRegExp(v2, false).test(v1);
 }
+
+/**The first input matches the wildcard pattern of the second input, case-sensitive
+ * @param {string} v1
+ * @param {string} v2
+ * @private
+ * @returns {boolean}
+ */
 const isWildcardMatchCaseSensitive = (v1, v2) => {
     if (v2 === null || v2 == '') {
         return false;
@@ -285,6 +365,6 @@ export default {
         right: true,
         description: 'The following condition must not be true for the whole condition to be true',
         example: 'NOT [a == b]',
-        evaluator: (v1) => (!v1)
+        evaluator: (v2) => (!v2)
     }
 };
