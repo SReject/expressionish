@@ -43,4 +43,5 @@ export default (state, tokens) => {
     // indicate the cursor has moved
     state.consumed = true;
     state.cursor += 1;
+    return true;
 }

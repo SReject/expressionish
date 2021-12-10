@@ -10,9 +10,8 @@ export default (state, tokens, escapeChars) => {
 
     if (tokens[cursor + 1] == null) {
         tokens[cursor].type = types.LITERAL_TEXT;
-        state.consumed = true;
         state.cursor += 1;
-        return;
+        return true;
     }
 
     // Retrieve the token following the escape token
@@ -40,14 +39,13 @@ export default (state, tokens, escapeChars) => {
     // character isn't escapable so treat the \ as literal text
     if (escapeChars.indexOf(nextTokenValue) === -1) {
         tokens[cursor].type = types.LITERAL_TEXT;
-        state.consumed = true;
         state.cursor += 1;
-        return;
+        return true;
     }
 
     // character is escapeable so remove the \ from the tokens list and add set the next token as being literal_text
     tokens.splice(cursor, 1);
     tokens[cursor].type = types.LITERAL_TEXT;
-    state.consumed = true;
     state.cursor += 1;
+    return true;
 };

@@ -12,7 +12,7 @@ export default (state, tokens) => {
     const {value: tokenValue, position: tokenPosition } = tokens[cursor];
 
     if (tokenValue !== '"') {
-        return;
+        return false;
     }
 
     const startPosition = tokenPosition;
@@ -32,16 +32,13 @@ export default (state, tokens) => {
                 1 + (cursor - startCursor),
                 {value: result, position: startPosition, type: types.LITERAL_TEXT}
             );
-
-            state.consumed = true;
             state.cursor += 1;
-            return;
+            return true;
         }
 
         // Process escape sequences inside of the quote
         const escState = {consumed: false, cursor};
-        consumeEscapeSequence(escState, tokens, QUOTE_ESC_CHARS);
-        if (escState.consumed) {
+        if (consumeEscapeSequence(escState, tokens, QUOTE_ESC_CHARS)) {
             cursor = escState.cursor;
             result += tokens[cursor - 1].value;
             continue;

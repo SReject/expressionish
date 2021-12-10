@@ -1,9 +1,7 @@
-import operators from './operators.mjs';
-
 import tokenize from './helpers/tokenize.mjs';
-import { has } from './helpers/misc.mjs';
 import types from './helpers/token-types.mjs';
 
+import consumeArguments from './consume/arguments.mjs';
 import consumeEscapeSequence from './consume/escape.mjs';
 import consumeQuotedText from './consume/quoted-text.mjs';
 import consumeVariableName from './consume/variable-name.mjs';
@@ -51,32 +49,10 @@ export default function evaluate(variables, options) {
     let cursor = 0;
     while (cursor < tokens.length) {
 
-        const token = tokens[cursor];
-
-        // Potential Operator
-        if (has(operators, token.value) || token.value === '!') {
-            token.type = types.OPERATOR;
-            cursor += 1;
-            continue;
-        }
-
-        // Non-signifacant token
-        if (tokens[cursor].value === '' || '"$\\[,]'.indexOf(tokens[cursor].value) === -1) {
-            if (cursor > 0 && tokens[cursor - 1].type === types.LITERAL_TEXT) {
-                tokens[cursor - 1].value += tokens[cursor].value;
-                tokens.splice(cursor, 1);
-            } else {
-                tokens[cursor].type = types.LITERAL_TEXT;
-                cursor += 1;
-            }
-            continue;
-        }
-
-        const state = {cursor, consumed: false};
+        let state = {cursor, consumed: false};
 
         // Process next token as escape sequence
-        consumeEscapeSequence(state, tokens, ESC_CHARS);
-        if (state.consumed) {
+        if (consumeEscapeSequence(state, tokens, ESC_CHARS)) {
             if (cursor > 0 && tokens[cursor - 1].type === types.LITERAL_TEXT) {
                 tokens[cursor - 1].value += tokens[cursor].value;
                 tokens.splice(cursor, 1);
@@ -87,8 +63,7 @@ export default function evaluate(variables, options) {
         }
 
         // Process next token as quoted text
-        consumeQuotedText(state, tokens);
-        if (state.consumed) {
+        if (consumeQuotedText(state, tokens)) {
             if (cursor > 0 && tokens[cursor - 1].type === types.LITERAL_TEXT) {
                 tokens[cursor - 1].value += tokens[cursor].value;
                 tokens.splice(cursor, 1);
@@ -99,14 +74,24 @@ export default function evaluate(variables, options) {
         }
 
         // process next token as a variable name
-        consumeVariableName(state, tokens);
-        if (state.consumed) {
+        if (consumeVariableName(state, tokens)) {
+            const isIf = tokens[cursor].value === 'if';
             cursor = state.cursor;
+            state = {cursor, consumed: false};
+            if (tokens[cursor].value === '[' && consumeArguments(state, tokens, isIf)) {
+                cursor = state.cursor;
+            }
             continue;
         }
 
-        // Move cursor to next token
-        cursor += 1;
+        // Treat token as literal text
+        if (cursor > 0 && tokens[cursor - 1].type === types.LITERAL_TEXT) {
+            tokens[cursor - 1].value += tokens[cursor].value;
+            tokens.splice(cursor, 1);
+        } else {
+            tokens[cursor].type = types.LITERAL_TEXT;
+            cursor += 1;
+        }
     }
 
     // Concatinate all literal text tokens
@@ -116,6 +101,4 @@ export default function evaluate(variables, options) {
         }
         return acc + cur.value;
     }, '');
-
-    return tokens;
 }
