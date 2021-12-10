@@ -1,4 +1,4 @@
-import split from './unicode-split.mjs';
+import split from './split.mjs';
 
 export default (pattern, caseSensitive) => {
     let wc = split(pattern);
