@@ -91,6 +91,8 @@ export default function evaluate(variables, options) {
         }
     }
 
+    /*
+
     // Concatinate all literal text tokens
     return tokens.reduce((acc, cur) => {
         if (cur.type !== types.LITERAL_TEXT) {
@@ -98,4 +100,7 @@ export default function evaluate(variables, options) {
         }
         return acc + cur.value;
     }, '');
+
+    */
+    return tokens;
 }

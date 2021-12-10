@@ -1,5 +1,7 @@
 import types from '../helpers/token-types.mjs';
 
+import consumeArguments from './arguments.mjs';
+
 const varnameMatch = /^([a-z][a-z\d]+)(.*)$/i;
 export default (state, tokens) => {
     let cursor = state.cursor;
@@ -37,12 +39,14 @@ export default (state, tokens) => {
     // update the token's type to VAR_NAME
     tokens[cursor].type = types.VARIABLE;
 
-    const argState = {token: tokens[cursor], isIf: tokens[cursor].value === 'if', cursor: state.cursor};
+    // store the variable token
+    let varToken = tokens[cursor];
 
     // Update cursor to passed the variable name
     state.cursor += 1;
 
     // Attempt to consume following tokens as arguments block
+    const argState = {token: varToken, isIf: varToken.value === 'if', cursor: state.cursor};
     consumeArguments(argState, tokens);
 
     return true;

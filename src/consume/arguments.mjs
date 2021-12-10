@@ -1,19 +1,17 @@
+import types from '../helpers/token-types.mjs';
+
 import consumeCondition from './condition.mjs';
+import consumeEscapeSequence from './escape.mjs';
+import consumeQuotedText from './quoted-text.mjs';
+import consumeVariable from './variable.mjs';
 
 const removeWhitespace = (tokens, cursor) => {
-    while (tokens[cursor] && tokens[cursor].value === ' ') {
+    let result = '';
+    while (cursor < tokens.length && tokens[cursor].value === ' ') {
+        result += ' ';
         tokens.splice(cursor, 1);
     }
-}
-
-const consumeComma = (tokens, cursor) => {
-    removeWhitespace(tokens, cursor);
-    if (!tokens[cursor] || tokens[cursor].value !== ',') {
-        return false;
-    }
-    tokens.splice(tokens, cursor);
-    removeWhitespace(tokens, cursor);
-    return true;
+    return result;
 }
 
 export default (argState, tokens) => {
@@ -22,11 +20,12 @@ export default (argState, tokens) => {
     let cursor = argState.cursor;
 
     let token = tokens[cursor];
+
     if (!token || token.value !== '[') {
         return;
     }
 
-    // remove the opening bracket and trailing whitespace from tokens list
+    // remove the opening bracket and following whitespace from tokens list
     tokens.splice(cursor, 1);
     removeWhitespace(tokens, cursor);
 
@@ -41,18 +40,135 @@ export default (argState, tokens) => {
         }
         cursor = argState.cursor = condState.cursor;
 
-        // Attempt to consume a trailing comma
-        if (!consumeComma(tokens, cursor)) {
+        // remove leading whitespace
+        removeWhitespace(tokens, cursor);
+
+        // Insure next token is a comma and remove the comma token
+        if (!tokens[cursor] || tokens[cursor].value !== ',') {
             throw new Error('Expected arguments delimiter');
+        }
+        tokens.splice(cursor, 1);
+
+        // Remove trailing whitespace
+        removeWhitespace(tokens, cursor);
+    }
+
+    console.log('\r\nIterating Arguments:');
+    console.log('Cursor:', cursor);
+    console.log('Tokens:', tokens.slice(cursor));
+    console.log('\r\n\r\n');
+
+
+    let argParts = [];
+    while (cursor < tokens.length) {
+
+        // consume leading whitespace
+        let position = tokens[cursor].position,
+            whitespace = removeWhitespace(tokens, cursor);
+
+        console.log('Iterated token:')
+        console.log('  Cursor:', cursor);
+        console.log('  Token:', tokens[cursor]);
+
+        // Attempt to consume escape sequence
+        if (consumeEscapeSequence({cursor}, tokens)) {
+            // prepend leading whitespace to escaped character
+            tokens[cursor].position = position;
+            tokens[cursor].value = whitespace + tokens[cursor].value;
+            if (
+                argParts.length &&
+                argParts[argParts.length - 1].type === types.LITERAL_TEXT
+            ) {
+                argParts[argParts.length - 1].value += tokens[cursor].value;
+            } else {
+                argParts.push(tokens[cursor]);
+            }
+            tokens.splice(cursor, 1);
+            continue;
+        }
+
+        // Attempt to consume quoted text
+        if (consumeQuotedText({cursor}, tokens)) {
+            // prepend leading whitespace to escaped character
+            tokens[cursor].position = position;
+            tokens[cursor].value = whitespace + tokens[cursor].value;
+            if (
+                argParts.length &&
+                argParts[argParts.length - 1].type === types.LITERAL_TEXT
+            ) {
+                argParts[argParts.length - 1].value += tokens[cursor].value;
+            } else {
+                argParts.push(tokens[cursor]);
+            }
+            tokens.splice(cursor, 1);
+            continue;
+        }
+
+        // Attempt to consume variable
+        if (consumeVariable({cursor}, tokens)) {
+
+            // append leading whitespace as literal text
+            if (
+                argParts.length &&
+                argParts[argParts.length - 1].type === types.LITERAL_TEXT
+            ) {
+                argParts[argParts.length - 1].value = argParts[argParts.length - 1].value + whitespace;
+            } else {
+                argParts.push({
+                    position,
+                    value: whitespace,
+                    type: types.LITERAL_TEXT
+                });
+            }
+
+            argParts.push(tokens[cursor]);
+            tokens.splice(cursor, 1);
+            continue;
+        }
+
+        if (cursor < tokens.length) {
+
+            let token = tokens[cursor];
+
+            // Argument delimiter
+            if (token.value === ',') {
+                if (argParts.length) {
+                    variableToken.args.push(argParts);
+                    argParts = [];
+                } else {
+                    variableToken.args.push([{position, value: '', type: types.LITERAL_TEXT}]);
+                }
+                tokens.splice(cursor, 1);
+                removeWhitespace(tokens, cursor);
+                continue;
+            }
+
+            // Arguments end
+            if (token.value === ']') {
+                if (argParts.length) {
+                    variableToken.args.push(argParts);
+                    argParts = [];
+                } else {
+                    variableToken.args.push([{position, value: '', type: types.LITERAL_TEXT}]);
+                }
+                break;
+            }
+
+            // Assume anything else is to be treated as literal text
+            if (
+                argParts.length &&
+                argParts[argParts.length - 1].type === types.LITERAL_TEXT
+            ) {
+                argParts[argParts.length - 1].value += token.value;
+            } else {
+                token.type = types.LITERAL_TEXT;
+                argParts.push(token);
+            }
+            tokens.splice(cursor, 1);
         }
     }
 
-
-    // todo: consume arguments body
-
-
     // remove closing ']'
-    removeWhitespace(tokens, cursor);
     if (!tokens[cursor]) {
         throw new Error('Unexpected end of expression');
     }
