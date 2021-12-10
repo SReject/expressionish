@@ -53,22 +53,12 @@ export default (argState, tokens) => {
         removeWhitespace(tokens, cursor);
     }
 
-    console.log('\r\nIterating Arguments:');
-    console.log('Cursor:', cursor);
-    console.log('Tokens:', tokens.slice(cursor));
-    console.log('\r\n\r\n');
-
-
     let argParts = [];
     while (cursor < tokens.length) {
 
         // consume leading whitespace
         let position = tokens[cursor].position,
             whitespace = removeWhitespace(tokens, cursor);
-
-        console.log('Iterated token:')
-        console.log('  Cursor:', cursor);
-        console.log('  Token:', tokens[cursor]);
 
         // Attempt to consume escape sequence
         if (consumeEscapeSequence({cursor}, tokens)) {
