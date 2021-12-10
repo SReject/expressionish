@@ -40,7 +40,17 @@ const codePointFromSurrogatePair = pair => {
     return (highOffset << 10) + lowOffset + 0x10000;
 };
 
-export default string => {
+const isSignificant = char => (
+    char === '"' ||
+    char === '\\' ||
+    char === '$' ||
+    char === '[' ||
+    char === ',' ||
+    char === ']' ||
+    char === ' '
+);
+
+export const split = string => {
     if (typeof string !== 'string') {
         throw new Error('string cannot be undefined or null')
     }
@@ -87,5 +97,85 @@ export default string => {
         idx += inc;
         inc = 0;
     }
+    return result;
+};
+
+export const tokenize = input => {
+
+    if (typeof input !== 'string') {
+        throw new Error('string cannot be undefined or null')
+    }
+
+    const result = [];
+    let idx = 0;
+    let inc = 0;
+    let tok = null;
+    while (idx < input.length) {
+        const idxInc = idx + inc;
+        const current = input[idxInc];
+        if (
+            idxInc < (input.length - 1) &&
+            current &&
+            betweenInclusive(current.charCodeAt(0), HIGH_SURROGATE_START, HIGH_SURROGATE_END)
+        ) {
+            const currPair = codePointFromSurrogatePair(current + input[idxInc + 1]);
+            const nextPair = codePointFromSurrogatePair(string.substring(idxInc + 2, idxInc + 5));
+            if (
+                betweenInclusive(currPair, REGIONAL_INDICATOR_START, REGIONAL_INDICATOR_END) &&
+                betweenInclusive(nextPair, REGIONAL_INDICATOR_START, REGIONAL_INDICATOR_END)
+            ) {
+                inc += 4;
+            } else if (betweenInclusive(nextPair, FITZPATRICK_MODIFIER_START, FITZPATRICK_MODIFIER_END)) {
+                inc += 4;
+            } else {
+                inc += 2;
+            }
+        } else {
+            inc += 1;
+        }
+        if (GRAPHEMS.has((input[idx + inc] + '').charCodeAt(0))) {
+            inc += 1;
+        }
+        if (betweenInclusive((input[idx + inc] + '').charCodeAt(0), VARIATION_MODIFIER_START, VARIATION_MODIFIER_END)) {
+            inc += 1;
+        }
+        if (betweenInclusive((input[idx + inc] + '').charCodeAt(0), DIACRITICAL_MARKS_START, DIACRITICAL_MARKS_END)) {
+            inc += 1;
+        }
+        if ((input[idx + inc] + '').charCodeAt(0) === ZWJ) {
+            inc += 1;
+            continue;
+        }
+
+        // Emoji
+        if (inc > 1) {
+            if (tok == null) {
+                tok = {position: idx, value: ''};
+            }
+            tok.value += input.substring(idx, idx + inc);
+
+        // Significant Characters
+        } else if (isSignificant(input[idx])) {
+            if (tok != null) {
+                result.push(tok);
+                tok = null;
+            }
+            result.push({position: idx, value: input[idx]});
+
+        // Non-emoji, Non-significant characters
+        } else if (tok == null) {
+            tok = {position: idx, value: input[idx]};
+
+        } else {
+            tok.value += input[idx];
+        }
+
+        idx += inc;
+        inc = 0;
+    }
+    if (tok != null) {
+        result.push(tok);
+    }
+
     return result;
 };
