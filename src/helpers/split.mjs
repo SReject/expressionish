@@ -50,6 +50,7 @@ const isSignificant = char => (
     char === ' '
 );
 
+// Unicode-safe splitting
 export const split = string => {
     if (typeof string !== 'string') {
         throw new Error('string cannot be undefined or null')
@@ -100,6 +101,7 @@ export const split = string => {
     return result;
 };
 
+// Unicode safe tokenizer
 export const tokenize = input => {
 
     if (typeof input !== 'string') {
