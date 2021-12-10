@@ -1,7 +1,7 @@
 import split from './split.mjs';
 
-export default (pattern, caseSensitive) => {
-    let wc = split(pattern);
+export default (input, caseSensitive) => {
+    let wc = split(input);
 
     let isStart = true;
     let startAnchor = true;

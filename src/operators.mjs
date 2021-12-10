@@ -1,4 +1,4 @@
-import wildcardToRegExp from './wildcard-to-regexp.mjs';
+import wildcardToRegExp from './helpers/wildcard-to-regexp.mjs';
 
 const isRange = /^((?:[+-]?\d+(?:\.\d+)?)|(?:[+-]?\.\d+))-((?:[+-]?\d+(?:\.\d+)?)|(?:[+-]?\.\d+))$/;
 
