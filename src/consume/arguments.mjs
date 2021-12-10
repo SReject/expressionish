@@ -29,7 +29,7 @@ export default (argState, tokens) => {
     tokens.splice(cursor, 1);
     removeWhitespace(tokens, cursor);
 
-    variableToken.args = [];
+    variableToken.arguments = [];
 
     // $if[] - Consume condition argument
     if (argState.isIf) {
@@ -123,10 +123,10 @@ export default (argState, tokens) => {
             // Argument delimiter
             if (token.value === ',') {
                 if (argParts.length) {
-                    variableToken.args.push(argParts);
+                    variableToken.arguments.push(argParts);
                     argParts = [];
                 } else {
-                    variableToken.args.push([{position, value: '', type: types.LITERAL_TEXT}]);
+                    variableToken.arguments.push([{position, value: '', type: types.LITERAL_TEXT}]);
                 }
                 tokens.splice(cursor, 1);
                 removeWhitespace(tokens, cursor);
@@ -136,10 +136,10 @@ export default (argState, tokens) => {
             // Arguments end
             if (token.value === ']') {
                 if (argParts.length) {
-                    variableToken.args.push(argParts);
+                    variableToken.arguments.push(argParts);
                     argParts = [];
                 } else {
-                    variableToken.args.push([{position, value: '', type: types.LITERAL_TEXT}]);
+                    variableToken.arguments.push([{position, value: '', type: types.LITERAL_TEXT}]);
                 }
                 break;
             }

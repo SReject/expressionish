@@ -1,5 +1,6 @@
 export default {
     LITERAL_TEXT: 'LITERAL_TEXT',
+    IF_VARIABLE:  'IF_VARIABLE',
     VARIABLE:     'VARIABLE',
     OPERATOR:     'OPERATOR',
 
