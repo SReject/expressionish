@@ -13,8 +13,8 @@
 | `!exists`   | `"" !exists`      | The left side is null or empty text |
 | `isnumber`  | `1 isnumber`      | The left side is numerical |
 | `!isnumber` | `a !isnumber`     | The left side is not numerical |
-| `isnumber`  | `2 isnumber 1-2`  | The left side is numerical and falls within the specified range |
-| `!isnumber` | `2 !isnumber 1-2` | The left side is not numerical or does not fall within the specified range |
+| `isnumber`  | `2 isnumber 1-2`  | The left side is numerical and falls within the specified range (inclusive) |
+| `!isnumber` | `3 !isnumber 1-2` | The left side is not numerical or does not fall within the specified range (inclusive) |
 | `regex`     | `a regex /a/`     | The left side matches the right side's regex pattern |
 | `!regex`    | `a !regex /b/`    | The left side does not match the right side's regex pattern |
 | `iswcm`     | `ab iswcm a?`     | The left side matches the right side's wildcard pattern |
