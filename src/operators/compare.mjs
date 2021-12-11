@@ -82,54 +82,54 @@ const isWildcardMatchCaseSensitive = (v1, v2) => {
     return wildcardToRegExp(v2, true).test(v1);
 };
 
-export default {
-    '===': isStrictEqual,
-    '!==': (...args) => !(isStrictEqual(...args)),
+export default new Map([
+    ['===', isStrictEqual],
+    ['!==', (...args) => !(isStrictEqual(...args))],
 
-    '==': isLooseEqual,
-    '!=': (...args) => !(isLooseEqual(...args)),
+    ['==', isLooseEqual],
+    ['!=', (...args) => !(isLooseEqual(...args))],
 
-    '<': (v1, v2) => {
+    ['<', (v1, v2) => {
         [v1, v2] = toNumber(v1, v2);
         if (Number.isNaN(v1) || Number.isNaN(v2)) {
             return false;
         }
         return v1 < v2;
-    },
-    '<=': (v1, v2) => {
+    }],
+    ['<=', (v1, v2) => {
         [v1, v2] = toNumber(v1, v2);
         if (Number.isNaN(v1) || Number.isNaN(v2)) {
             return false;
         }
         return v1 <= v2;
-    },
-    '>': (v1, v2) => {
+    }],
+    ['>', (v1, v2) => {
         [v1, v2] = toNumber(v1, v2);
         if (Number.isNaN(v1) || Number.isNaN(v2)) {
             return false;
         }
         return v1 > v2;
-    },
-    '>=': (v1, v2) => {
+    }],
+    ['>=', (v1, v2) => {
         [v1, v2] = toNumber(v1, v2);
         if (Number.isNaN(v1) || Number.isNaN(v2)) {
             return false;
         }
         return v1 >= v2;
-    },
+    }],
 
-    'exists':  exists,
-    '!exists': (...args) => !(exists(...args)),
+    ['exists',  exists],
+    ['!exists', (...args) => !(exists(...args))],
 
-    'isnumber':  isNumber,
-    '!isnumber': (...args) => !(isNumber(...args)),
+    ['isnumber',  isNumber],
+    ['!isnumber', (...args) => !(isNumber(...args))],
 
-    'regex': isRegexMatch,
-    '!regex': (...args) => !(isRegexMatch(...args)),
+    ['regex', isRegexMatch],
+    ['!regex', (...args) => !(isRegexMatch(...args))],
 
-    'iswcm':  isWildcardMatch,
-    '!iswcm': (...args) => !(isWildcardMatch(...args)),
+    ['iswcm',  isWildcardMatch],
+    ['!iswcm', (...args) => !(isWildcardMatch(...args))],
 
-    'iswcmcs':  isWildcardMatchCaseSensitive,
-    '!iswcmcs': (...args) => !(isWildcardMatchCaseSensitive(...args))
-};
+    ['iswcmcs',  isWildcardMatchCaseSensitive],
+    ['!iswcmcs', (...args) => !(isWildcardMatchCaseSensitive(...args))]
+]);

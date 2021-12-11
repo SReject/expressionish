@@ -17,18 +17,18 @@ const $or = (...args) => {
 const $nand = (...args) => $not($and(...args));
 const $nor = (...args) => $not($or(...args));
 
-export default {
-    '$NOT': $not,
+export default new Map([
+    ['$NOT', $not],
 
-    '$AND': $and,
-    '$ALL': $and,
+    ['$AND', $and],
+    ['$ALL', $and],
 
-    '$OR':  $or,
-    '$ANY': $or,
+    ['$OR',  $or],
+    ['$ANY', $or],
 
-    '$NAND': $nand,
-    '$NALL': $nand,
+    ['$NAND', $nand],
+    ['$NALL', $nand],
 
-    '$NOR': $nor,
-    '$NANY': $nor
-};
+    ['$NOR',  $nor],
+    ['$NANY', $nor]
+]);

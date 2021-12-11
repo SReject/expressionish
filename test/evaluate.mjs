@@ -21,13 +21,13 @@ const expectEqual = async (fnc, value) => {
     assert.equal(result, value);
 };
 
-const vars = [
-    {handle: 'txt', argsCheck: () => {}, evaluator: () => 'evaled_var_text'},
-    {handle: 'ten', argsCheck: () => {}, evaluator: () => 10},
-    {handle: 'sum', argsCheck: () => {}, evaluator: (meta, ...args) => {
+const vars = new Map([
+    ['txt', {handle: 'txt', argsCheck: () => {}, evaluator: () => 'evaled_var_text'}],
+    ['ten', {handle: 'ten', argsCheck: () => {}, evaluator: () => 10}],
+    ['sum', {handle: 'sum', argsCheck: () => {}, evaluator: (meta, ...args) => {
         return args.map(item => Number(item)).reduce((acc, cur) => acc + cur, 0)
-    }}
-];
+    }}]
+]);
 
 describe('evaluate()', function () {
 

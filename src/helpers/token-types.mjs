@@ -1,13 +1,7 @@
 export default {
-    LITERAL_TEXT: 'LITERAL_TEXT',
-    IF_VARIABLE:  'IF_VARIABLE',
-    VARIABLE:     'VARIABLE',
-    OPERATOR:     'OPERATOR',
-
-    QUOTE:        'QUOTE',
-    ESCAPE:       'ESCAPE',
-    BLOCK_START:  'ARG_START',
-    BLOCK_SEP:    'ARG_SEP',
-    BLOCK_END:    'ARG_END',
-    TEXT:         'TEXT'
+    LITERAL_TEXT:     'LITERAL_TEXT',
+    VARIABLE:         'VARIABLE',
+    IF_VARIABLE:      'IF_VARIABLE',
+    LOGIC_OPERATOR:   'LOGIC_OPERATOR',
+    COMPARE_OPERATOR: 'COMPARE_OPERATOR'
 };
