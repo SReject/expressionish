@@ -1,4 +1,4 @@
-import {ExpressionSyntaxError, ExpressionVariableError, ExpressionArgumentsError } from './errors.mjs';
+import {ExpressionError, ExpressionSyntaxError, ExpressionVariableError, ExpressionArgumentsError } from './errors.mjs';
 
 import buildLogicMap from './build-logic-map.mjs';
 
@@ -74,7 +74,7 @@ const processTokens = async (handlers, options, tokenMap) => {
     return result.join('');
 };
 
-export default function evaluate(handlers, options) {
+function evaluate(handlers, options) {
 
     // validate handlers list
     if (handlers == null || !Array.isArray(handlers)) {
@@ -101,4 +101,12 @@ export default function evaluate(handlers, options) {
 
     let tokenMap = buildLogicMap(options.expression);
     return processTokens(handlers, options, tokenMap);
+};
+
+export {
+    evaluate as default,
+    ExpressionError,
+    ExpressionSyntaxError,
+    ExpressionVariableError,
+    ExpressionArgumentsError
 };
