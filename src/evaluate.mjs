@@ -75,8 +75,9 @@ const processTokens = async (handlers, options, tokenMap) => {
 };
 
 export default function evaluate(handlers, options) {
+
     // validate handlers list
-    if (!Array.isArray(handlers)) {
+    if (handlers == null || !Array.isArray(handlers)) {
         throw new TypeError('handlers list not an array');
     }
 
