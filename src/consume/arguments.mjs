@@ -18,9 +18,7 @@ export default (argState, tokens) => {
     const variableToken = argState.token;
 
     let cursor = argState.cursor;
-
     let token = tokens[cursor];
-
     if (!token || token.value !== '[') {
         return;
     }
@@ -96,8 +94,6 @@ export default (argState, tokens) => {
 
         // Attempt to consume variable
         if (consumeVariable({cursor}, tokens)) {
-
-            // append leading whitespace as literal text
             if (
                 argParts.length &&
                 argParts[argParts.length - 1].type === types.LITERAL_TEXT
@@ -117,7 +113,6 @@ export default (argState, tokens) => {
         }
 
         if (cursor < tokens.length) {
-
             let token = tokens[cursor];
 
             // Argument delimiter
