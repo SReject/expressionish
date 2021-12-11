@@ -19,14 +19,10 @@
 | `!iswcmcs` | `bc !iswcmcs a?` | The left side does not match the right side's wildcard pattern (case-sensitive) |
 
 # Logical Operators
-| Operator | Example                 | Returns true If |
-|:--------:|:-----------------------:|-|
-| `$AND`   | `$AND[1 == 1, 2 == 2]`  | All comparisions returned true |
-| `$ALL`   | `$ALL[1 == 1, 2 == 2]`  | All comparisions returned true |
-| `$NAND`  | `$NAND[1 == 1, 1 == 2]` | Any comparison returned false |
-| `$NALL`  | `$NALL[1 == 1, 1 == 2]` | Any comparison returned false |
-| `$OR`    | `$OR[1 == 1, 2 == 2]`   | Atleast one comparison returned true |
-| `$ANY`   | `$ANY[1 == 1, 2 == 2]`  | Atleast one comparison returned true |
-| `$NOR`   | `$NOR[1 == 1, 1 == 2]`  | All comparisons returned false |
-| `$NANY`  | `$NANY[1 == 1, 1 == 2]` | All comparisons returned false |
-| `$NOT`   | `$NOT[1 == 2]`          | The comparison returned false |
+| Operator         | Example                 | Returns true If |
+|:----------------:|:-----------------------:|-|
+| `$NOT`           | `$NOT[1 == 2]`          | The comparison returned false |
+| `$AND`, `$ALL`   | `$AND[1 == 1, 2 == 2]`  | All comparisions returned true |
+| `$NAND`, `$NALL` | `$NAND[1 == 1, 1 == 2]` | Any comparison returned false |
+| `$OR`, `$ANY`    | `$OR[1 == 1, 2 == 2]`   | Atleast one comparison returned true |
+| `$NOR`, `$NANY`  | `$NOR[1 == 1, 1 == 2]`  | All comparisons returned false |
