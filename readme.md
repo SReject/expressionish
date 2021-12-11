@@ -18,6 +18,12 @@
 | `iswcmcs`  | `ab iswcmcs a?`  | The left side matches the right side's wildcard pattern (case-sensitive) |
 | `!iswcmcs` | `bc !iswcmcs a?` | The left side does not match the right side's wildcard pattern (case-sensitive) |
 
+\*: Loosey equals returns true if either:
+\- the left-side exactly equals the right-side
+\- the left-side exactly equals the right-side after converting both to lower-case
+\- the left-side is numerical and exactly equals the right side after converting both to numbers
+\- both left- and right-side values are null or string
+
 # Logical Operators
 | Operator         | Example                 | Returns true If |
 |:----------------:|:-----------------------:|-|
