@@ -2,8 +2,13 @@
     "name": "expressionish",
     "author": "SReject",
     "version": "0.0.1",
+
     "private": true,
     "license": "ISC",
+
+    "main": "./src/evaluate.mjs",
+    "type": "module",
+
     "devDependencies": {
         "mocha": "^9.1.3"
     }
