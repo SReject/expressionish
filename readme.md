@@ -22,7 +22,7 @@
 | Operator         | Example                 | Returns true If |
 |:----------------:|:-----------------------:|-|
 | `$NOT`           | `$NOT[1 == 2]`          | The comparison returned false |
-| `$AND`, `$ALL`   | `$AND[1 == 1, 2 == 2]`  | All comparisions returned true |
+| `$AND`, `$ALL`   | `$AND[1 == 1, 2 == 2]`  | Atleast one comparision returned false |
 | `$NAND`, `$NALL` | `$NAND[1 == 1, 1 == 2]` | Any comparison returned false |
 | `$OR`, `$ANY`    | `$OR[1 == 1, 2 == 2]`   | Atleast one comparison returned true |
 | `$NOR`, `$NANY`  | `$NOR[1 == 1, 1 == 2]`  | All comparisons returned false |
