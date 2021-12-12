@@ -1,6 +1,6 @@
 import {ExpressionError, ExpressionSyntaxError, ExpressionVariableError, ExpressionArgumentsError } from './errors.mjs';
 
-import buildTokenMap from './build-logic-map.mjs';
+import tokenize from './tokenize/tokenize.mjs';
 import evaluateExpression from './evaluate/expression.mjs';
 
 function evaluate(handlers, options) {
@@ -50,8 +50,8 @@ function evaluate(handlers, options) {
         throw new TypeError('failed to convert handlers to Map');
     }
 
-    let tokenMap = buildTokenMap(options.expression);
-    return evaluateExpression(handlers, options, tokenMap);
+    const tokens = tokenize(options.expression);
+    return evaluateExpression(handlers, options, tokens);
 };
 
 export {
