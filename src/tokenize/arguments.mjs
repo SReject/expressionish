@@ -50,7 +50,7 @@ export default function tokenizeArguments(result, tokens) {
         }
 
         if (whitespace) {
-            if (parts.length && parts[parts - 1].type === types.LITERAL_TEXT) {
+            if (parts.length && parts[parts.length - 1].type === types.LITERAL_TEXT) {
                 parts[parts.length - 1].value += whitespace;
             } else {
                 parts.push({value: whitespace, type: types.LITERAL_TEXT, position});
@@ -75,7 +75,7 @@ export default function tokenizeArguments(result, tokens) {
 
         // Treat all other tokens as plain text
         const token = tokens.shift();
-        if (parts.length && parts[parts - 1].type === types.LITERAL_TEXT) {
+        if (parts.length && parts[parts.length - 1].type === types.LITERAL_TEXT) {
             parts[parts.length - 1].value += token.value;
         } else {
             token.type = types.LITERAL_TEXT;

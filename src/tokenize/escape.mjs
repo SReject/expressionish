@@ -3,8 +3,11 @@ import types from '../helpers/token-types.mjs';
 const ROOT_ESC = '"$[\\';
 
 const resultAdd = (result, token) => {
-    if (result.length && result[result.length - 1].type === types.LITERAL_TEXT) {
-        result[result.length - 1].value = token.value;
+    if (
+        result.length &&
+        result[result.length - 1].type === types.LITERAL_TEXT
+    ) {
+        result[result.length - 1].value += token.value;
     } else {
         result.push(token);
     }
@@ -12,7 +15,7 @@ const resultAdd = (result, token) => {
 
 export default function tokenizeEscape(result, tokens, escapeChars) {
     if (!tokens.length || tokens[0].value !== '\\') {
-        return;
+        return false;
     }
 
     if (escapeChars == null || escapeChars === '') {

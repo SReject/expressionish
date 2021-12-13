@@ -7,12 +7,8 @@ import tokenizeQuotedText from './quoted-text.mjs';
 import tokenizeIf from './if.mjs';
 import tokenizeVariable from './variable.mjs';
 
-
-const ESC_CHARS = '"$[\\';
-
 export default function tokenize(expression) {
     let tokens = splitExpression(expression);
-
     const result = [];
 
     /*
@@ -23,11 +19,10 @@ export default function tokenize(expression) {
     - Process non-significant tokens into LITERAL_TEXT entites
     - Concatinate sequential LITERAL_TEXT tokens into single token
     */
-    let cursor = 0;
-    while (cursor < tokens.length) {
+    while (tokens.length) {
 
         // Attempt to consume token as escape sequence
-        if (tokenizeEscape(result, tokens, ESC_CHARS)) {
+        if (tokenizeEscape(result, tokens)) {
             continue;
         }
 
@@ -49,7 +44,8 @@ export default function tokenize(expression) {
         // Assume token is literal text
         let token = tokens.shift(),
             resLen = result.length;
-        if (resLen.length && result[resLen - 1].type === types.LITERAL_TEXT) {
+
+        if (result.length && result[resLen - 1].type === types.LITERAL_TEXT) {
             result[resLen - 1].value += token.value;
 
         } else {
@@ -57,5 +53,5 @@ export default function tokenize(expression) {
             result.push(token);
         }
     }
-    return tokens;
+    return result;
 }

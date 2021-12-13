@@ -3,7 +3,7 @@ import types from '../helpers/token-types.mjs';
 import { ExpressionSyntaxError } from '../errors.mjs';
 
 import tokenizeArguments from './arguments.mjs';
-import tokenizeConditionBlock from './condition-block.mjs';
+import tokenizeCondition from './condition.mjs';
 
 const removeWhitespace = tokens => {
     let result = ''
@@ -14,7 +14,13 @@ const removeWhitespace = tokens => {
 }
 
 export default function tokenizeIf(result, tokens) {
-    if (!tokens.length || tokens.length < 2 || tokens[0].value !== '$' || tokens[1].value !== 'if') {
+    if (
+        !tokens.length ||
+        tokens.length < 3 ||
+        tokens[0].value !== '$' ||
+        tokens[1].value !== 'if' ||
+        tokens[2].value !== '['
+    ) {
         return false;
     }
 
@@ -35,9 +41,10 @@ export default function tokenizeIf(result, tokens) {
     removeWhitespace(tokens);
 
     // Consume condition block and delimiter
-    if (!tokenizeConditionBlock(token.arguments, tokens)) {
+    if (!tokenizeCondition(token.arguments, tokens)) {
         throw new ExpressionSyntaxError('$if requires the first argument to be a conditional', openToken.position + 1);
     }
+
     if (!tokens.length) {
         throw new ExpressionSyntaxError('unexpected end of expression');
     }
@@ -52,10 +59,10 @@ export default function tokenizeIf(result, tokens) {
     tokenizeArguments(token.arguments, tokens);
 
     // check result
-    if (result.length < 2) {
+    if (token.arguments.length < 2) {
         throw new ExpressionSyntaxError('$if requires at least 2 arguments', openToken.position);
     }
-    if (result.length > 3) {
+    if (token.arguments.length > 3) {
         throw new ExpressionSyntaxError('$if requires at most 3 arguments', result[result.length -1].position);
     }
     result.push(token);

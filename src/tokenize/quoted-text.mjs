@@ -21,8 +21,9 @@ export default function (result, tokens) {
         token = tokens.shift();
 
         if (token.value === '"') {
-            text = text.map(item => item.value);
-            if (result.length && result[result.length -1].type === types.LITERAL_TEXT) {
+            text = text.map(item => item.value).join('');
+
+            if (result.length && result[result.length - 1].type === types.LITERAL_TEXT) {
                 result[result.length - 1].value += text;
             } else {
                 result.push({
