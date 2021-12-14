@@ -362,4 +362,12 @@ describe('evaluate()', function () {
             await expectEqual(() => evaluate({...options, expression: '$if[$NOT[1 === 1], yes, no]'}), 'no');
         });
     });
+
+    describe('Input all the things', function () {
+        it('Properly evaluates all the things', async function () {
+            const expression = `a \\b \\$ "c \\d \\"" $ten $sum[$ten, 1] $if[$NOT[$AND[1 === 1, $ten == 9]], 12, -1]\\`
+            const expect = `a \\b $ c \\d " 10 11 12\\`
+            await expectEqual(() => evaluate({...options, expression}), expect);
+        });
+    })
 });
