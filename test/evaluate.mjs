@@ -186,6 +186,9 @@ describe('evaluate()', function () {
         it('Does not throw an error for valid statement', async function () {
             await evaluate({...options, expression: '$if[1 === 1, true, false]'});
         });
+    });
+
+    describe('Input is $if with comparison operator', function () {
         it('Properly evaluates ===', async function () {
             await expectEqual(() => evaluate({...options, expression: '$if[1 === 1, yes, no]'}), 'yes');
             await expectEqual(() => evaluate({...options, expression: '$if[1 === 2, yes, no]'}), 'no');
@@ -341,6 +344,22 @@ describe('evaluate()', function () {
         it('Properly evaluates !iswcmcs', async function () {
             await expectEqual(() => evaluate({...options, expression: '$if[ab !iswcmcs a?, yes, no]'}), 'no');
             await expectEqual(() => evaluate({...options, expression: '$if[Ab !iswcmcs a?, yes, no]'}), 'yes');
+        });
+    });
+
+    describe('Input is $if with logical operator', function () {
+        it('Properly evaluates $ALL', async function () {
+            await expectEqual(() => evaluate({...options, expression: '$if[$ALL[1 === 1], yes, no]'}), 'yes');
+            await expectEqual(() => evaluate({...options, expression: '$if[$ALL[1 === 1, 2 === 2], yes, no]'}), 'yes');
+            await expectEqual(() => evaluate({...options, expression: '$if[$ALL[1 === 1, 2 === 3], yes, no]'}), 'no');
+        });
+        it('Properly evaluates $ANY', async function () {
+            await expectEqual(() => evaluate({...options, expression: '$if[$ANY[1 === 1], yes, no]'}), 'yes');
+            await expectEqual(() => evaluate({...options, expression: '$if[$ANY[1 === 2, 2 === 2], yes, no]'}), 'yes');
+            await expectEqual(() => evaluate({...options, expression: '$if[$ANY[1 === 2, 2 === 3], yes, no]'}), 'no');
+        });
+        it('Properly evaluates $NOT', async function () {
+            await expectEqual(() => evaluate({...options, expression: '$if[$NOT[1 === 1], yes, no]'}), 'no');
         });
     });
 });

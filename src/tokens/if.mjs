@@ -5,6 +5,7 @@ import { ExpressionSyntaxError } from '../errors.mjs';
 
 import BaseToken from './base.mjs';
 import { default as tokenizeComparison } from './comparison.mjs';
+import { default as tokenizeLogicOperator } from './logic-operator.mjs';
 import { default as tokenizeArguments } from './arguments.mjs';
 
 export class IfToken extends BaseToken {
@@ -114,11 +115,18 @@ export default (output, tokens) => {
     // Save opening bracket token
     const openToken = tokens.shift();
 
-    // Consume condition and delimiter(,)
-    let condition = tokenizeComparison(tokens);
+    // Attempt to consume logic condition
+    let condition = tokenizeLogicOperator(tokens);
     if (!condition) {
-        throw new ExpressionSyntaxError('$if requires the first argument to be a conditional', openToken.position + 1);
+
+        // Attempt to consume comparison condition
+        condition = tokenizeComparison(tokens);
+        if (!condition) {
+            throw new ExpressionSyntaxError('$if requires the first argument to be a conditional', openToken.position + 1);
+        }
     }
+
+    // Comsume delimiter(,) following condition
     if (!tokens.length) {
         throw new ExpressionSyntaxError('unexpected end of expression');
     }

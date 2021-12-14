@@ -1,8 +1,12 @@
+import types from '../helpers/token-types.mjs';
+
 import { ExpressionSyntaxError } from '../errors.mjs';
 import { removeWhitespace } from '../helpers/misc.mjs';
 
 import BaseToken from './base.mjs';
-import { tokenize as tokenizeComparison } from './comparison.mjs';
+import { default as tokenizeComparison } from './comparison.mjs';
+
+import operators from '../operators/logical.mjs';
 
 export class LogicToken extends BaseToken {
     constructor(options) {
@@ -14,8 +18,8 @@ export class LogicToken extends BaseToken {
     }
 
     async evaluate(options = {}) {
-        let operator = logicOperators.get(this.value);
-        if (operator) {
+        let operator = operators.get(this.value);
+        if (!operator) {
             return false;
         }
 
@@ -28,18 +32,17 @@ export class LogicToken extends BaseToken {
         if (options.onlyValidate) {
             return false;
         }
-
         return operator(...args);
     }
 }
 
 // tokenizeLogicOperator()
-export default tokens => {
+const tokenize = tokens => {
     // Not a logical operator
     if (
         tokens.length < 4 ||
         tokens[0].value !== '$' ||
-        !logicOperators.has('$' + tokens[1].value) ||
+        !operators.has('$' + tokens[1].value) ||
         tokens[2].value !== '['
     ) {
         return;
@@ -68,7 +71,7 @@ export default tokens => {
         let position = tokens[0].position;
 
         // Consume condition and trailing whitespace
-        let token = tokenizeLogicOperator(tokens);
+        let token = tokenize(tokens);
         if (token == null) {
             token = tokenizeComparison(tokens);
             if (token == null) {
@@ -82,8 +85,9 @@ export default tokens => {
         }
 
         // Argument delimiter
-        if (tokens[0] === ',') {
+        if (tokens[0].value === ',') {
             tokens.shift();
+            continue;
         }
 
         // End of Logic Block
@@ -96,3 +100,4 @@ export default tokens => {
 
     throw new ExpressionSyntaxError('unexpected end of expression');
 };
+export default tokenize;
