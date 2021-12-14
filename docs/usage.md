@@ -47,4 +47,4 @@ You can find more info on conditions [here](./conditions.md)
 | `$if[1 === 2, yes, no]` | no | |
 | `$if[1 === 1, yes]` | yes | |
 | `$if[1 === 2, yes]` | | Returns an empty string when a second argument is given |
-| `$ten is $if[$ten > 5, greater than, less than or equal to] 5` | 10 greater than 5 | |
+| `$ten is $if[$ten > 5, greater than, less than or equal to] 5` | 10 is greater than 5 | |
