@@ -1,3 +1,5 @@
+/* global describe, it */
+
 import assert from 'assert';
 
 import * as errors from '../src/errors.mjs';
