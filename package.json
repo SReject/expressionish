@@ -6,9 +6,15 @@
     "private": true,
     "license": "ISC",
 
-    "main": "./src/evaluate.mjs",
-    "type": "module",
-
+    "type": "commonjs",
+    "main": "./src/evaluate.js",
+    "module": "./src/evaluate.mjs",
+    "exports": {
+        ".":{
+            "require": "./src/evaluate.js",
+            "default": "./src/evaluate.mjs"
+        }
+    },
     "devDependencies": {
         "mocha": "^9.1.3"
     }
