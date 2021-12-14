@@ -284,6 +284,63 @@ describe('evaluate()', function () {
             await expectEqual(() => evaluate({...options, expression: '$if[a !isnumber, yes, no]'}), 'yes');
             await expectEqual(() => evaluate({...options, expression: '$if["" !isnumber, yes, no]'}), 'yes');
         });
-
+        it('Properly evaluates isnumber range', async function () {
+            await expectEqual(() => evaluate({...options, expression: '$if[0 isnumber 1-3, yes, no]'}), 'no');
+            await expectEqual(() => evaluate({...options, expression: '$if[1 isnumber 1-3, yes, no]'}), 'yes');
+            await expectEqual(() => evaluate({...options, expression: '$if[2 isnumber 1-3, yes, no]'}), 'yes');
+            await expectEqual(() => evaluate({...options, expression: '$if[3 isnumber 1-3, yes, no]'}), 'yes');
+            await expectEqual(() => evaluate({...options, expression: '$if[4 isnumber 1-3, yes, no]'}), 'no');
+            await expectEqual(() => evaluate({...options, expression: '$if[1.5 isnumber 1-2, yes, no]'}), 'yes');
+            await expectEqual(() => evaluate({...options, expression: '$if[a isnumber 1-2, yes, no]'}), 'no');
+        });
+        it('Properly evaluates !isnumber range', async function () {
+            await expectEqual(() => evaluate({...options, expression: '$if[0 !isnumber 1-3, yes, no]'}), 'yes');
+            await expectEqual(() => evaluate({...options, expression: '$if[1 !isnumber 1-3, yes, no]'}), 'no');
+            await expectEqual(() => evaluate({...options, expression: '$if[2 !isnumber 1-3, yes, no]'}), 'no');
+            await expectEqual(() => evaluate({...options, expression: '$if[3 !isnumber 1-3, yes, no]'}), 'no');
+            await expectEqual(() => evaluate({...options, expression: '$if[4 !isnumber 1-3, yes, no]'}), 'yes');
+            await expectEqual(() => evaluate({...options, expression: '$if[1.5 !isnumber 1-2, yes, no]'}), 'no');
+            await expectEqual(() => evaluate({...options, expression: '$if[a !isnumber 1-2, yes, no]'}), 'yes');
+        });
+        it('Properly evaluates regex', async function () {
+            await expectEqual(() => evaluate({...options, expression: '$if[a regex /a/, yes, no]'}), 'yes');
+            await expectEqual(() => evaluate({...options, expression: '$if[A regex /a/i, yes, no]'}), 'yes');
+            await expectEqual(() => evaluate({...options, expression: '$if[a regex /b/, yes, no]'}), 'no');
+        });
+        it('Properly evaluates !regex', async function () {
+            await expectEqual(() => evaluate({...options, expression: '$if[a !regex /a/, yes, no]'}), 'no');
+            await expectEqual(() => evaluate({...options, expression: '$if[A !regex /a/i, yes, no]'}), 'no');
+            await expectEqual(() => evaluate({...options, expression: '$if[a !regex /b/, yes, no]'}), 'yes');
+        });
+        it('Properly evaluates iswcm', async function () {
+            await expectEqual(() => evaluate({...options, expression: '$if[a iswcm a, yes, no]'}), 'yes');
+            await expectEqual(() => evaluate({...options, expression: '$if[z iswcm a, yes, no]'}), 'no');
+            await expectEqual(() => evaluate({...options, expression: '$if[ab iswcm a?, yes, no]'}), 'yes');
+            await expectEqual(() => evaluate({...options, expression: '$if[bc iswcm a?, yes, no]'}), 'no');
+            await expectEqual(() => evaluate({...options, expression: '$if[abc iswcm a?c, yes, no]'}), 'yes');
+            await expectEqual(() => evaluate({...options, expression: '$if[ac iswcm a?c, yes, no]'}), 'no');
+            await expectEqual(() => evaluate({...options, expression: '$if[a iswcm a*, yes, no]'}), 'yes');
+            await expectEqual(() => evaluate({...options, expression: '$if[ab iswcm a*, yes, no]'}), 'yes');
+            await expectEqual(() => evaluate({...options, expression: '$if[ab iswcm *b*, yes, no]'}), 'yes');
+        });
+        it('Properly evaluates !iswcm', async function () {
+            await expectEqual(() => evaluate({...options, expression: '$if[a !iswcm a, yes, no]'}), 'no');
+            await expectEqual(() => evaluate({...options, expression: '$if[z !iswcm a, yes, no]'}), 'yes');
+            await expectEqual(() => evaluate({...options, expression: '$if[ab !iswcm a?, yes, no]'}), 'no');
+            await expectEqual(() => evaluate({...options, expression: '$if[bc !iswcm a?, yes, no]'}), 'yes');
+            await expectEqual(() => evaluate({...options, expression: '$if[abc !iswcm a?c, yes, no]'}), 'no');
+            await expectEqual(() => evaluate({...options, expression: '$if[ac !iswcm a?c, yes, no]'}), 'yes');
+            await expectEqual(() => evaluate({...options, expression: '$if[a !iswcm a*, yes, no]'}), 'no');
+            await expectEqual(() => evaluate({...options, expression: '$if[ab !iswcm a*, yes, no]'}), 'no');
+            await expectEqual(() => evaluate({...options, expression: '$if[ab !iswcm *b*, yes, no]'}), 'no');
+        });
+        it('Properly evaluates iswcmcs', async function () {
+            await expectEqual(() => evaluate({...options, expression: '$if[ab iswcmcs a?, yes, no]'}), 'yes');
+            await expectEqual(() => evaluate({...options, expression: '$if[Ab iswcmcs a?, yes, no]'}), 'no');
+        });
+        it('Properly evaluates !iswcmcs', async function () {
+            await expectEqual(() => evaluate({...options, expression: '$if[ab !iswcmcs a?, yes, no]'}), 'no');
+            await expectEqual(() => evaluate({...options, expression: '$if[Ab !iswcmcs a?, yes, no]'}), 'yes');
+        });
     });
 });

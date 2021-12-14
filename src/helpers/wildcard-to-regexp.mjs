@@ -10,9 +10,10 @@ export default (input, caseSensitive) => {
     let tokenACount = 0;
     let pattern = '';
     let idx = 0;
+    let processTokens = false;
     while (idx < wc.length) {
 
-        const char = wc[idx];
+        let char = wc[idx];
 
         // Char needs to be escaped
         if (
@@ -31,22 +32,25 @@ export default (input, caseSensitive) => {
             char === '}' ||
             char === '$'
         ) {
-            pattern = pattern + `\\${char}`;
+            char = `\\${char}`;
             processTokens = true;
 
         // Wildcard characters
         } else if (char === '*') {
             tokenACount += 1;
+            char = null;
+
         } else if (char === '?') {
             tokenQCount += 1;
+            char = null;
 
         // Non-special character
         } else {
-            pattern = pattern + char;
             processTokens = true;
         }
 
         const isEnd = (idx + 1) === wc.length;
+
         if (processTokens || (isEnd && (tokenQCount || tokenACount))) {
             let useAstericks = false;
 
@@ -70,10 +74,16 @@ export default (input, caseSensitive) => {
                 pattern = pattern + '.'.repeat(tokenQCount);
             }
 
+            if (char != null) {
+                pattern += char;
+            }
+
             tokenQCount = 0;
             tokenACount = 0;
-            processTokens = false;
             isStart = false;
+            processTokens = false;
+        } else if (char) {
+            pattern += char;
         }
 
         idx += 1;
@@ -85,6 +95,6 @@ export default (input, caseSensitive) => {
     if (endAnchor) {
         pattern = pattern + '$';
     }
-
-    return new RegExp(pattern, caseSensitive ? '' : 'i');
+    let res = new RegExp(pattern, caseSensitive ? '' : 'i');
+    return res;
 };

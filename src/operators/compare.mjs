@@ -43,14 +43,15 @@ const isNumber = (v1, v2) => {
         return false;
     }
     v1 = Number(v1);
+
     if (Number.isNaN(v1)) {
         return false;
     }
     if (v2 == null || v2 === '') {
         return true;
     }
-
     const range = isRange.exec(v2);
+
     if (!range) {
         return false;
     }
@@ -58,14 +59,10 @@ const isNumber = (v1, v2) => {
     let r1 = Number(range[1]),
         r2 = Number(range[2]);
 
-    if (Number.isNaN(r2)) {
-        return v1 === r1;
-    }
-
     if (r1 > r2) {
         return (r2 <= v1 && v1 <= r1);
     }
-    return (r1 <= v1 && v1 <= r1);
+    return (r1 <= v1 && v1 <= r2);
 };
 
 const isRegexMatch = (v1, v2) => {
