@@ -17,6 +17,7 @@ Quoted text is treated as-is except in the case of escape sequences.
 | "text\\"" | text\" |
 | "$text"   | $text  |
 
+
 ## Variables
 Variables come in two forms: those without arguments and those with.
 
@@ -34,10 +35,13 @@ Variable names always start with `$` and are followed by a-z followed by a-z 0-9
 | `$a` | $a | Not a valid variable name so treated as-is |
 | `$10` | $10 | Not a valid variable name so treated as-is |
 
+
 ## $if Variable
-the `$if` variable is a special variable that consists of a condition and two follwoing  arguments.
+The `$if` variable is a special variable that consists of a condition and one to two following  arguments.
 
 When the specified condition is true, the first argument is returned as the result otherwise the second argument is returned as the result.
+
+Variables, including `$if`, can be used in the condtion aswell as the arguments. Variables in the arguments will only be evaluated respectively of the conditions result. That is the first argument is only evalidated when the condition is true, the second argument is only evaluated when the condition is false.
 
 You can find more info on conditions [here](./conditions.md)
 
@@ -48,3 +52,16 @@ You can find more info on conditions [here](./conditions.md)
 | `$if[1 === 1, yes]` | yes | |
 | `$if[1 === 2, yes]` | | Returns an empty string when a second argument is given |
 | `$ten is $if[$ten > 5, greater than, less than or equal to] 5` | 10 is greater than 5 | |
+
+## Escape Sequences
+For special characters that you wish to treat as plain text, prefix them with `\`. If a `\` is encountered followed by a special character the `\` is removed and the special character is seen as plain text. Otherwise the `\` is treated as plain text
+
+| Example | Evaluation Result | Notes |
+|---------|-------------------|-------|
+| `\text` | \text\ | Non-escape sequence so `\` is treated as plain text
+| `\$var` | $var | Treats the `$` as plain text |
+| `\\text` | \text | Treats the `\` as plain text |
+| `\"text` | "text | Treats the `"` as plain text |
+| `$ten\[` | 10[] | Treats the `[` as plain text |
+| `$lowercase[TEXT\,]` | text, | Treats the `,` as plain text. Only valid in arguments |
+| `$lowercase[TEXT\]]` | text] | Treats the `]` as plain text. Only valid in arguments |
