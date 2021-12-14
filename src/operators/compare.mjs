@@ -3,6 +3,10 @@ import wildcardToRegExp from '../helpers/wildcard-to-regexp.mjs';
 const isRange = /^((?:[+-]?\d+(?:\.\d+)?)|(?:[+-]?\.\d+))-((?:[+-]?\d+(?:\.\d+)?)|(?:[+-]?\.\d+))$/;
 
 const toNumber = (v1, v2) => {
+    if (v1 === '' || v2 === '') {
+        return [v1, v2];
+    }
+
     const v1Num = Number(v1);
     if (Number.isNaN(v1Num)) {
         return [v1, v2];
@@ -35,6 +39,9 @@ const exists = (v1) => {
 };
 
 const isNumber = (v1, v2) => {
+    if (v1 === '') {
+        return false;
+    }
     v1 = Number(v1);
     if (Number.isNaN(v1)) {
         return false;
@@ -123,7 +130,10 @@ export default new Map([
     ['!exists', (...args) => !(exists(...args))],
 
     ['isnumber',  isNumber],
+    ['isnum', isNumber],
+
     ['!isnumber', (...args) => !(isNumber(...args))],
+    ['!isnum', (...args) => !(isNumber(...args))],
 
     ['regex', isRegexMatch],
     ['!regex', (...args) => !(isRegexMatch(...args))],
