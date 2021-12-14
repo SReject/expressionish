@@ -9,7 +9,8 @@ const expectThrow = async (fnc, type) => {
         await fnc();
     } catch (err) {
         if (type && !(err instanceof type)) {
-            throw new Error('threw incorrect error');
+            console.log(err);
+            throw new Error(`threw incorrect error: ${err.name}`);
         }
         return;
     }
@@ -124,31 +125,7 @@ describe('evaluate()', function () {
         });
     });
 
-    describe('Input is variable', function () {
-        it('Treats naked $ as text', async function () {
-            await expectEqual(() => evaluate({...options, expression: '$'}), '$');
-        });
-        it('Treats $<number> as text', async function () {
-            await expectEqual(() => evaluate({...options, expression: '$10'}), '$10');
-        });
-        it('Throws an error if the variable does not exist', async function () {
-            await expectThrow(() => evaluate({...options, expression: '$notdefined'}), errors.ExpressionVariableError);
-        });
-        it('Evaluates variable', async function () {
-            await expectEqual(() => evaluate({...options, expression: '$txt'}), 'evaled_var_text');
-        });
-        it('Evaluates variable with arguments', async function () {
-            await expectEqual(() => evaluate({...options, expression: '$sum[1,2]'}), '3');
-        });
-        it('Evaluates nested variables', async function () {
-            await expectEqual(() => evaluate({...options, expression: '$sum[$ten, 1]'}), '11');
-        });
-        it('Evaluates nested variable with arguments', async function () {
-            await expectEqual(() => evaluate({...options, expression: '$sum[$sum[$ten, 1], 1]'}), '12');
-        });
-    });
-
-    describe('Input is a mix', async function () {
+    describe('Input is a mix of text', async function () {
         it('Plain-text and escape sequences', async function () {
             await expectEqual(() => evaluate({...options, expression: 'text\\\\'}), 'text\\');
             await expectEqual(() => evaluate({...options, expression: '\\\\text'}), '\\text');
@@ -175,6 +152,87 @@ describe('evaluate()', function () {
             await expectEqual(() => evaluate({...options, expression: '\\$ "text"\\\\'}), '$ text\\');
             await expectEqual(() => evaluate({...options, expression: '\\$"text" \\\\'}), '$text \\');
             await expectEqual(() => evaluate({...options, expression: '\\$ "text" \\\\'}), '$ text \\');
+        });
+    });
+
+    describe('Input is variable', function () {
+        it('Treats naked $ as text', async function () {
+            await expectEqual(() => evaluate({...options, expression: '$'}), '$');
+        });
+        it('Treats $<number> as text', async function () {
+            await expectEqual(() => evaluate({...options, expression: '$10'}), '$10');
+        });
+        it('Throws an error if the variable does not exist', async function () {
+            await expectThrow(() => evaluate({...options, expression: '$notdefined'}), errors.ExpressionVariableError);
+        });
+        it('Evaluates variable', async function () {
+            await expectEqual(() => evaluate({...options, expression: '$txt'}), 'evaled_var_text');
+        });
+        it('Evaluates variable with arguments', async function () {
+            await expectEqual(() => evaluate({...options, expression: '$sum[1,2]'}), '3');
+        });
+        it('Evaluates nested variables', async function () {
+            await expectEqual(() => evaluate({...options, expression: '$sum[$ten, 1]'}), '11');
+        });
+        it('Evaluates nested variable with arguments', async function () {
+            await expectEqual(() => evaluate({...options, expression: '$sum[$sum[$ten, 1], 1]'}), '12');
+        });
+    });
+
+    describe('Input is $if', function () {
+        it('throws an error if no arguments', async function () {
+            await expectThrow(() => evaluate({...options, expression: '$if'}), errors.ExpressionSyntaxError);
+        });
+        it('Does not throw an error for valid statement', async function () {
+            await evaluate({...options, expression: '$if[1 === 1, true, false]'});
+        });
+        it('Properly evaluates ===', async function () {
+            await expectEqual(() => evaluate({...options, expression: '$if[1 === 1, yes, no]'}), 'yes');
+            await expectEqual(() => evaluate({...options, expression: '$if[1 === 2, yes, no]'}), 'no');
+            await expectEqual(() => evaluate({...options, expression: '$if[a === a, yes, no]'}), 'yes');
+            await expectEqual(() => evaluate({...options, expression: '$if[a === b, yes, no]'}), 'no');
+            await expectEqual(() => evaluate({...options, expression: '$if[a === A, yes, no]'}), 'no');
+            await expectEqual(() => evaluate({...options, expression: '$if[ === , yes, no]'}), 'yes');
+        });
+        it('Properly evaluates !==', async function () {
+            await expectEqual(() => evaluate({...options, expression: '$if[1 !== 1, yes, no]'}), 'no');
+            await expectEqual(() => evaluate({...options, expression: '$if[1 !== 2, yes, no]'}), 'yes');
+            await expectEqual(() => evaluate({...options, expression: '$if[a !== a, yes, no]'}), 'no');
+            await expectEqual(() => evaluate({...options, expression: '$if[a !== b, yes, no]'}), 'yes');
+            await expectEqual(() => evaluate({...options, expression: '$if[a !== A, yes, no]'}), 'yes');
+            await expectEqual(() => evaluate({...options, expression: '$if[ !== , yes, no]'}), 'no');
+        });
+        it('Properly evaluates <', async function () {
+            await expectEqual(() => evaluate({...options, expression: '$if[1 < 2, yes, no]'}), 'yes');
+            await expectEqual(() => evaluate({...options, expression: '$if[1.0 < 2, yes, no]'}), 'yes');
+            await expectEqual(() => evaluate({...options, expression: '$if[1 < 2.0, yes, no]'}), 'yes');
+            await expectEqual(() => evaluate({...options, expression: '$if[1 < 1, yes, no]'}), 'no');
+            await expectEqual(() => evaluate({...options, expression: '$if[a < 1, yes, no]'}), 'no');
+            await expectEqual(() => evaluate({...options, expression: '$if[1 < a, yes, no]'}), 'no');
+        });
+        it('Properly evaluates <=', async function () {
+            await expectEqual(() => evaluate({...options, expression: '$if[1 <= 2, yes, no]'}), 'yes');
+            await expectEqual(() => evaluate({...options, expression: '$if[1.0 <= 2, yes, no]'}), 'yes');
+            await expectEqual(() => evaluate({...options, expression: '$if[1 <= 2.0, yes, no]'}), 'yes');
+            await expectEqual(() => evaluate({...options, expression: '$if[1 <= 1, yes, no]'}), 'yes');
+            await expectEqual(() => evaluate({...options, expression: '$if[a < 1, yes, no]'}), 'no');
+            await expectEqual(() => evaluate({...options, expression: '$if[1 < a, yes, no]'}), 'no');
+        });
+        it('Properly evaluates >', async function () {
+            await expectEqual(() => evaluate({...options, expression: '$if[2 > 1, yes, no]'}), 'yes');
+            await expectEqual(() => evaluate({...options, expression: '$if[2.0 > 1, yes, no]'}), 'yes');
+            await expectEqual(() => evaluate({...options, expression: '$if[2 > 1.0, yes, no]'}), 'yes');
+            await expectEqual(() => evaluate({...options, expression: '$if[1 > 1, yes, no]'}), 'no');
+            await expectEqual(() => evaluate({...options, expression: '$if[a > 1, yes, no]'}), 'no');
+            await expectEqual(() => evaluate({...options, expression: '$if[1 > a, yes, no]'}), 'no');
+        });
+        it('Properly evaluates >=', async function () {
+            await expectEqual(() => evaluate({...options, expression: '$if[2 >= 1, yes, no]'}), 'yes');
+            await expectEqual(() => evaluate({...options, expression: '$if[2.0 >= 1, yes, no]'}), 'yes');
+            await expectEqual(() => evaluate({...options, expression: '$if[2 >= 1.0, yes, no]'}), 'yes');
+            await expectEqual(() => evaluate({...options, expression: '$if[1 >= 1, yes, no]'}), 'yes');
+            await expectEqual(() => evaluate({...options, expression: '$if[a > 1, yes, no]'}), 'no');
+            await expectEqual(() => evaluate({...options, expression: '$if[1 > a, yes, no]'}), 'no');
         });
     });
 });
