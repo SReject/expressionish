@@ -1,3 +1,5 @@
+import types from '../helpers/token-types.mjs';
+
 import { removeWhitespace } from "../helpers/misc.mjs";
 import operators from '../operators/compare.mjs';
 
@@ -14,10 +16,9 @@ export class ComparisonToken extends BaseToken {
 
     constructor(options) {
         super({
-            type: types.CONDITION,
-            ...options
+            ...options,
+            type: types.CONDITION
         });
-        this.operator = options.operator;
         this.arguments = options.arguments;
     }
 
@@ -32,8 +33,18 @@ export class ComparisonToken extends BaseToken {
         }
 
         let args = [];
-        for (let idx = 0; idx < this.arguments.length; idx += 1) {
-            args[idx] = await this.arguments[idx].evaluate(options);
+        if (this.arguments && this.arguments.length) {
+            for (let idx = 0; idx < this.arguments.length; idx += 1) {
+                let accumulator = '';
+                const parts = this.arguments[idx];
+                for (let partsIdx = 0; partsIdx < parts.length; partsIdx += 1) {
+                    let res = await parts[partsIdx].evaluate(options);
+                    if (res != null) {
+                        accumulator += res;
+                    }
+                }
+                args.push(accumulator);
+            }
         }
 
         if (options.onlyValidate) {
@@ -52,7 +63,8 @@ export default (tokens) => {
         return;
     }
 
-    const position = tokens[0].position,
+    const leadingWs = removeWhitespace(tokens),
+        position = tokens[0].position,
         left = [],
         right = [];
 
@@ -69,8 +81,8 @@ export default (tokens) => {
         // consume operator: must be prefixed with whitespace and suffixed with whitespace or end-of-conditional
         if (
             value == null &&
-            whitespace &&
-            comparisonOperators.has(tokens[0].value) &&
+            (leadingWs || ws) &&
+            operators.has(tokens[0].value) &&
             (
                 !tokens[1] ||
                 tokens[1].value === ' ' ||
@@ -87,9 +99,9 @@ export default (tokens) => {
         const side = value == null ? left : right;
 
         // Add whitespace to side token array
-        if (whitespace) {
+        if (ws) {
             if (side.length && side[side.length - 1].type === types.TEXT) {
-                side[side.length - 1].value += whitespace;
+                side[side.length - 1].value += ws;
             } else {
                 side.push(new TextToken({value: ws, position: pos}));
             }

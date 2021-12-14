@@ -1,7 +1,19 @@
-import {ExpressionError, ExpressionSyntaxError, ExpressionVariableError, ExpressionArgumentsError } from './errors.mjs';
+import {
+    ExpressionError,
+    ExpressionSyntaxError,
+    ExpressionVariableError,
+    ExpressionArgumentsError
+} from './errors.mjs';
 
 import tokenize from './tokens/index.mjs';
 
+/**
+** @param {object} options
+** @param {Map<string, object>} options.handlers
+** @param {string} options.expression
+** @param {object} options.metadata
+** @param {!any} options.trigger
+*/
 async function evaluate(options) {
 
     if (options == null) {

@@ -7,6 +7,7 @@ const toNumber = (v1, v2) => {
     if (Number.isNaN(v1Num)) {
         return [v1, v2];
     }
+
     const v2Num = Number(v2);
     if (Number.isNaN(v2Num)) {
         return [v1, v2];
@@ -91,28 +92,28 @@ export default new Map([
 
     ['<', (v1, v2) => {
         [v1, v2] = toNumber(v1, v2);
-        if (Number.isNaN(v1) || Number.isNaN(v2)) {
+        if (typeof v1 !== 'number' || typeof v2 !== 'number') {
             return false;
         }
         return v1 < v2;
     }],
     ['<=', (v1, v2) => {
         [v1, v2] = toNumber(v1, v2);
-        if (Number.isNaN(v1) || Number.isNaN(v2)) {
+        if (typeof v1 !== 'number' || typeof v2 !== 'number') {
             return false;
         }
         return v1 <= v2;
     }],
     ['>', (v1, v2) => {
         [v1, v2] = toNumber(v1, v2);
-        if (Number.isNaN(v1) || Number.isNaN(v2)) {
+        if (typeof v1 !== 'number' || typeof v2 !== 'number') {
             return false;
         }
         return v1 > v2;
     }],
     ['>=', (v1, v2) => {
         [v1, v2] = toNumber(v1, v2);
-        if (Number.isNaN(v1) || Number.isNaN(v2)) {
+        if (typeof v1 !== 'number' || typeof v2 !== 'number') {
             return false;
         }
         return v1 >= v2;
