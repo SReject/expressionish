@@ -1,22 +1,19 @@
 import {ExpressionError, ExpressionSyntaxError, ExpressionVariableError, ExpressionArgumentsError } from './errors.mjs';
 
-import tokenize from './tokenize/tokenize.mjs';
-import evaluateExpression from './evaluate/expression.mjs';
+import tokenize from './tokens/index.mjs';
 
-function evaluate(handlers, options) {
+async function evaluate(options) {
 
-    // validate handlers list
-    if (handlers == null) {
-        throw new TypeError('handlers list null');
-    }
-
-    if (typeof handlers !== 'object') {
-        throw new TypeError('handlers list is not an array or object');
-    }
-
-    // validate options.expression
     if (options == null) {
         throw new TypeError('options not specified');
+    }
+
+    // validate handlers list
+    if (options.handlers == null) {
+        throw new TypeError('handlers list null');
+    }
+    if (!(options.handlers instanceof Map)) {
+        throw new TypeError('handlers list is not a Map');
     }
 
     // validate options.trigger
@@ -32,26 +29,22 @@ function evaluate(handlers, options) {
         throw new TypeError('expression must be a string');
     }
 
-    // Convert handlers array to map
-    if (Array.isArray(handlers)) {
-        const res = new Map();
-        handlers.forEach(item => res.set(item.handle, item));
-        handlers = res;
-
-    // Convert object literal to map
-    } else if (!(handlers instanceof Map)) {
-        const res = new Map();
-        Object.keys(handlers).forEach(key => {
-            res.set(key, handlers[key]);
-        });
-    }
-
-    if (!(handlers instanceof Map)) {
-        throw new TypeError('failed to convert handlers to Map');
-    }
-
+    // tokenize expression
     const tokens = tokenize(options.expression);
-    return evaluateExpression(handlers, options, tokens);
+
+    // evaluate
+    const result = [];
+    for (let idx = 0; idx < tokens.length; idx += 1) {
+        let token = await tokens[idx].evaluate(options);
+        if (typeof token == null) {
+            result.push('');
+        } else {
+            result.push(token);
+        }
+    }
+
+    // return result
+    return result.join('');
 };
 
 export {

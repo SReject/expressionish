@@ -47,7 +47,8 @@ const isSignificant = char => (
     char === '[' ||
     char === ',' ||
     char === ']' ||
-    char === ' '
+    char === ' ' ||
+    char === '\n'
 );
 
 // Unicode-safe splitting
@@ -156,18 +157,27 @@ export const tokenize = input => {
             }
             tok.value += input.substring(idx, idx + inc);
 
+        // \r: treat as space if not followed by \n, otherwise ignore
+        } else if (input[idx] === '\r') {
+            if (input[idx + 1] !== '\n') {
+                if (tok != null) {
+                    result.push(tok);
+                    tok = null;
+                }
+                result.push({position: idx, value: ' '});
+            }
+
         // Significant Characters
         } else if (isSignificant(input[idx])) {
             if (tok != null) {
                 result.push(tok);
                 tok = null;
             }
-            result.push({position: idx, value: input[idx]});
+            result.push({position: idx, value: input[idx] === '\n' ? ' ' : input[idx]});
 
         // Non-emoji, Non-significant characters
         } else if (tok == null) {
             tok = {position: idx, value: input[idx]};
-
         } else {
             tok.value += input[idx];
         }
