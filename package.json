@@ -2,20 +2,19 @@
     "name": "expressionish",
     "author": "SReject",
     "version": "0.0.1",
-
     "private": true,
     "license": "ISC",
-
     "type": "commonjs",
     "main": "./src/evaluate.js",
     "module": "./src/evaluate.mjs",
     "exports": {
-        ".":{
+        ".": {
             "require": "./src/evaluate.js",
             "default": "./src/evaluate.mjs"
         }
     },
     "devDependencies": {
+        "eslint": "^8.4.1",
         "mocha": "^9.1.3"
     }
 }

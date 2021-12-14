@@ -48,7 +48,7 @@ async function evaluate(options) {
     const result = [];
     for (let idx = 0; idx < tokens.length; idx += 1) {
         let token = await tokens[idx].evaluate(options);
-        if (typeof token == null) {
+        if (token == null) {
             result.push('');
         } else {
             result.push(token);
@@ -57,7 +57,7 @@ async function evaluate(options) {
 
     // return result
     return result.join('');
-};
+}
 
 export {
     evaluate as default,

@@ -122,7 +122,7 @@ export const tokenize = input => {
             betweenInclusive(current.charCodeAt(0), HIGH_SURROGATE_START, HIGH_SURROGATE_END)
         ) {
             const currPair = codePointFromSurrogatePair(current + input[idxInc + 1]);
-            const nextPair = codePointFromSurrogatePair(string.substring(idxInc + 2, idxInc + 5));
+            const nextPair = codePointFromSurrogatePair(input.substring(idxInc + 2, idxInc + 5));
             if (
                 betweenInclusive(currPair, REGIONAL_INDICATOR_START, REGIONAL_INDICATOR_END) &&
                 betweenInclusive(nextPair, REGIONAL_INDICATOR_START, REGIONAL_INDICATOR_END)

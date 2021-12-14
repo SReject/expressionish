@@ -33,7 +33,7 @@ class VariableToken extends BaseToken {
 
             if (Array.isArray(trigger)) {
                 if (!trigger.some(id => id === options.trigger.id)) {
-                    throw new ExpressionVariableError(`$${value} does not support this specific trigger type: ${display}`, this.position, this.value);
+                    throw new ExpressionVariableError(`$${this.value} does not support this specific trigger type: ${display}`, this.position, this.value);
                 }
             }
         }

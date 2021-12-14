@@ -13,7 +13,7 @@ export default (output, tokens) => {
         return false;
     }
 
-    tokens.shift();
+    const openToken = tokens.shift();
     removeWhitespace(tokens);
 
     let parts = [];

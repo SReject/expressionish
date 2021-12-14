@@ -34,8 +34,7 @@ export default expression => {
         }
 
         // Assume token is literal text
-        let token = tokens.shift(),
-            resLen = result.length;
+        let token = tokens.shift();
 
         if (result.length && result[result.length - 1].type === types.TEXT) {
             result[result.length - 1].value += token.value;
