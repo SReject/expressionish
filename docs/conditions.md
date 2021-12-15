@@ -1,4 +1,14 @@
 # Comparators
+Comparators compare whats on the left side to that of the right side of the comparator.
+
+Comparators must have a space before and after.
+
+`1 === 1` - Valid  
+`1=== 2` - Invalid  
+`1 ===2` - Invalid  
+`1===2` - Invalid  
+
+
 | Comparator  | Example           | Description |
 |:-----------:|:-----------------:|-|
 | `===`       | `1 === 1`         | The left side exactly equals the right side |
