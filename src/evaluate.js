@@ -44,8 +44,6 @@ async function evaluate(options) {
     // tokenize expression
     const tokens = tokenize(options.expression);
 
-    console.log('tokens', tokens);
-
     // evaluate
     const result = [];
     for (let idx = 0; idx < tokens.length; idx += 1) {
