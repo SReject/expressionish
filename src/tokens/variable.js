@@ -1,9 +1,9 @@
-import { ExpressionVariableError, ExpressionArgumentsError } from '../errors.mjs';
+const { ExpressionVariableError, ExpressionArgumentsError } = require('../errors.js');
 
-import types from '../helpers/token-types.mjs';
+const types = require('../helpers/token-types.js');
 
-import BaseToken from './base.mjs';
-import { default as tokenizeArguments } from './arguments.mjs';
+const BaseToken = require('./base.js');
+const argumentsHandler = require('./arguments.js');
 
 const nameCheck = /^([a-z][a-z\d]+)(.*)$/i;
 
@@ -69,7 +69,7 @@ class VariableToken extends BaseToken {
 }
 
 // tokenizeVariable()
-export default (output, tokens) => {
+module.exports.tokenize = (output, tokens) => {
 
     let nameMatch;
     if (
@@ -93,10 +93,11 @@ export default (output, tokens) => {
     }
 
     const args = [];
-    if (tokenizeArguments(args, tokens)) {
+    if (argumentsHandler.tokenize(args, tokens)) {
         token.arguments = args;
     }
 
     output.push(new VariableToken(token))
     return true;
 };
+module.exports.VariableToken = VariableToken;

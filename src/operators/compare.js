@@ -1,4 +1,4 @@
-import wildcardToRegExp from '../helpers/wildcard-to-regexp.mjs';
+const wildcardToRegExp = require('../helpers/wildcard-to-regexp.js');
 
 const isRange = /^((?:[+-]?\d+(?:\.\d+)?)|(?:[+-]?\.\d+))-((?:[+-]?\d+(?:\.\d+)?)|(?:[+-]?\.\d+))$/;
 
@@ -87,7 +87,7 @@ const isWildcardMatchCaseSensitive = (v1, v2) => {
     return wildcardToRegExp(v2, true).test(v1);
 };
 
-export default new Map([
+module.exports = new Map([
     ['===', isStrictEqual],
     ['!==', (...args) => !(isStrictEqual(...args))],
 

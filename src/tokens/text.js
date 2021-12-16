@@ -1,9 +1,9 @@
-import { ExpressionSyntaxError } from '../errors.mjs';
-import types from '../helpers/token-types.mjs';
+const { ExpressionSyntaxError } = require('../errors.js');
+const types = require('../helpers/token-types.js');
 
-import BaseToken from './base.mjs';
+const BaseToken = require('./base.js');
 
-export class TextToken extends BaseToken {
+class TextToken extends BaseToken {
     constructor(options) {
         super({
             ...options,
@@ -12,7 +12,7 @@ export class TextToken extends BaseToken {
     }
 }
 
-export const tokenizeEscape = (output, tokens, escape) => {
+const tokenizeEscape = (output, tokens, escape) => {
     if (!tokens.length || tokens[0].value !== '\\') {
         return false;
     }
@@ -59,7 +59,7 @@ export const tokenizeEscape = (output, tokens, escape) => {
     return true;
 };
 
-export const tokenizeQuote = (output, tokens) => {
+const tokenizeQuote = (output, tokens) => {
     if (!tokens.length || tokens[0].value !== '"') {
         return false;
     }
@@ -93,4 +93,10 @@ export const tokenizeQuote = (output, tokens) => {
 
     // End quote wasn't encountered in the loop
     throw new ExpressionSyntaxError('end quote missing', openToken.position);
+};
+
+module.exports = {
+    tokenizeEscape,
+    tokenizeQuote,
+    TextToken
 };

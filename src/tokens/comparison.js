@@ -1,18 +1,18 @@
-import types from '../helpers/token-types.mjs';
+const types = require('../helpers/token-types.js');
 
-import { removeWhitespace } from "../helpers/misc.mjs";
-import operators from '../operators/compare.mjs';
+const { removeWhitespace } = require('../helpers/misc.js');
+const  operators = require('../operators/compare.js');
 
-import BaseToken from "./base.mjs";
-import { default as tokenizeVariable } from './variable.mjs';
-import { default as tokenizeIf } from './if.mjs';
-import {
+const BaseToken = require('./base.js');
+const variableHandler = require('./variable.js');
+const ifHandler = require('./if.js');
+const {
     TextToken,
     tokenizeEscape,
     tokenizeQuote
-} from './text.mjs';
+} = require('./text.js');
 
-export class ComparisonToken extends BaseToken {
+class ComparisonToken extends BaseToken {
 
     constructor(options) {
         super({
@@ -56,7 +56,7 @@ export class ComparisonToken extends BaseToken {
 }
 
 // tokenizeComparison()
-export default (tokens) => {
+module.exports.tokenize = (tokens) => {
 
     // nothing to consume
     if (!tokens.length || tokens[0].value === ',' || tokens[0].value === ']') {
@@ -115,11 +115,11 @@ export default (tokens) => {
             continue;
         }
 
-        if (tokenizeIf(side, tokens)) {
+        if (ifHandler.tokenize(side, tokens)) {
             continue;
         }
 
-        if (tokenizeVariable(side, tokens)) {
+        if (variableHandler.tokenize(side, tokens)) {
             continue;
         }
 
@@ -138,3 +138,5 @@ export default (tokens) => {
         arguments: [left, right]
     });
 };
+
+module.exports.ComparisonToken = ComparisonToken;

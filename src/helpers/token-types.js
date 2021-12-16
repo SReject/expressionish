@@ -1,4 +1,4 @@
-export default {
+module.exports = {
     TEXT:      'TEXT',
     VARIABLE:  'VARIABLE',
     IF:        'IF',

@@ -1,4 +1,4 @@
-export class ExpressionError extends Error {
+class ExpressionError extends Error {
     constructor(message, position) {
         super(message);
 
@@ -7,7 +7,7 @@ export class ExpressionError extends Error {
         this.position = position || 0;
     }
 }
-export class ExpressionSyntaxError extends ExpressionError {
+class ExpressionSyntaxError extends ExpressionError {
     constructor(message, position, character) {
         super(message, position);
 
@@ -15,7 +15,7 @@ export class ExpressionSyntaxError extends ExpressionError {
         this.character = character;
     }
 }
-export class ExpressionVariableError extends ExpressionError {
+class ExpressionVariableError extends ExpressionError {
     constructor(message, position, varname) {
         super(message, position);
 
@@ -23,7 +23,7 @@ export class ExpressionVariableError extends ExpressionError {
         this.varname = varname;
     }
 }
-export class ExpressionArgumentsError extends ExpressionError {
+class ExpressionArgumentsError extends ExpressionError {
     constructor(message, position, index, varname) {
         super(message, position);
 
@@ -31,4 +31,11 @@ export class ExpressionArgumentsError extends ExpressionError {
         this.index = index || -1;
         this.varname = varname;
     }
+}
+
+module.exports = {
+    ExpressionError,
+    ExpressionSyntaxError,
+    ExpressionVariableError,
+    ExpressionArgumentsError
 }

@@ -1,6 +1,6 @@
-import types from '../helpers/token-types.mjs';
+const types = require('../helpers/token-types.js');
 
-export default class Token {
+module.exports = class Token {
 
     constructor({type, position, value}) {
         this.type = type || types.UNKNOWN;

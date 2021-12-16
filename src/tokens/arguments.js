@@ -1,14 +1,16 @@
-import types from '../helpers/token-types.mjs';
-import { removeWhitespace } from '../helpers/misc.mjs';
+const types = require('../helpers/token-types.js');
 
-import { ExpressionSyntaxError } from '../errors.mjs';
+const { removeWhitespace } = require('../helpers/misc.js');
 
-import { tokenizeEscape, tokenizeQuote, TextToken } from './text.mjs';
-import { default as tokenizeIf } from './if.mjs';
-import { default as tokenizeVariable } from './variable.mjs';
+
+const { ExpressionSyntaxError } = require('../errors.js');
+const { tokenizeEscape, tokenizeQuote, TextToken } = require('./text.js');
+
+const ifHandler = require('./if.js');
+const varHandler = require('./variable.js');
 
 // tokenizeArguments();
-export default (output, tokens) => {
+module.exports.tokenize = (output, tokens) => {
     if (!tokens.length || tokens[0].value !== '[') {
         return false;
     }
@@ -62,11 +64,11 @@ export default (output, tokens) => {
             continue;
         }
 
-        if (tokenizeIf(parts, tokens)) {
+        if (ifHandler.tokenize(parts, tokens)) {
             continue;
         }
 
-        if (tokenizeVariable(parts, tokens)) {
+        if (varHandler.tokenize(parts, tokens)) {
             continue;
         }
 

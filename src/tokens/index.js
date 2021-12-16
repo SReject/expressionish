@@ -1,13 +1,14 @@
-import types from '../helpers/token-types.mjs';
 
-import { tokenize } from '../helpers/split.mjs';
+const types = require('../helpers/token-types.js');
 
-import { tokenizeEscape, tokenizeQuote, TextToken } from './text.mjs';
-import { default as tokenizeIf } from './if.mjs';
-import { default as tokenizeVariable } from './variable.mjs';
+const { tokenize } = require('../helpers/split.js');
+
+const { tokenizeEscape, tokenizeQuote, TextToken } = require('./text.js');
+const ifHandler = require('./if.js');
+const variableHandler = require('./variable.js');
 
 // tokenize(expression)
-export default expression => {
+module.exports = expression => {
     let tokens = tokenize(expression);
     const result = [];
 
@@ -24,12 +25,12 @@ export default expression => {
         }
 
         // Attempt to consume token as $if
-        if (tokenizeIf(result, tokens)) {
+        if (ifHandler.tokenize(result, tokens)) {
             continue;
         }
 
         // Attempt to consume token as a variable
-        if (tokenizeVariable(result, tokens)) {
+        if (variableHandler.tokenize(result, tokens)) {
             continue;
         }
 
@@ -44,4 +45,4 @@ export default expression => {
         }
     }
     return result;
-}
+};

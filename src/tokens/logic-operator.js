@@ -1,14 +1,14 @@
-import types from '../helpers/token-types.mjs';
+const types = require('../helpers/token-types.js');
 
-import { ExpressionSyntaxError } from '../errors.mjs';
-import { removeWhitespace } from '../helpers/misc.mjs';
+const { ExpressionSyntaxError } = require('../errors.js');
+const { removeWhitespace } = require('../helpers/misc.js');
 
-import BaseToken from './base.mjs';
-import { default as tokenizeComparison } from './comparison.mjs';
+const BaseToken = require('./base.js');
+const comparisonHandler = require('./comparison.js');
 
-import operators from '../operators/logical.mjs';
+const operators = require('../operators/logical.js');
 
-export class LogicToken extends BaseToken {
+class LogicToken extends BaseToken {
     constructor(options) {
         super({
             ...options,
@@ -73,7 +73,7 @@ const tokenize = tokens => {
         // Consume condition and trailing whitespace
         let token = tokenize(tokens);
         if (token == null) {
-            token = tokenizeComparison(tokens);
+            token = comparisonHandler.tokenize(tokens);
             if (token == null) {
                 throw new ExpressionSyntaxError('condition expected', position);
             }
@@ -100,4 +100,5 @@ const tokenize = tokens => {
 
     throw new ExpressionSyntaxError('unexpected end of expression');
 };
-export default tokenize;
+module.exports.tokenize = tokenize;
+module.exports.LogicToken = LogicToken;

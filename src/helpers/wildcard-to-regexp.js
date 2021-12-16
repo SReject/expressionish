@@ -1,6 +1,6 @@
-import { split } from './split.mjs';
+const { split } = require('./split.js');
 
-export default (input, caseSensitive) => {
+module.exports = (input, caseSensitive) => {
     let wc = split(input);
 
     let isStart = true;

@@ -17,7 +17,7 @@ const $or = (...args) => {
 const $nand = (...args) => $not($and(...args));
 const $nor = (...args) => $not($or(...args));
 
-export default new Map([
+module.exports = new Map([
     ['$NOT', $not],
 
     ['$AND', $and],

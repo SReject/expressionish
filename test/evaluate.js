@@ -1,10 +1,10 @@
 /* global describe, it */
 
-import assert from 'assert';
+const assert = require('assert');
 
-import * as errors from '../src/errors.mjs';
+const errors = require('../src/errors.js');
 
-import evaluate from '../src/evaluate.mjs';
+const evaluate = require('../src/evaluate.js');
 
 const expectThrow = async (fnc, type) => {
     try {

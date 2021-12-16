@@ -1,14 +1,14 @@
-import types from '../helpers/token-types.mjs';
-import { removeWhitespace } from '../helpers/misc.mjs';
+const types = require('../helpers/token-types.js');
+const { removeWhitespace } = require('../helpers/misc.js');
 
-import { ExpressionSyntaxError } from '../errors.mjs';
+const { ExpressionSyntaxError } = require('../errors.js');
 
-import BaseToken from './base.mjs';
-import { default as tokenizeComparison } from './comparison.mjs';
-import { default as tokenizeLogicOperator } from './logic-operator.mjs';
-import { default as tokenizeArguments } from './arguments.mjs';
+const BaseToken = require('./base.js');
+const comparisonHandler = require('./comparison.js');
+const logicOperatorHandler = require('./logic-operator.js');
+const argumentsHandler = require('./arguments.js');
 
-export class IfToken extends BaseToken {
+class IfToken extends BaseToken {
     constructor(options) {
         super({
             type: types.IF,
@@ -90,7 +90,7 @@ export class IfToken extends BaseToken {
 }
 
 // tokenizeIf();
-export default (output, tokens) => {
+module.exports.tokenize = (output, tokens) => {
 
     // not an $if[ token
     if (
@@ -116,11 +116,11 @@ export default (output, tokens) => {
     const openToken = tokens.shift();
 
     // Attempt to consume logic condition
-    let condition = tokenizeLogicOperator(tokens);
+    let condition = logicOperatorHandler.tokenize(tokens);
     if (!condition) {
 
         // Attempt to consume comparison condition
-        condition = tokenizeComparison(tokens);
+        condition = comparisonHandler.tokenize(tokens);
         if (!condition) {
             throw new ExpressionSyntaxError('$if requires the first argument to be a conditional', openToken.position + 1);
         }
@@ -138,7 +138,7 @@ export default (output, tokens) => {
 
     // Re-add opening bracket token so tokenizeArguments() can be used to finish parsing the $if[]
     tokens.unshift(openToken);
-    tokenizeArguments(args, tokens);
+    argumentsHandler.tokenize(args, tokens);
 
     // check result
     if (args.length < 1) {
@@ -154,4 +154,6 @@ export default (output, tokens) => {
         arguments: args
     }));
     return true;
-}
+};
+
+module.exports.IfToken = IfToken;

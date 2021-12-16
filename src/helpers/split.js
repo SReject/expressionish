@@ -52,7 +52,7 @@ const isSignificant = char => (
 );
 
 // Unicode-safe splitting
-export const split = string => {
+module.exports.split = string => {
     if (typeof string !== 'string') {
         throw new Error('string cannot be undefined or null')
     }
@@ -103,7 +103,7 @@ export const split = string => {
 };
 
 // Unicode safe tokenizer
-export const tokenize = input => {
+module.exports.tokenize = input => {
 
     if (typeof input !== 'string') {
         throw new Error('string cannot be undefined or null')

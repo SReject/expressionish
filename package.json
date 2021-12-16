@@ -6,13 +6,6 @@
     "license": "ISC",
     "type": "commonjs",
     "main": "./src/evaluate.js",
-    "module": "./src/evaluate.mjs",
-    "exports": {
-        ".": {
-            "require": "./src/evaluate.js",
-            "default": "./src/evaluate.mjs"
-        }
-    },
     "scripts": {
         "lint": "eslint --fix ./src/** ./test/**",
         "test": "mocha"
