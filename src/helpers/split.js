@@ -47,8 +47,7 @@ const isSignificant = char => (
     char === '[' ||
     char === ',' ||
     char === ']' ||
-    char === ' ' ||
-    char === '\n'
+    char === ' '
 );
 
 // Unicode-safe splitting
@@ -157,6 +156,7 @@ module.exports.tokenize = input => {
             }
             tok.value += input.substring(idx, idx + inc);
 
+        /*
         // \r: treat as space if not followed by \n, otherwise ignore
         } else if (input[idx] === '\r') {
             if (input[idx + 1] !== '\n') {
@@ -166,6 +166,7 @@ module.exports.tokenize = input => {
                 }
                 result.push({position: idx, value: ' '});
             }
+        */
 
         // Significant Characters
         } else if (isSignificant(input[idx])) {
