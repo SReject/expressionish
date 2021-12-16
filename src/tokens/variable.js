@@ -5,7 +5,7 @@ const types = require('../helpers/token-types.js');
 const BaseToken = require('./base.js');
 const argumentsHandler = require('./arguments.js');
 
-const nameCheck = /^([a-z][a-z\d]+)(.*)$/i;
+const nameCheck = /^([a-z][a-z\d]+)([\s\S]*)$/i;
 
 class VariableToken extends BaseToken {
     constructor(options) {
