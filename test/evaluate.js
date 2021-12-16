@@ -103,6 +103,7 @@ describe('evaluate()', function () {
         });
     });
 
+    /*
     describe('Input is quoted text', function () {
         it('Throws an error if there is no applicable closing quote', async function () {
             await expectThrow(() => evaluate({...options, expression: '"'}), errors.ExpressionSyntaxError);
@@ -126,6 +127,7 @@ describe('evaluate()', function () {
             await expectEqual(() => evaluate({...options, expression: '"\\a"'}), '\\a');
         });
     });
+    */
 
     describe('Input is a mix of text', async function () {
         it('Plain-text and escape sequences', async function () {
@@ -137,6 +139,7 @@ describe('evaluate()', function () {
         it('Treats non-escape-sequences as literal \\', async function () {
             await expectEqual(() => evaluate({...options, expression: '\\a'}), '\\a');
         });
+        /*
         it('Plain-text, escape sequences and quotes', async function () {
             await expectEqual(() => evaluate({...options, expression: 'leading"text"'}), 'leadingtext');
             await expectEqual(() => evaluate({...options, expression: 'leading "text"'}), 'leading text');
@@ -155,6 +158,7 @@ describe('evaluate()', function () {
             await expectEqual(() => evaluate({...options, expression: '\\$"text" \\\\'}), '$text \\');
             await expectEqual(() => evaluate({...options, expression: '\\$ "text" \\\\'}), '$ text \\');
         });
+        */
     });
 
     describe('Input is variable', function () {

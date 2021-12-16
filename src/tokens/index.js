@@ -3,7 +3,8 @@ const types = require('../helpers/token-types.js');
 
 const { tokenize } = require('../helpers/split.js');
 
-const { tokenizeEscape, tokenizeQuote, TextToken } = require('./text.js');
+// const { tokenizeEscape, tokenizeQuote, TextToken } = require('./text.js');
+const { tokenizeEscape, TextToken } = require('./text.js');
 const ifHandler = require('./if.js');
 const variableHandler = require('./variable.js');
 
@@ -19,10 +20,13 @@ module.exports = expression => {
             continue;
         }
 
+        /*
+
         // Attempt to consume token as quoted text
         if (tokenizeQuote(result, tokens)) {
             continue;
         }
+        */
 
         // Attempt to consume token as $if
         if (ifHandler.tokenize(result, tokens)) {
