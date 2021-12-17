@@ -29,6 +29,9 @@ const vars = new Map([
     ['ten', {handle: 'ten', argsCheck: () => {}, evaluator: () => 10}],
     ['sum', {handle: 'sum', argsCheck: () => {}, evaluator: (meta, ...args) => {
         return args.map(item => Number(item)).reduce((acc, cur) => acc + cur, 0);
+    }}],
+    ['inout', {handle: 'inout', argsCheck: () => {}, evaluator: (meta, ...args) => {
+        return args.join('');
     }}]
 ]);
 const options = {
@@ -86,6 +89,12 @@ describe('evaluate()', function () {
         it('string matches input', async function () {
             await expectEqual(() => evaluate({...options, expression: 'plain text'}) , 'plain text');
         });
+        it('treats root-level quotes as literals', async function () {
+            await expectEqual(() => evaluate({...options, expression: '"text"'}), '"text"');
+        });
+        it('treats root-level double backticks as literals', async function () {
+            await expectEqual(() => evaluate({...options, expression: '``text``'}), '``text``');
+        });
     });
 
     describe('Input is escape sequences', function () {
@@ -103,32 +112,6 @@ describe('evaluate()', function () {
         });
     });
 
-    /*
-    describe('Input is quoted text', function () {
-        it('Throws an error if there is no applicable closing quote', async function () {
-            await expectThrow(() => evaluate({...options, expression: '"'}), errors.ExpressionSyntaxError);
-        });
-        it('Returns text inside of quotes without quation marks', async function () {
-            await expectEqual(() => evaluate({...options, expression: '"text"'}), 'text');
-        });
-        it('Returns an empty string for ""', async function () {
-            await expectEqual(() => evaluate({...options, expression: '""'}), '');
-        });
-        it('Treats $ as plain text', async function () {
-            await expectEqual(() => evaluate({...options, expression: '"$var"'}), '$var');
-        });
-        it('Escapes \\\\', async function () {
-            await expectEqual(() => evaluate({...options, expression: '"\\\\"'}), '\\');
-        });
-        it('Escapes \\"', async function () {
-            await expectEqual(() => evaluate({...options, expression: '"\\""'}), '"');
-        });
-        it('Treats non-escape-sequence as literal \\', async function () {
-            await expectEqual(() => evaluate({...options, expression: '"\\a"'}), '\\a');
-        });
-    });
-    */
-
     describe('Input is a mix of text', async function () {
         it('Plain-text and escape sequences', async function () {
             await expectEqual(() => evaluate({...options, expression: 'text\\\\'}), 'text\\');
@@ -139,26 +122,6 @@ describe('evaluate()', function () {
         it('Treats non-escape-sequences as literal \\', async function () {
             await expectEqual(() => evaluate({...options, expression: '\\a'}), '\\a');
         });
-        /*
-        it('Plain-text, escape sequences and quotes', async function () {
-            await expectEqual(() => evaluate({...options, expression: 'leading"text"'}), 'leadingtext');
-            await expectEqual(() => evaluate({...options, expression: 'leading "text"'}), 'leading text');
-            await expectEqual(() => evaluate({...options, expression: '"text"trailing'}), 'texttrailing');
-            await expectEqual(() => evaluate({...options, expression: '"text" trailing'}), 'text trailing');
-            await expectEqual(() => evaluate({...options, expression: 'leading"text"trailing'}), 'leadingtexttrailing');
-            await expectEqual(() => evaluate({...options, expression: 'leading "text"trailing'}), 'leading texttrailing');
-            await expectEqual(() => evaluate({...options, expression: 'leading"text" trailing'}), 'leadingtext trailing');
-            await expectEqual(() => evaluate({...options, expression: 'leading "text" trailing'}), 'leading text trailing');
-            await expectEqual(() => evaluate({...options, expression: '\\$"text"'}), '$text');
-            await expectEqual(() => evaluate({...options, expression: '\\$ "text"'}), '$ text');
-            await expectEqual(() => evaluate({...options, expression: '"text"\\\\'}), 'text\\');
-            await expectEqual(() => evaluate({...options, expression: '"text" \\\\'}), 'text \\');
-            await expectEqual(() => evaluate({...options, expression: '\\$"text"\\\\'}), '$text\\');
-            await expectEqual(() => evaluate({...options, expression: '\\$ "text"\\\\'}), '$ text\\');
-            await expectEqual(() => evaluate({...options, expression: '\\$"text" \\\\'}), '$text \\');
-            await expectEqual(() => evaluate({...options, expression: '\\$ "text" \\\\'}), '$ text \\');
-        });
-        */
     });
 
     describe('Input is variable', function () {
@@ -182,6 +145,15 @@ describe('evaluate()', function () {
         });
         it('Evaluates nested variable with arguments', async function () {
             await expectEqual(() => evaluate({...options, expression: '$sum[$sum[$ten, 1], 1]'}), '12');
+        });
+        it('Evaluates quoted text in arguments to plain text', async function () {
+            await expectEqual(() => evaluate({...options, expression: '$inout["text"]'}), 'text');
+        });
+        it('Block-escapes text in double backticks', async function () {
+            await expectEqual(() => evaluate({...options, expression: '$inout[``"text"``]'}), '"text"');
+        });
+        it('Evaluates vars in block escapes', async function () {
+            await expectEqual(() => evaluate({...options, expression: '$inout[``"$ten"``]'}), '"10"');
         });
     });
 
@@ -372,7 +344,7 @@ describe('evaluate()', function () {
     describe('Input all the things', function () {
         it('Properly evaluates all the things', async function () {
             const expression = `a \\b \\$ "c \\d \\"" $ten $sum[$ten, 1] $if[$NOT[$AND[1 === 1, $ten == 9]], 12, -1]\\`
-            const expect = `a \\b $ c \\d " 10 11 12\\`
+            const expect = `a \\b $ "c \\d "" 10 11 12\\`
             await expectEqual(() => evaluate({...options, expression}), expect);
         });
     })

@@ -5,6 +5,7 @@ const { removeWhitespace } = require('../helpers/misc.js');
 
 const { ExpressionSyntaxError } = require('../errors.js');
 const { tokenizeEscape, tokenizeQuote, TextToken } = require('./text.js');
+const blockEscapeHandler = require('./block-escape.js');
 
 const ifHandler = require('./if.js');
 const varHandler = require('./variable.js');
@@ -42,6 +43,10 @@ module.exports.tokenize = (output, tokens) => {
             }
             output.push(parts);
             parts = [];
+            continue;
+        }
+
+        if (blockEscapeHandler.tokenize(parts, tokens)) {
             continue;
         }
 

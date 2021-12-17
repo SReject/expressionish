@@ -156,17 +156,15 @@ module.exports.tokenize = input => {
             }
             tok.value += input.substring(idx, idx + inc);
 
-        /*
-        // \r: treat as space if not followed by \n, otherwise ignore
-        } else if (input[idx] === '\r') {
-            if (input[idx + 1] !== '\n') {
-                if (tok != null) {
-                    result.push(tok);
-                    tok = null;
-                }
-                result.push({position: idx, value: ' '});
+        // ``
+        } else if (input[idx] === '`' && input[idx + 1] === '`') {
+            if (tok != null) {
+                result.push(tok);
+                tok = null;
             }
-        */
+
+            result.push({position: idx, value: '``'});
+            idx += 1;
 
         // Significant Characters
         } else if (isSignificant(input[idx])) {
