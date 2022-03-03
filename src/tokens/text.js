@@ -18,7 +18,7 @@ const tokenizeEscape = (output, tokens, escape) => {
     }
 
     if (escape == null) {
-        escape = '"$[\\';
+        escape = '"$[\\rnt';
     }
 
     // get escape denoter character(\)
@@ -50,9 +50,21 @@ const tokenizeEscape = (output, tokens, escape) => {
         token.value = token.value[0];
     }
 
+    // If token is special-character-sequence
+    // replace sequence with represented value
+    if (token.value === 'n') {
+        token.value = '\n';
+    } else if (token.value === 'r') {
+        token.value = '\r';
+    } else if (token.value === 't') {
+        token.value = '\t';
+    }
+
+    // If the last token of the output is text, append the token value to the text
     if (output.length && output[output.length - 1].type === types.TEXT) {
         output[output.length - 1].value += token.value;
 
+    // Otherwise add a new text token to the output
     } else {
         output.push(new TextToken(token));
     }
@@ -84,7 +96,7 @@ const tokenizeQuote = (output, tokens) => {
             return true;
         }
 
-        if (tokenizeEscape(text, tokens, '\\"')) {
+        if (tokenizeEscape(text, tokens, '\\"nrt')) {
             continue;
         }
 
