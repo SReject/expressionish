@@ -15,18 +15,6 @@ Certain character sequences hold special meaning
 | `\"`     | literal double quote(") |
 
 
-## Quotes
-Quoted text is treated as-is except in the case of special characters
-
-| Example   | Evaluation Result |
-|-----------|--------|
-| "text"    | text   |
-| "text\""  | text"  |
-| "text\\"  | text   |
-| "text\\"" | text\" |
-| "$text"   | $text  |
-
-
 ## Variables
 Variables come in two forms: those without arguments and those with.
 
@@ -44,6 +32,21 @@ Arguments are listed inside of `[]`, delimited by a comma(`,`)
 | `$ten"text"` | 10text | |
 | `$a` | $a | Not a valid variable name so treated as-is |
 | `$10` | $10 | Not a valid variable name so treated as-is |
+
+
+## Quotes
+Quoted text is treated as-is except in the case of special characters when used as part of a variable argument.  
+Outside of variable arguments, double quotes are treated as literal characters with no significant meaning
+
+
+| Example   | Evaluation Result |
+|-----------|--------|
+| "text"    | text   |
+| "text\""  | text"  |
+| "text\\"  | text   |
+| "text\\"" | text\" |
+| "$text"   | $text  |
+
 
 
 ## $if Variable
