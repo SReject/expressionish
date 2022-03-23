@@ -3,11 +3,20 @@ An expression is text consisting of literal text, quotes, escape sequences and v
 
 # Format
 
-## Quotes
-Quoted text is treated as-is except in the case of escape sequences.
+## Special Characters
+Certain character sequences hold special meaning
 
-`\"` is treated as a literal `"`  
-`\\` is treated as a literal `\`
+| Sequence | Evaluates to            |
+|----------|-------------------------|
+| `\t`     | tab                     |
+| `\n`     | line feed               |
+| `\r`     | carriage return         |
+| `\\`     | literal backslash(\\)   |
+| `\"`     | literal double quote(") |
+
+
+## Quotes
+Quoted text is treated as-is except in the case of special characters
 
 | Example   | Evaluation Result |
 |-----------|--------|
@@ -23,7 +32,8 @@ Variables come in two forms: those without arguments and those with.
 
 Variables can occur anywhere within an expression and can even be used as arguments to another variable.
 
-Variable names always start with `$` and are followed by a-z followed by a-z 0-9. Arguments are listed inside of `[]`, delimited by a comma(`,`)
+Variable names always start with `$` and are followed by a-z followed by a-z 0-9.  
+Arguments are listed inside of `[]`, delimited by a comma(`,`)
 
 | Example | Evaluation Result | Notes |
 |--|--|--|
@@ -53,15 +63,19 @@ You can find more info on conditions [here](./conditions.md)
 | `$if[1 === 2, yes]` | | Returns an empty string when a second argument is given |
 | `$ten is $if[$ten > 5, greater than, less than or equal to] 5` | 10 is greater than 5 | |
 
-## Escape Sequences
+## Single Character Escape Sequences
 For special characters that you wish to treat as plain text, prefix them with `\`. If a `\` is encountered followed by a special character the `\` is removed and the special character is seen as plain text. Otherwise the `\` is treated as plain text
 
 | Example | Evaluation Result | Notes |
 |---------|-------------------|-------|
-| `\text` | \text\ | Non-escape sequence so `\` is treated as plain text
+| `\text` | \text | Non-escape sequence so `\` is treated as plain text
 | `\$var` | $var | Treats the `$` as plain text |
-| `\\text` | \text | Treats the `\` as plain text |
-| `\"text` | "text | Treats the `"` as plain text |
-| `$ten\[` | 10[] | Treats the `[` as plain text |
+| `$ten\[` | 10[] | Treats the `[` as plain text. Only valid after a variable. |
 | `$lowercase[TEXT\,]` | text, | Treats the `,` as plain text. Only valid in arguments |
 | `$lowercase[TEXT\]]` | text] | Treats the `]` as plain text. Only valid in arguments |
+
+
+## Block Escape
+For a sequence of characters you wish to treat as plain text, you can wrap them in double backticks(\`). This will result in all text inside the backticks to be treated as plain text
+
+\`\`example $text \\"\`\` is treated as the literal text `example $text \"`
