@@ -3,7 +3,7 @@ import TokenType from '../types/token-types';
 
 import getPotentialTokens from '../helpers/get-potential-tokens';
 
-import { default as Token, IToken } from '../tokens/base';
+import Token, { IToken } from '../tokens/base';
 import TokenList, { ITokenList } from '../tokens/token-list';
 import TextToken from '../tokens/text';
 

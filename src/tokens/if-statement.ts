@@ -1,7 +1,7 @@
 import TokenType from '../types/token-types';
 import ParserOptions from '../types/options';
 
-import { default as Token, IToken } from './base';
+import Token, { IToken } from './base';
 import OperatorToken from './operator';
 
 export interface IIfStatementToken extends IToken {

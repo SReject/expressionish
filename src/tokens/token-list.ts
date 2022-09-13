@@ -3,7 +3,7 @@ import ParserOptions from '../types/options';
 
 import toText from '../helpers/to-text';
 
-import { default as Token, IToken } from './base';
+import Token, { IToken } from './base';
 
 export interface ITokenList extends IToken {
     value: Token[];

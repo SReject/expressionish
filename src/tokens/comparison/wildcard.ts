@@ -3,7 +3,7 @@ import ParserOptions from '../../types/options';
 import split from '../../helpers/unicode-safe-split';
 import toText from '../../helpers/to-text';
 
-import { default as ComparisonToken, IComparisonToken } from './base';
+import ComparisonToken, { IComparisonToken } from './base';
 
 const toRegExp = (subject: string, caseSensitive: boolean = false) : RegExp => {
     let wc = split(subject);

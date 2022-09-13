@@ -1,5 +1,6 @@
 import ParserOptions from '../../types/options';
-import { default as ComparisonToken, IComparisonToken } from './base';
+
+import ComparisonToken, { IComparisonToken } from './base';
 
 export default class ExistsToken extends ComparisonToken {
     constructor(token: IComparisonToken) {

@@ -1,5 +1,7 @@
 import ParserOptions from '../../types/options';
-import { default as ComparisonToken, IComparisonToken } from './base';
+
+import ComparisonToken, { IComparisonToken } from './base';
+
 import toNumber from '../../helpers/to-number';
 
 export default class GreaterThanEqualToken extends ComparisonToken {
