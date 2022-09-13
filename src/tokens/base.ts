@@ -8,9 +8,9 @@ export interface IToken {
 
 export default class Token  {
 
-    protected type: TokenType;
-    protected position : number;
-    protected value : any;
+    public type: TokenType;
+    public position : number;
+    public value : any;
 
     constructor(token: IToken) {
         this.type = token.type == null ? TokenType.UNKNOWN : token.type;

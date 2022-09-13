@@ -1,4 +1,4 @@
-import type { IBaseToken } from '../tokens/base';
+import type { IToken } from '../tokens/base';
 
 import {
     HIGH_SURROGATE_START,
@@ -18,14 +18,14 @@ import {
 } from './unicode-safe-split';
 
 /** Split input string into array of potential tokens */
-export default (subject: string) : IBaseToken[] => {
+export default (subject: string) : IToken[] => {
 
     if (typeof subject !== 'string') {
         throw new Error('string cannot be undefined or null')
     }
 
-    const result : IBaseToken[] = [];
-    let token : IBaseToken | null = null;
+    const result : IToken[] = [];
+    let token : IToken | null = null;
     let idx = 0;
     let inc = 0;
 

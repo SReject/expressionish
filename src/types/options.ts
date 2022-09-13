@@ -10,5 +10,6 @@ export default interface ParserOptions {
     verifyOnly?: boolean;
     skipArgumentsCheck?: boolean;
 
-    eol?: "error" | "ignore" | "consume" | "space"
+    eol?: "error" | "ignore" | "consume" | "space";
+    specialSequences?: boolean;
 };
