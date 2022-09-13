@@ -1,4 +1,3 @@
-import type TokenList from './token-list';
 import { ParserOptions } from '../types/options';
 import { default as Token, IToken } from './base';
 
