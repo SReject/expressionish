@@ -7,6 +7,8 @@ import Token from '../tokens/base';
 
 import tokenizeEscapeSingle from './text-escape-single';
 import tokenizeTextSpecial from './text-special';
+// import tokenizeFunctionIf from './function-if;
+import tokenizeFunction from './function';
 
 export default (
     options: ParserOptions,
@@ -34,10 +36,13 @@ export default (
         };
         if (
             tokenizeEscapeSingle(mockState, ['\\', '"']) ||
-            tokenizeTextSpecial(options, mockState)  /* ||
+            tokenizeTextSpecial(options, mockState)  ||
+
+            /* TODO - uncomment once implemented
             tokenizeFunctionIf(options, meta, mockState) ||
-            tokenizeFunction(options, meta, mockState)
             */
+
+            tokenizeFunction(options, meta, mockState)
         ) {
             cursor = mockState.cursor;
             continue;

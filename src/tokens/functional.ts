@@ -1,7 +1,7 @@
 import TokenType from '../types/token-types';
 import ParserOptions from '../types/options';
-import { default as Token, IToken } from './base';
-import type { default as TokenList } from './token-list';
+import Token, { IToken } from './base';
+import type TokenList from './token-list';
 
 export interface IFunctionalToken extends IToken {
     prefix: string;
@@ -9,9 +9,8 @@ export interface IFunctionalToken extends IToken {
 }
 
 export default class FunctionalToken extends Token {
-    protected prefix: string;
-    protected value: string;
-    protected arguments: TokenList;
+    public prefix: string;
+    public arguments: TokenList;
 
     constructor(token: IFunctionalToken) {
         super({

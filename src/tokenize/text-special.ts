@@ -22,15 +22,16 @@ export default (
         't': '\t'
     }
 
+    let value = tokens[cursor].value;
     if (
-        tokens[cursor].value !== '\\' ||
-        (cursor += 1) === tokens.length ||
-        !has(characters, tokens[cursor].value)
+        value[0] !== '\\' ||
+        (value[1] == null || value[1] === '') ||
+        !has(characters, value[1])
     ) {
         return false;
     }
 
-    const value = characters[tokens[cursor].value];
+    value = characters[value[1]];
     if (output.length > 0 && output[output.length -1].type === TokenType.TEXT) {
         output[output.length - 1].value += value;
 

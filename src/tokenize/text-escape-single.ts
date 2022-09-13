@@ -13,21 +13,26 @@ export default (
         characters = ['\\', '$', '"', '`']
     }
 
+    const value = tokens[cursor].value;
+
     if (
-        tokens[cursor].value !== '\\' ||
-        (cursor += 1) === tokens.length ||
-        characters?.findIndex(tokens[cursor].value) === -1
+        value[0] !== '\\' ||
+        (value[1] == null || value[1] === '') ||
+        characters.findIndex(value[1]) !== -1
     ) {
         return false;
     }
 
     if (output.length > 0 && output[output.length -1].type === TokenType.TEXT) {
-        output[output.length - 1].value += tokens[cursor].value;
-        state.cursor = cursor + 1;
+        output[output.length - 1].value += value[1];
+
     } else {
-        output.push(new TextToken(tokens[cursor]));
-        state.cursor = cursor + 1;
+        output.push(new TextToken({
+            ...(tokens[cursor]),
+            value: value[1]
+        }));
     }
 
+    state.cursor = cursor + 1;
     return true;
 }

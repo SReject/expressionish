@@ -5,6 +5,9 @@ import TextToken from '../tokens/text';
 import TokenType from '../types/token-types';
 import Token from '../tokens/base';
 
+// import tokenizeFunctionIf from './function-if;
+import tokenizeFunction from './function';
+
 export default (
     options: ParserOptions,
     meta: any,
@@ -12,34 +15,34 @@ export default (
 ) : boolean => {
     let { tokens, cursor, output } = state;
 
-    if (
-        cursor < (tokens.length - 2) ||
-        `${tokens[cursor].value}${tokens[cursor + 1].value}` !== '``'
-    ) {
+    if (tokens[cursor].value !== '``') {
         return false;
     }
-    cursor += 2;
+    cursor += 1;
+
+    if (cursor < (tokens.length - 1)) {
+        // TODO - custom error
+        throw new Error('TODO');
+    }
 
     const escTokens : Token[] = [];
-    while (
-        cursor < (tokens.length - 2) &&
-        `${tokens[cursor].value}${tokens[cursor + 1].value}` !== '``'
-    ) {
+    while (cursor < tokens.length && tokens[cursor].value !== '``') {
 
-        /* TODO: Uncomment once tokenize* is implemented
         const mockState = {
             ...state,
             cursor,
             output: escTokens
         };
+
         if (
+            /* TODO: Uncomment once tokenize* is implemented
             tokenizeFunctionIf(options, meta, mockState) ||
+            */
             tokenizeFunction(options, meta, mockState)
         ) {
             cursor = mockState.cursor;
             continue;
         }
-        */
 
         if (
             escTokens.length === 0 ||
@@ -54,16 +57,13 @@ export default (
         cursor += 1;
     }
 
-    if (
-        cursor > (tokens.length - 2) ||
-        `${tokens[cursor].value}${tokens[cursor + 1].value}` !== '``'
-    ) {
+    if (tokens[cursor].value !== '``') {
         // TODO - custom error
         throw new Error('TODO');
     }
 
     output.push(...escTokens);
-    state.cursor = cursor + 2;
+    state.cursor = cursor + 1;
 
     return true;
 }
