@@ -9,7 +9,7 @@ export interface ITokenList extends IToken {
 }
 
 export default class TokenList extends Token {
-    protected value : Token[];
+    public value : Token[];
 
     constructor(token: ITokenList) {
         super({
@@ -24,6 +24,10 @@ export default class TokenList extends Token {
         let res : any;
         for (let idx = 0; idx < parts.length; idx += 1) {
             let value = await parts[idx].evaluate(options, meta);
+
+            if (options.verifyOnly) {
+                continue;
+            }
 
             if (value === undefined) {
                 continue;

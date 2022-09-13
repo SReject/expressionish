@@ -21,11 +21,15 @@ export default class OperatorToken extends Token {
     }
 
     toToken() : object {
-        const right : any = this.right;
-        return {
+
+        let result : Record<string, object> = {
             ...(super.toToken()),
-            left: this.left,
-            right
+            left: this.left.toToken()
         }
+
+        if (this.right != null) {
+            result.right = this.right.toToken();
+        }
+        return result;
     }
 }

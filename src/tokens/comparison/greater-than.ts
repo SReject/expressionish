@@ -12,11 +12,16 @@ export default class GreaterThanToken extends ComparisonToken {
 
     async handle(options: ParserOptions, meta?: any): Promise<boolean> {
         if (this.right == null) {
-            return false
+            // TODO - custom error
+            throw new Error('TODO');
         }
 
         let v1 = await this.left.evaluate(options, meta);
         let v2 = await this.right.evaluate(options, meta);
+
+        if (options.verifyOnly) {
+            return false;
+        }
 
         v1 = toNumber(v1);
         if (v1 == null) {

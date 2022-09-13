@@ -11,6 +11,11 @@ export default class NotOperator extends LogicalToken {
 
     async evaluate(options: ParserOptions, meta?: any): Promise<boolean> {
         const value = await this.left.evaluate(options, meta);
+
+        if (options.verifyOnly) {
+            return false;
+        }
+
         return value != null && value !== false && value !== '' && value !== 0;
     }
 }

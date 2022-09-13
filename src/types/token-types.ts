@@ -1,9 +1,9 @@
 export enum TokenType {
     TOKENLIST,
+    IFSTATEMENT,
+    FUNCTIONAL,
     TEXT,
     ARGUMENT,
-    FUNCTIONAL,
-    CONDITIONAL,
     LOGICAL,
     COMPARISON,
     UNKNOWN

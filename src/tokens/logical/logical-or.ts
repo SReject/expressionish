@@ -10,13 +10,19 @@ export default class OrOperator extends LogicalToken {
     }
 
     async evaluate(options: ParserOptions, meta?: any): Promise<boolean> {
-        const left = await this.left.evaluate(options, meta);
-        if (left != null && left !== false && left !== '' && left !== 0) {
-            return true;
+        if (this.right == null) {
+            // TODO - custom errors
+            throw new Error('TODO');
         }
 
-        if (this.right == null) {
+        const left = await this.left.evaluate(options, meta);
+        if (options.verifyOnly) {
+            await this.right.evaluate(options, meta);
             return false;
+        }
+
+        if (left != null && left !== false && left !== '' && left !== 0) {
+            return true;
         }
 
         const right = await this.right.evaluate(options, meta);
