@@ -10,8 +10,12 @@ export default class EqualStrictToken extends ComparisonToken {
     }
 
     async handle(options: ParserOptions, meta?: any): Promise<boolean> {
-        const v1 = await this.arguments[0].evaluate(options, meta);
-        const v2 = await this.arguments[1].evaluate(options, meta);
+        const v1 = await this.left.evaluate(options, meta);
+
+        let v2 : any;
+        if (this.right != null) {
+            v2 = await this.right.evaluate(options, meta);
+        }
 
         return (
             v1 === v2 ||

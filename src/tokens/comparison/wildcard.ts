@@ -109,13 +109,17 @@ export default class WildcardToken extends ComparisonToken {
     }
 
     async handle(options: ParserOptions, meta?: any): Promise<boolean> {
-        let v1 = await this.arguments[0].evaluate(options, meta);
+        if (this.right == null) {
+            return false;
+        }
+
+        let v1 = await this.left.evaluate(options, meta);
         v1 = toText(v1);
         if (v1 == null) {
             return false;
         }
 
-        let v2 = await this.arguments[1].evaluate(options, meta);
+        let v2 = await this.right.evaluate(options, meta);
         v2 = toText(v2);
         if (v2 == null) {
             return false;
@@ -130,13 +134,17 @@ export default class WildcardToken extends ComparisonToken {
     }
 
     async handleInverse(options: ParserOptions, meta?: any): Promise<boolean> {
-        let v1 = await this.arguments[0].evaluate(options, meta);
+        if (this.right == null) {
+            return false;
+        }
+
+        let v1 = await this.left.evaluate(options, meta);
         v1 = toText(v1);
         if (v1 == null) {
             return false;
         }
 
-        let v2 = await this.arguments[1].evaluate(options, meta);
+        let v2 = await this.right.evaluate(options, meta);
         v2 = toRegExp(v2);
         if (v2 == null) {
             return false;

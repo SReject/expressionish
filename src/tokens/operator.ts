@@ -3,16 +3,18 @@ import { ParserOptions } from '../types/options';
 import { default as Token, IToken } from './base';
 
 export interface IOperatorToken extends IToken {
-    arguments: TokenList
+    left: Token,
+    right?: Token
 }
 
 export default class OperatorToken extends Token {
-
-    protected arguments : TokenList;
+    protected left: Token;
+    protected right?: Token;
 
     constructor(token: IOperatorToken) {
         super(token);
-        this.arguments = token.arguments;
+        this.left = token.left;
+        this.right = token.right;
     }
 
     async evaluate(options: ParserOptions, meta?: any) : Promise<boolean> {
@@ -20,9 +22,16 @@ export default class OperatorToken extends Token {
     }
 
     toToken() : object {
+        const self : Record<string, any> = {
+            left: this.left
+        };
+        if (this.right != null) {
+            self.right = this.right;
+        }
+
         return {
             ...(super.toToken()),
-            arguments: this.arguments.toToken()
+            ...self
         }
     }
 }

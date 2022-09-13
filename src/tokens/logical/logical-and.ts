@@ -10,12 +10,17 @@ export default class AndOperator extends LogicalToken {
     }
 
     async evaluate(options: ParserOptions, meta?: any): Promise<boolean> {
-        const left = await this.arguments[0].evaluate(options, meta);
+        if (this.right == null) {
+            return false;
+        }
+
+        const left = await this.left.evaluate(options, meta);
         if (left == null || left === false || left === '' || left === 0) {
             return false;
         }
 
-        const right = await this.arguments[1].evaluate(options, meta);
+
+        const right = await this.right.evaluate(options, meta);
         return right != null && right != false && right !== '' && right !== 0;
     }
 }

@@ -10,7 +10,7 @@ export default class ExistsToken extends ComparisonToken {
     }
 
     async handle(options: ParserOptions, meta?: any): Promise<boolean> {
-        let v1 = await this.arguments[0].evaluate(options, meta);
+        let v1 = await this.left.evaluate(options, meta);
         return v1 != null && v1 !== '';
     }
 }

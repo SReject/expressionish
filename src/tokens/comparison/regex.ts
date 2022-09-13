@@ -11,8 +11,12 @@ export default class LessThanToken extends ComparisonToken {
     }
 
     async handle(options: ParserOptions, meta?: any): Promise<boolean> {
-        let v1 = await this.arguments[0].evaluate(options, meta);
-        let v2 = await this.arguments[1].evaluate(options, meta);
+        if (this.right == null) {
+            return false
+        }
+
+        let v1 = await this.left.evaluate(options, meta);
+        let v2 = await this.right.evaluate(options, meta);
 
         if (v1 == null || typeof v2 !== 'string') {
             return false;
