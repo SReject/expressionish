@@ -4,11 +4,11 @@ import { TokenType } from '../../types/token-types';
 import { default as OperatorToken, IOperatorToken } from '../operator';
 
 export interface IComparisonToken extends IOperatorToken {
-    inverted?: boolean;
+    invert?: boolean;
 }
 
 export default class ComparisonToken extends OperatorToken {
-    protected inverted : boolean;
+    protected invert : boolean = false;
 
     constructor(token: IComparisonToken) {
         super({
@@ -16,7 +16,9 @@ export default class ComparisonToken extends OperatorToken {
             ...token
         });
 
-        this.inverted = !!token.inverted;
+        if (token.invert) {
+            this.invert = true;
+        }
     }
 
     async handle(options: ParserOptions, meta?: any) : Promise<boolean> {
@@ -29,7 +31,7 @@ export default class ComparisonToken extends OperatorToken {
     }
 
     async evaluate(options: ParserOptions, meta?: any) : Promise<boolean> {
-        if (this.inverted) {
+        if (this.invert) {
             return this.handleInverse(options, meta);
         }
         return this.handle(options, meta);
@@ -38,7 +40,7 @@ export default class ComparisonToken extends OperatorToken {
     toToken() : object {
         return {
             ...(super.toToken()),
-            inverted: this.inverted
+            invert: this.invert
         }
     }
 }
