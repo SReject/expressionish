@@ -1,4 +1,4 @@
-export enum TokenType {
+enum TokenType {
     TOKENLIST,
     IFSTATEMENT,
     FUNCTIONAL,
@@ -7,4 +7,6 @@ export enum TokenType {
     LOGICAL,
     COMPARISON,
     UNKNOWN
-}
+};
+
+export default TokenType;

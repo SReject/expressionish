@@ -1,4 +1,4 @@
-import { ParserOptions } from '../../types/options';
+import ParserOptions from '../../types/options';
 
 import split from '../../helpers/unicode-safe-split';
 import toText from '../../helpers/to-text';

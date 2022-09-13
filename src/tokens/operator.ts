@@ -1,4 +1,4 @@
-import { ParserOptions } from '../types/options';
+import ParserOptions from '../types/options';
 import { default as Token, IToken } from './base';
 
 export interface IOperatorToken extends IToken {

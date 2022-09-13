@@ -1,6 +1,4 @@
-import { TokenType } from '../types/token-types';
-
-import toText from '../helpers/to-text';
+import TokenType from '../types/token-types';
 
 export interface IToken {
     type?: TokenType;

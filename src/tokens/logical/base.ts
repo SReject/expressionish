@@ -1,5 +1,4 @@
-import { TokenType } from '../../types/token-types';
-import { default as Token, IToken } from '../base';
+import TokenType from '../../types/token-types';
 
 import { default as OperatorToken, IOperatorToken} from '../operator';
 

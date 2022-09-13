@@ -1,4 +1,4 @@
-import { ParserOptions } from '../../types/options';
+import ParserOptions from '../../types/options';
 import { default as LogicalToken, ILogicalToken } from './base';
 
 export default class NotOperator extends LogicalToken {

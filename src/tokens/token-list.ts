@@ -1,4 +1,5 @@
-import { TokenType } from '../types/token-types';
+import TokenType from '../types/token-types';
+import ParserOptions from '../types/options';
 
 import toText from '../helpers/to-text';
 
@@ -18,7 +19,7 @@ export default class TokenList extends Token {
         });
     }
 
-    async evaluate(options: any, meta?: any): Promise<any> {
+    async evaluate(options: ParserOptions, meta?: any): Promise<any> {
         const parts = this.value;
 
         let res : any;

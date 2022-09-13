@@ -1,5 +1,6 @@
-import { ParserOptions } from '../types/options';
-import { TokenType } from '../types/token-types';
+import TokenType from '../types/token-types';
+import ParserOptions from '../types/options';
+
 import { default as Token, IToken } from './base';
 import OperatorToken from './operator';
 

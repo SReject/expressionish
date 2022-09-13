@@ -5,8 +5,10 @@ interface Handler {
 
 type LookupHandler = (meta: any, name: string) => Handler;
 
-export interface ParserOptions {
+export default interface ParserOptions {
     functionalHandlers: Record<string, LookupHandler>;
     verifyOnly?: boolean;
     skipArgumentsCheck?: boolean;
+
+    eol?: "error" | "ignore" | "consume" | "space"
 };

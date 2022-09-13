@@ -1,4 +1,5 @@
-import { ParserOptions } from '../../types/options';
+import ParserOptions from '../../types/options';
+
 import { default as ComparisonToken, IComparisonToken } from './base';
 import toNumber from '../../helpers/to-number';
 import isPrimitive from '../../helpers/is-primitive';
