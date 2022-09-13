@@ -22,16 +22,11 @@ export default class OperatorToken extends Token {
     }
 
     toToken() : object {
-        const self : Record<string, any> = {
-            left: this.left
-        };
-        if (this.right != null) {
-            self.right = this.right;
-        }
-
+        const right : any = this.right;
         return {
             ...(super.toToken()),
-            ...self
+            left: this.left,
+            right
         }
     }
 }
