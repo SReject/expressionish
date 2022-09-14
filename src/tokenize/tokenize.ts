@@ -64,12 +64,9 @@ export default (subject: string, options: ParserOptions, meta: any = {}) : Token
 
         // Assume anything else is plain text
         const last : Token = <Token>result[result.length - 1];
-        if (
-            result.length &&
-            last != null &&
-            last.type === TokenType.TEXT
-        ) {
+        if (last != null && last.type === TokenType.TEXT) {
             last.value += tokens[cursor].value;
+
         } else {
             result.push(new TextToken(tokens[cursor]));
         }
