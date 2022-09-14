@@ -1,13 +1,9 @@
 import ParserOptions from '../types/options';
-
 import has from '../helpers/has';
-
 import type { TokenizeState } from './tokenize';
-
-import TokenList from '../tokens/token-list';
+import type Token from '../tokens/base';
 import FunctionalToken from '../tokens/functional';
-
-// import tokenizeArguments from './arguments;
+import tokenizeArgumentList from './argument-list';
 
 const nameCheck = /^([a-z][a-z\d]{2,})$/i;
 
@@ -59,28 +55,23 @@ export default (
     const varName = tokens[cursor].value;
     cursor += 1;
 
-    const varArguments : TokenList[] = [];
+    const varArguments : Token[] = [];
     const mockState = {
         tokens,
         cursor,
         output: varArguments
     }
 
-    /* TODO - Uncomment once argument tokenizer is implemented
-    if (tokenizeArguments(options, meta, mockState)) {
+    if (tokenizeArgumentList(options, meta, mockState)) {
         tokens = mockState.tokens;
         cursor = mockState.cursor;
     }
-    */
 
     output.push(new FunctionalToken({
         position: varPosition,
         prefix,
         value: varName,
-        arguments: new TokenList({
-            position: cursor,
-            value: varArguments
-        })
+        arguments: varArguments
     }));
 
     state.tokens = tokens;

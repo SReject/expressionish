@@ -1,10 +1,8 @@
 import ParserOptions from '../types/options';
 import type { TokenizeState } from './tokenize';
-
 import TextToken from '../tokens/text';
 import TokenType from '../types/token-types';
 import Token from '../tokens/base';
-
 import tokenizeEscapeSingle from './text-escape-single';
 import tokenizeTextSpecial from './text-special';
 // import tokenizeFunctionIf from './function-if;
@@ -66,7 +64,7 @@ export default (
         tokens[cursor + 1].value !== '"'
     ) {
         // TODO - custom error
-        throw new Error('TODO');
+        throw new Error('TODO - Syntax Error: expected closing quote');
     }
 
     output.push(...quoteTokens);

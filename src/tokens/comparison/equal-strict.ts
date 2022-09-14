@@ -1,5 +1,4 @@
 import ParserOptions from '../../types/options';
-
 import ComparisonToken, { IComparisonToken } from './base';
 
 export default class EqualStrictToken extends ComparisonToken {
@@ -13,7 +12,7 @@ export default class EqualStrictToken extends ComparisonToken {
     async handle(options: ParserOptions, meta?: any): Promise<boolean> {
         if (this.right == null) {
             // TODO - custom error
-            throw new Error('TODO');
+            throw new Error('TODO - Evaluation Error: Right hand argument missing');
         }
 
         const v1 = await this.left.evaluate(options, meta);

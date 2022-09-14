@@ -1,5 +1,4 @@
 import ParserOptions from '../../types/options';
-
 import ComparisonToken, { IComparisonToken } from './base';
 
 export default class ExistsToken extends ComparisonToken {

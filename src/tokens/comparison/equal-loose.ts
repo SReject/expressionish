@@ -1,5 +1,4 @@
 import ParserOptions from '../../types/options';
-
 import ComparisonToken, { IComparisonToken } from './base';
 import toNumber from '../../helpers/to-number';
 import isPrimitive from '../../helpers/is-primitive';

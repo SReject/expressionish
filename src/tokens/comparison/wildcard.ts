@@ -1,8 +1,6 @@
 import ParserOptions from '../../types/options';
-
 import split from '../../helpers/unicode-safe-split';
 import toText from '../../helpers/to-text';
-
 import ComparisonToken, { IComparisonToken } from './base';
 
 const toRegExp = (subject: string, caseSensitive: boolean = false) : RegExp => {
@@ -111,7 +109,7 @@ export default class WildcardToken extends ComparisonToken {
     async handle(options: ParserOptions, meta?: any): Promise<boolean> {
         if (this.right == null) {
             // TODO - custom error
-            throw new Error('TODO');
+            throw new Error('TODO - Evaluation Error: Right hand argument missing');
         }
 
         let v1 = await this.left.evaluate(options, meta);
@@ -144,7 +142,7 @@ export default class WildcardToken extends ComparisonToken {
 
         if (this.right == null) {
             // TODO - custom error
-            throw new Error('TODO');
+            throw new Error('TODO - Evaluation Error: Right hand argument missing');
         }
 
         let v1 = await this.left.evaluate(options, meta);

@@ -1,10 +1,8 @@
 import ParserOptions from '../types/options';
 import type { TokenizeState } from './tokenize';
-
 import TextToken from '../tokens/text';
 import TokenType from '../types/token-types';
 import Token from '../tokens/base';
-
 // import tokenizeFunctionIf from './function-if;
 import tokenizeFunction from './function';
 

@@ -1,16 +1,15 @@
 import TokenType from '../types/token-types';
 import ParserOptions from '../types/options';
 import Token, { IToken } from './base';
-import type TokenList from './token-list';
 
 export interface IFunctionalToken extends IToken {
     prefix: string;
-    arguments: TokenList
+    arguments: Token[]
 }
 
 export default class FunctionalToken extends Token {
     public prefix: string;
-    public arguments: TokenList;
+    public arguments: Token[];
 
     constructor(token: IFunctionalToken) {
         super({
@@ -37,7 +36,7 @@ export default class FunctionalToken extends Token {
 
         let args : any[] = [];
         if (this.arguments != null) {
-            const argList = this.arguments.value;
+            const argList = this.arguments;
             for (let idx = 0; idx < argList.length; idx += 1) {
                 const arg = await argList[idx].evaluate(options, meta);
                 args.push(arg);
@@ -71,7 +70,7 @@ export default class FunctionalToken extends Token {
         return {
             ...(super.toToken()),
             prefix: this.prefix,
-            arguments: this.arguments.toToken()
+            arguments: this.arguments.map(value => value.toToken())
         }
     }
 }

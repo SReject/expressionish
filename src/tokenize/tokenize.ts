@@ -1,20 +1,15 @@
 import ParserOptions from '../types/options';
 import TokenType from '../types/token-types';
-
 import getPotentialTokens from '../helpers/get-potential-tokens';
-
 import Token, { IToken } from '../tokens/base';
 import TokenList, { ITokenList } from '../tokens/token-list';
 import TextToken from '../tokens/text';
-
 import tokenizeTextEscapeSingle from './text-escape-single';
 import tokenizeTextEscapeBlock from './text-escape-block';
 import tokenizeTextQuoted from './text-quoted';
 import tokenizeTextSpecial from './text-special';
 // import tokenizeFunctionIf from './function-if;
 import tokenizeFunction from './function';
-
-
 
 export interface TokenizeState {
     tokens: IToken[];
@@ -60,7 +55,7 @@ export default (subject: string, options: ParserOptions, meta: any = {}) : Token
 
     if (state.cursor < tokens.length) {
         // TODO - custom error;
-        throw new Error('TODO');
+        throw new Error('TODO - Syntax Error: Unexpected token');
     }
 
     return new TokenList(<ITokenList>{
