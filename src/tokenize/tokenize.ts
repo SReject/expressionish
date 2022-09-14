@@ -8,57 +8,76 @@ import tokenizeTextEscapeSingle from './text-escape-single';
 import tokenizeTextEscapeBlock from './text-escape-block';
 import tokenizeTextQuoted from './text-quoted';
 import tokenizeTextSpecial from './text-special';
-// import tokenizeFunctionIf from './function-if;
+import tokenizeFunctionIf from './function-if';
 import tokenizeFunction from './function';
 
 export interface TokenizeState {
     tokens: IToken[];
     cursor: number;
-    output: Token[];
+    output?: Token | Token[];
 }
 
 export default (subject: string, options: ParserOptions, meta: any = {}) : TokenList => {
-    const tokens = getPotentialTokens(subject);
 
-    const state : TokenizeState = {
-        tokens,
-        cursor: 0,
-        output: []
-    }
+    let tokens = getPotentialTokens(options, subject);
 
-    while (state.cursor < tokens.length) {
+    const result : Array<void | Token> = [];
+
+    let cursor = 0;
+
+    // trim leading and trailing spaces
+    while (tokens.length && tokens[0].value === ' ') tokens.shift();
+    while (tokens.length && tokens[tokens.length - 1].value === ' ') tokens.pop();
+
+    while (cursor < tokens.length) {
+
+        let mockState : TokenizeState = {
+            tokens: tokens,
+            cursor: cursor
+        };
+
         if (
-            tokenizeTextEscapeSingle(state) ||
-            tokenizeTextEscapeBlock(options, meta, state) ||
-            tokenizeTextQuoted(options, meta, state) ||
-            tokenizeTextSpecial(options, state) ||
-            /*
-            TODO - Uncomment once implemented
-            tokenizeFunctionIf(options, meta, state) ||
-            */
-            tokenizeFunction(options, meta, state)
+            tokenizeTextEscapeSingle(mockState) ||
+            tokenizeTextEscapeBlock(options, meta, mockState) ||
+            tokenizeTextQuoted(options, meta, mockState) ||
+            tokenizeTextSpecial(options, mockState) ||
+            tokenizeFunctionIf(options, meta, mockState) ||
+            tokenizeFunction(options, meta, mockState)
         ) {
+            let lastToken : Token = <Token>result[result.length - 1];
+            if (
+                lastToken != null &&
+                lastToken.type === TokenType.TEXT &&
+                mockState.output &&
+                (<Token>mockState.output).type === TokenType.TEXT
+            ) {
+                lastToken.value += (<Token>mockState.output).value;
+
+            } else {
+                result.push(<Token>mockState.output);
+            }
+
+            tokens = mockState.tokens;
+            cursor = mockState.cursor;
             continue;
         }
 
-        const { tokens, output, cursor } = state;
-
-        if (output.length === 0 || output[output.length - 1].type !== TokenType.TEXT) {
-            output.push(new TextToken(tokens[cursor]));
-
+        // Assume anything else is plain text
+        const last : Token = <Token>result[result.length - 1];
+        if (
+            result.length &&
+            last != null &&
+            last.type === TokenType.TEXT
+        ) {
+            last.value += tokens[cursor].value;
         } else {
-            output[output.length - 1].value += tokens[cursor].value;
+            result.push(new TextToken(tokens[cursor]));
         }
 
-        state.cursor += 1;
-    }
-
-    if (state.cursor < tokens.length) {
-        // TODO - custom error;
-        throw new Error('TODO - Syntax Error: Unexpected token');
+        cursor += 1;
     }
 
     return new TokenList(<ITokenList>{
-        value: state.output
+        value: result
     });
 }

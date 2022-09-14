@@ -47,9 +47,10 @@ export default class TokenList extends Token {
             if (typeof res !== 'string') {
                 let strRes = toText(res);
                 if (strRes == null) {
-                    res = value;
+                    res = strValue;
+
                 } else {
-                    res = strRes + strValue;
+                    res = <string>strRes + <string>strValue;
                 }
                 continue;
             }

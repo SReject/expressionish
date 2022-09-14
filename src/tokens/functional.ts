@@ -2,6 +2,8 @@ import TokenType from '../types/token-types';
 import ParserOptions from '../types/options';
 import Token, { IToken } from './base';
 
+import TokenList from './token-list';
+
 export interface IFunctionalToken extends IToken {
     prefix: string;
     arguments: Token[]

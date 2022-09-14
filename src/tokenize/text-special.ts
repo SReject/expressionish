@@ -1,7 +1,6 @@
 import ParserOptions from '../types/options';
 import type { TokenizeState } from './tokenize';
 import TextToken from '../tokens/text';
-import TokenType from '../types/token-types';
 import has from '../helpers/has';
 
 export default (
@@ -12,15 +11,15 @@ export default (
         return false;
     }
 
-    let { tokens, cursor, output } = state;
+    let { tokens, cursor } = state;
 
-    const characters = {
+    const characters : Record<string, string> = {
         'n': '\n',
         'r': '\r',
         't': '\t'
     }
 
-    let value = tokens[cursor].value;
+    let value : string = tokens[cursor].value;
     if (
         value[0] !== '\\' ||
         (value[1] == null || value[1] === '') ||
@@ -29,17 +28,11 @@ export default (
         return false;
     }
 
-    value = characters[value[1]];
-    if (output.length > 0 && output[output.length -1].type === TokenType.TEXT) {
-        output[output.length - 1].value += value;
+    state.output = new TextToken({
+        position: state.cursor,
+        value: characters[value[1]]
+    });
+    state.cursor += 1;
 
-    } else {
-        output.push(new TextToken({
-            ...(tokens[cursor]),
-            value
-        }));
-    }
-
-    state.cursor = cursor + 1;
     return true;
 }

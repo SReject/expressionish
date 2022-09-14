@@ -6,6 +6,7 @@ enum TokenType {
     ARGUMENT,
     LOGICAL,
     COMPARISON,
+    EMPTY,
     UNKNOWN
 };
 

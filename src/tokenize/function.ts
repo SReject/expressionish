@@ -1,9 +1,9 @@
 import ParserOptions from '../types/options';
 import has from '../helpers/has';
 import type { TokenizeState } from './tokenize';
-import type Token from '../tokens/base';
 import FunctionalToken from '../tokens/functional';
 import tokenizeArgumentList from './argument-list';
+import Token from '../tokens/base';
 
 const nameCheck = /^([a-z][a-z\d]{2,})$/i;
 
@@ -13,23 +13,24 @@ export default (
     state: TokenizeState
 ) : boolean => {
 
-    let { tokens, cursor, output } = state;
+    let { tokens, cursor } = state;
 
     if (
-        cursor + 4 >= tokens.length ||
-        tokens[cursor].value !== '$'
+        tokens[cursor].value !== '$' ||
+        cursor + 4 >= tokens.length
     ) {
         return false;
     }
+    const startCursor = cursor;
 
-    const varPosition = tokens[cursor].position;
+    let prefix = '$';
 
     cursor += 1;
 
-    let prefix = '$';
     if (has(options.functionalHandlers, '$' + tokens[cursor].value[0])) {
 
-        let {position, value} = tokens[cursor].value;
+        let { position, value } = tokens[cursor];
+
         prefix += value[0];
 
         if (value.length > 1) {
@@ -55,27 +56,21 @@ export default (
     const varName = tokens[cursor].value;
     cursor += 1;
 
-    const varArguments : Token[] = [];
-    const mockState = {
+    const mockState : TokenizeState = {
         tokens,
-        cursor,
-        output: varArguments
+        cursor
     }
 
-    if (tokenizeArgumentList(options, meta, mockState)) {
-        tokens = mockState.tokens;
-        cursor = mockState.cursor;
-    }
+    tokenizeArgumentList(options, meta, mockState);
 
-    output.push(new FunctionalToken({
-        position: varPosition,
+    state.tokens = mockState.tokens;
+    state.output = new FunctionalToken({
+        position: startCursor,
         prefix,
         value: varName,
-        arguments: varArguments
-    }));
-
-    state.tokens = tokens;
-    state.cursor = cursor;
+        arguments: <Token[]>(mockState.output || [])
+    });
+    state.cursor = mockState.cursor;
 
     return true;
 };

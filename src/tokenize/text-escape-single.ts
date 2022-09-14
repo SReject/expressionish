@@ -6,7 +6,7 @@ export default (
     state: TokenizeState,
     characters?: string[]
 ) : boolean => {
-    let { tokens, cursor, output } = state;
+    let { tokens, cursor } = state;
 
     if (characters == null) {
         characters = ['\\', '$', '"', '`']
@@ -22,16 +22,10 @@ export default (
         return false;
     }
 
-    if (output.length > 0 && output[output.length -1].type === TokenType.TEXT) {
-        output[output.length - 1].value += value[1];
-
-    } else {
-        output.push(new TextToken({
-            ...(tokens[cursor]),
-            value: value[1]
-        }));
-    }
-
+    state.output = new TextToken({
+        position: cursor,
+        value: value[1]
+    });
     state.cursor = cursor + 1;
     return true;
 }

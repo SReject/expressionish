@@ -5,8 +5,9 @@ import TokenType from '../types/token-types';
 import Token from '../tokens/base';
 import tokenizeEscapeSingle from './text-escape-single';
 import tokenizeTextSpecial from './text-special';
-// import tokenizeFunctionIf from './function-if;
+import tokenizeFunctionIf from './function-if';
 import tokenizeFunction from './function';
+import TokenList from '../tokens/token-list';
 
 export default (
     options: ParserOptions,
@@ -15,60 +16,83 @@ export default (
 ) : boolean => {
     let { tokens, cursor, output } = state;
 
-    if (
-        cursor < (tokens.length - 2) ||
-        tokens[cursor].value !== '`' ||
-        tokens[cursor + 1].value !== '`'
-    ) {
+    if (tokens[cursor].value !== '"') {
         return false;
     }
-    cursor += 2;
+
+    const startCursor = cursor;
+
+    cursor += 1;
+
+    if (cursor === tokens.length) {
+        // TODO - custom error - unexpected end
+        throw new Error('TODO - Syntax Error: unexpected end');
+    }
 
     const quoteTokens : Token[] = [];
-    while (cursor < (tokens.length - 1) && tokens[cursor].value !== '"') {
+    while (
+        cursor < tokens.length &&
+        tokens[cursor].value !== '"'
+    ) {
 
-        const mockState = {
-            ...state,
-            cursor,
-            output: quoteTokens
+        let lastToken : Token = quoteTokens[quoteTokens.length - 1];
+
+        const mockState : TokenizeState = {
+            tokens,
+            cursor
         };
         if (
             tokenizeEscapeSingle(mockState, ['\\', '"']) ||
             tokenizeTextSpecial(options, mockState)  ||
-
-            /* TODO - uncomment once implemented
             tokenizeFunctionIf(options, meta, mockState) ||
-            */
-
             tokenizeFunction(options, meta, mockState)
         ) {
+
+            if (mockState.output != null) {
+                if (
+                    lastToken &&
+                    lastToken.type === TokenType.TEXT &&
+                    (<Token>mockState.output).type === TokenType.TEXT
+                ) {
+                    lastToken.value += (<Token>mockState.output).value;
+                } else {
+                    quoteTokens.push(<Token>mockState.output);
+                }
+            }
+            tokens = mockState.tokens;
             cursor = mockState.cursor;
             continue;
         }
 
-        if (
-            quoteTokens.length === 0 ||
-            quoteTokens[quoteTokens.length - 1].type != TokenType.TEXT
-        ) {
-            quoteTokens.push(new TextToken(tokens[cursor]));
+        // Treat everything else as text
+        if (lastToken && lastToken.type === TokenType.TEXT) {
+            lastToken.value += tokens[cursor].value;
 
         } else {
-            quoteTokens[quoteTokens.length - 1].value += tokens[cursor].value;
+            quoteTokens.push(new TextToken({
+                position: cursor,
+                value: tokens[cursor].value
+            }));
         }
-
         cursor += 1;
     }
 
-    if (
-        cursor > (tokens.length - 1) ||
-        tokens[cursor + 1].value !== '"'
-    ) {
-        // TODO - custom error
+    if (cursor >= tokens.length) {
+        // TODO - custom error - unexpected end
+        throw new Error('TODO - SyntaxError: unexpected end');
+    }
+
+    if (tokens[cursor].value !== '"') {
+        // TODO - custom error - expected closing token
         throw new Error('TODO - Syntax Error: expected closing quote');
     }
 
-    output.push(...quoteTokens);
+    state.tokens = tokens;
     state.cursor = cursor + 2;
+    state.output = new TokenList({
+        position: startCursor,
+        value: quoteTokens
+    });
 
     return true;
 }

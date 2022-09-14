@@ -41,7 +41,10 @@ export const codePointFromSurrogatePair = (pair: string) : number => {
 };
 
 /** Splits input text into an array of characters */
-export default (subject : string) : string[] => {
+export default (
+    subject : string,
+    callback?: (subject: string, char: string, position: number) => number | void
+) : string[] => {
 
     if (typeof subject !== 'string') {
         throw new Error('string cannot be undefined or null')
@@ -86,10 +89,16 @@ export default (subject : string) : string[] => {
             inc += 1;
             continue;
         }
-        result.push(subject.substring(idx, idx + inc));
+        const char = subject.substring(idx, idx + inc);
+        if (callback) {
+            let cbres = callback(subject, char, idx);
+            if (cbres != null) {
+                inc += <number>cbres;
+            }
+        }
+        result.push(char);
         idx += inc;
         inc = 0;
     }
-
     return result;
 };

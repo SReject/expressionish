@@ -1,8 +1,8 @@
 import ParserOptions from '../types/options';
 import { TokenizeState } from "./tokenize";
 import Token from '../tokens/base';
-import TokenList from '../tokens/token-list';
 import tokenizeArgument from './argument';
+import TokenType from '../types/token-types';
 
 export default (options: ParserOptions, meta: any, state: TokenizeState) : boolean => {
 
@@ -13,52 +13,60 @@ export default (options: ParserOptions, meta: any, state: TokenizeState) : boole
     }
     cursor += 1;
 
-    let args : TokenList[] = [];
+    let args : Token[] = [];
 
     while (
         cursor < tokens.length &&
         tokens[cursor].value != ']'
     ) {
 
-        // consume leading whitespace
         while (tokens[cursor].value === ' ') {
             cursor += 1;
         }
 
-        let argParts : Token[] = [];
-        const mockState = {
+        if (tokens[cursor].value === ']') {
+            break;
+        }
+
+        if (tokens[cursor].value === ',') {
+            args.push(new Token({
+                position: cursor,
+                type: TokenType.EMPTY,
+                value: undefined
+            }));
+            cursor += 1;
+            continue;
+        }
+
+        const mockState : TokenizeState = {
             tokens,
-            cursor,
-            output: argParts
+            cursor
         };
 
-        tokenizeArgument(options, meta, mockState);
+        if (tokenizeArgument(options, meta, mockState)) {
 
-        const next = mockState.tokens[mockState.cursor].value;
-        if (next == null) {
-            // TODO - custom error - Syntax Error: unexpected end
-            throw new Error('TODO - Syntax Error: Unexpected end');
+            if (mockState.output) {
+                args.push(<Token>mockState.output);
+
+            } else {
+                args.push(new Token({
+                    position: cursor,
+                    type: TokenType.EMPTY,
+                    value: undefined
+                }));
+            }
+            tokens = mockState.tokens;
+            cursor = mockState.cursor;
+
+        } else {
+            // TODO - custom error - SyntaxError: Illegal character
+            throw new Error('TODO - SyntaxError: Illegal character');
         }
+    }
 
-        if (
-            next !== ',' &&
-            next !== ']'
-        ) {
-            // TODO - custom error - Syntax Error: Illegal token
-            throw new Error('TODO - Syntax Error: Illegal Token')
-        }
-
-        args.push(new TokenList({
-            position: cursor,
-            value: argParts
-        }));
-        tokens = mockState.tokens;
-        cursor = mockState.cursor;
-
-
-        if (next === ',') {
-            cursor += 1;
-        }
+    if (cursor >= tokens.length) {
+        // TODO - custom error - SyntaxError: Unexpected end
+        throw new Error('TODO - SyntaxError: Unexpected end');
     }
 
     if (tokens[cursor].value !== ']') {
@@ -68,7 +76,7 @@ export default (options: ParserOptions, meta: any, state: TokenizeState) : boole
 
     state.tokens = tokens;
     state.cursor = cursor + 1;
-    state.output.push(...args);
+    state.output = args;
 
     return true;
 };
