@@ -16,15 +16,15 @@ export default (
     let { tokens, cursor } = state;
 
     if (
+        tokens[cursor] == null ||
         tokens[cursor].value !== '$' ||
-        cursor + 4 >= tokens.length
+        tokens[cursor + 1] == null
     ) {
         return false;
     }
     const startCursor = cursor;
 
     let prefix = '$';
-
     cursor += 1;
 
     if (has(options.functionalHandlers, '$' + tokens[cursor].value[0])) {
@@ -48,12 +48,22 @@ export default (
         }
         cursor += 1;
     }
-
-    if (!nameCheck.test(tokens[cursor].value)) {
+    if (tokens[cursor] == null) {
         return false;
     }
 
     const varName = tokens[cursor].value;
+
+    if (!nameCheck.test(varName)) {
+        return false;
+    }
+
+    const lookupHandler = options.functionalHandlers[prefix];
+    if (!lookupHandler || !lookupHandler(varName)) {
+        console.log(prefix, varName, lookupHandler);
+        return false;
+    }
+
     cursor += 1;
 
     const mockState : TokenizeState = {
