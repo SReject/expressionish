@@ -1,8 +1,10 @@
 {
     "compilerOptions": {
-
         "module": "commonjs",
 
+        "composite": true,
+        "declaration": true,
+        "declarationMap": true,
 
         "lib": ["ES2020"],
         "noImplicitAny": true,
@@ -12,9 +14,15 @@
         "newLine": "lf",
         "removeComments": true,
         "sourceMap": true,
-        "outDir": "./lib",
+
+        "rootDir": "src",
+        "outDir": "lib",
+        "tsBuildInfoFile": "lib/tsconfig.tsbuildinfo"
     },
-    "files": [
-        "./src/index.ts"
+    "include": [
+        "src/**/*"
+    ],
+    "exclude": [
+        "node_modules/**/*"
     ]
 }
