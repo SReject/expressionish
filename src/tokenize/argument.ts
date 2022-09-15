@@ -37,7 +37,7 @@ export default (
         const mockState : TokenizeState = {
             tokens,
             cursor
-        }
+        };
 
         if (
             tokenizeTextEscapeSingle(mockState, ['"', '$', '\\', ',', ']',]) ||
