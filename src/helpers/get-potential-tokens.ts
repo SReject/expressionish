@@ -1,12 +1,12 @@
-import { type IToken } from '../tokens/token';
+import type IPreToken from '../types/pre-token';
 import ParserOptions from '../types/options';
 
 import split from './unicode-safe-split';
 
 /** Split input string into array of potential tokens */
-export default (options: ParserOptions, subject: string) : {position: number, value: string}[] => {
+export default (options: ParserOptions, subject: string) : IPreToken[] => {
 
-    const result : {position: number, value: string}[] = [];
+    const result : IPreToken[] = [];
 
     let textToken : null | {position: number, value: string} = null;
     split(

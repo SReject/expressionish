@@ -1,5 +1,6 @@
 import type ParserOptions from '../types/options';
 import TokenType from '../types/token-types';
+import type IPreToken from '../types/pre-token';
 
 import getPotentialTokens from '../helpers/get-potential-tokens';
 
@@ -15,7 +16,7 @@ import tokenizeFunctionIf from './function-if';
 import tokenizeFunction from './function';
 
 export interface TokenizeState {
-    tokens: {position: number, value: string}[];
+    tokens: IPreToken[];
     cursor: number;
     output?: Token | Token[];
 }
