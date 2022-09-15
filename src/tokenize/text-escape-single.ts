@@ -21,7 +21,7 @@ export default (
     }
 
     state.output = new TextToken({
-        position: cursor,
+        position: tokens[cursor].position,
         value: tokens[cursor + 1].value
     });
     state.cursor += 2;

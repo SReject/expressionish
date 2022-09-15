@@ -18,7 +18,7 @@ export default (
     if (tokens[cursor]?.value !== '$' || tokens[cursor + 1] == null) {
         return false;
     }
-    const startCursor = cursor;
+    const position = tokens[cursor].position;
 
     let prefix = '$';
     cursor += 1;
@@ -58,7 +58,7 @@ export default (
 
     state.tokens = mockState.tokens;
     state.output = new FunctionalToken({
-        position: startCursor,
+        position,
         prefix,
         value: varName,
         arguments: <Token[]>(mockState.output || [])

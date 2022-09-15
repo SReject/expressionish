@@ -18,7 +18,7 @@ export default (
         return false;
     }
 
-    const startCursor = cursor;
+    const position = tokens[cursor].position;
 
     cursor += 1;
 
@@ -69,7 +69,7 @@ export default (
     state.tokens = tokens;
     state.cursor = cursor + 1;
     state.output = new TokenList({
-        position: startCursor,
+        position,
         value: escTokens
     });
 

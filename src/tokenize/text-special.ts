@@ -11,13 +11,13 @@ export default (
         return false;
     }
 
-    let { tokens, cursor } = state;
-
     const characters : Record<string, string> = {
         'n': '\n',
         'r': '\r',
         't': '\t'
     }
+
+    let { tokens, cursor } = state;
     if (
         tokens[cursor]?.value !== '\\' ||
         tokens[cursor + 1] == null ||
@@ -27,7 +27,7 @@ export default (
     }
 
     state.output = new TextToken({
-        position: state.cursor,
+        position: tokens[cursor].position,
         value: tokens[cursor + 1].value
     });
     state.cursor += 2;

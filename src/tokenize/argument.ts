@@ -20,7 +20,7 @@ export default (
 
     let { tokens, cursor } = state;
 
-    const startCursor = cursor;
+    const position = tokens[cursor]?.value;
 
 
     let whitespaceStart = 0,
@@ -140,7 +140,7 @@ export default (
     state.tokens = tokens;
     state.cursor = cursor;
     state.output = new TokenList({
-        position: startCursor,
+        position,
         value: result
     })
 

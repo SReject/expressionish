@@ -51,8 +51,7 @@ export default (options: ParserOptions, meta: any, state: TokenizeState) : boole
             } else {
                 args.push(new Token({
                     position: cursor,
-                    type: TokenType.EMPTY,
-                    value: undefined
+                    type: TokenType.EMPTY
                 }));
             }
             tokens = mockState.tokens;
