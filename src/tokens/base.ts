@@ -3,7 +3,7 @@ import TokenType from '../types/token-types';
 export interface IToken {
     type?: TokenType;
     position: number;
-    value: any;
+    value?: any;
 }
 
 export default class Token  {
