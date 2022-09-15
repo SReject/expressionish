@@ -1,9 +1,12 @@
-import ParserOptions from '../types/options';
 import has from '../helpers/has';
-import type { TokenizeState } from './tokenize';
-import FunctionalToken from '../tokens/functional';
+
+import type ParserOptions from '../types/options';
+
+import type Token from '../tokens/token';
+import FunctionalToken from '../tokens/token-function';
+
 import tokenizeArgumentList from './argument-list';
-import Token from '../tokens/base';
+import type { TokenizeState } from './tokenize';
 
 const nameCheck = /^([a-z][a-z\d]{2,})$/i;
 

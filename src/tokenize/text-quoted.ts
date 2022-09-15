@@ -1,13 +1,16 @@
-import ParserOptions from '../types/options';
-import type { TokenizeState } from './tokenize';
-import TextToken from '../tokens/text';
+import type ParserOptions from '../types/options';
 import TokenType from '../types/token-types';
-import Token from '../tokens/base';
+
+import type Token from '../tokens/token';
+import TokenList from '../tokens/token-list';
+import TextToken from '../tokens/token-text';
+
 import tokenizeEscapeSingle from './text-escape-single';
 import tokenizeTextSpecial from './text-special';
 import tokenizeFunctionIf from './function-if';
 import tokenizeFunction from './function';
-import TokenList from '../tokens/token-list';
+
+import type { TokenizeState } from './tokenize';
 
 export default (
     options: ParserOptions,

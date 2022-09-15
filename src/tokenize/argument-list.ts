@@ -1,8 +1,10 @@
-import ParserOptions from '../types/options';
-import { TokenizeState } from "./tokenize";
-import Token from '../tokens/base';
-import tokenizeArgument from './argument';
+import type ParserOptions from '../types/options';
 import TokenType from '../types/token-types';
+
+import Token from '../tokens/token';
+
+import type { TokenizeState } from "./tokenize";
+import tokenizeArgument from './argument';
 
 export default (options: ParserOptions, meta: any, state: TokenizeState) : boolean => {
 

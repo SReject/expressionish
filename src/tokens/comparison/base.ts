@@ -1,10 +1,11 @@
 import ParserOptions from '../../types/options';
 import TokenType from '../../types/token-types';
 
-import OperatorToken, { IOperatorToken } from '../operator';
+import OperatorToken, { IOperatorToken } from '../token-operator';
 
 export interface IComparisonToken extends IOperatorToken {
     invert?: boolean;
+    value: any;
 }
 
 export default class ComparisonToken extends OperatorToken {
@@ -12,8 +13,8 @@ export default class ComparisonToken extends OperatorToken {
 
     constructor(token: IComparisonToken) {
         super({
-            type: TokenType.COMPARISON,
-            ...token
+            ...token,
+            type: TokenType.COMPARISON
         });
 
         if (token.invert) {

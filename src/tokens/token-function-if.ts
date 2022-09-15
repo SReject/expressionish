@@ -1,10 +1,11 @@
 import TokenType from '../types/token-types';
 import ParserOptions from '../types/options';
 
-import Token, { IToken } from './base';
-import OperatorToken from './operator';
+import Token from './token';
+import OperatorToken from './token-operator';
 
-export interface IIfStatementToken extends IToken {
+export interface IIfStatementToken {
+    position: number;
     condition: OperatorToken;
     whenTrue: Token,
     whenFalse?: Token

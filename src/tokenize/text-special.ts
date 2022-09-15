@@ -1,7 +1,10 @@
-import ParserOptions from '../types/options';
-import type { TokenizeState } from './tokenize';
-import TextToken from '../tokens/text';
+import type ParserOptions from '../types/options';
+
 import has from '../helpers/has';
+
+import TextToken from '../tokens/token-text';
+
+import type { TokenizeState } from './tokenize';
 
 export default (
     options: ParserOptions,

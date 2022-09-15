@@ -1,10 +1,12 @@
 import TokenType from '../types/token-types';
 import ParserOptions from '../types/options';
-import Token, { IToken } from './base';
+import Token from './token';
 
-export interface IFunctionalToken extends IToken {
+export interface IFunctionalToken {
+    position: number;
     prefix: string;
-    arguments: Token[]
+    value: string;
+    arguments: Token[];
 }
 
 export default class FunctionalToken extends Token {

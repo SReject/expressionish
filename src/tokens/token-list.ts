@@ -3,9 +3,10 @@ import ParserOptions from '../types/options';
 
 import toText from '../helpers/to-text';
 
-import Token, { IToken } from './base';
+import Token from './token';
 
-export interface ITokenList extends IToken {
+export interface ITokenList {
+    position: number;
     value: Token[];
 }
 

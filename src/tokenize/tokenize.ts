@@ -1,9 +1,12 @@
-import ParserOptions from '../types/options';
+import type ParserOptions from '../types/options';
 import TokenType from '../types/token-types';
+
 import getPotentialTokens from '../helpers/get-potential-tokens';
-import Token, { IToken } from '../tokens/base';
+
+import Token from '../tokens/token';
 import TokenList, { ITokenList } from '../tokens/token-list';
-import TextToken from '../tokens/text';
+import TextToken from '../tokens/token-text';
+
 import tokenizeTextEscapeSingle from './text-escape-single';
 import tokenizeTextEscapeBlock from './text-escape-block';
 import tokenizeTextQuoted from './text-quoted';
@@ -12,7 +15,7 @@ import tokenizeFunctionIf from './function-if';
 import tokenizeFunction from './function';
 
 export interface TokenizeState {
-    tokens: IToken[];
+    tokens: {position: number, value: string}[];
     cursor: number;
     output?: Token | Token[];
 }

@@ -1,6 +1,6 @@
+import TextToken from '../tokens/token-text';
+
 import type { TokenizeState } from './tokenize';
-import TextToken from '../tokens/text';
-import TokenType from '../types/token-types';
 
 export default (
     state: TokenizeState,

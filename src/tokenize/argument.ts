@@ -1,16 +1,17 @@
-import Token from '../tokens/base';
-import TokenList from '../tokens/token-list';
-import ParserOptions from '../types/options';
-import { TokenizeState } from './tokenize';
+import type ParserOptions from '../types/options';
 import TokenType from '../types/token-types';
 
+import type Token from '../tokens/token';
+import TokenList from '../tokens/token-list';
+import TextToken from '../tokens/token-text';
+
+import type { TokenizeState } from './tokenize';
 import tokenizeTextEscapeSingle from './text-escape-single';
 import tokenizeTextEscapeBlock from './text-escape-block';
 import tokenizeTextQuoted from './text-quoted';
 import tokenizeTextSpecial from './text-special';
 import tokenizeFunctionIf from './function-if';
 import tokenizeFunction from './function';
-import TextToken from '../tokens/text';
 
 export default (
     options: ParserOptions,
@@ -20,7 +21,7 @@ export default (
 
     let { tokens, cursor } = state;
 
-    const position = tokens[cursor]?.value;
+    const position = tokens[cursor]?.position;
 
 
     let whitespaceStart = 0,

@@ -1,14 +1,14 @@
-import { type IToken } from '../tokens/base';
+import { type IToken } from '../tokens/token';
 import ParserOptions from '../types/options';
 
 import split from './unicode-safe-split';
 
 /** Split input string into array of potential tokens */
-export default (options: ParserOptions, subject: string) : IToken[] => {
+export default (options: ParserOptions, subject: string) : {position: number, value: string}[] => {
 
-    const result : IToken[] = [];
+    const result : {position: number, value: string}[] = [];
 
-    let textToken : null | IToken = null;
+    let textToken : null | {position: number, value: string} = null;
     split(
         subject,
         (subject: string, char: string, position: number) : number | void => {

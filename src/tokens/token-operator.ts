@@ -1,9 +1,12 @@
 import ParserOptions from '../types/options';
-import Token, { IToken } from './base';
+import TokenType from '../types/token-types';
+import Token from './token';
 
-export interface IOperatorToken extends IToken {
-    left: Token,
-    right?: Token
+export interface IOperatorToken {
+    type: TokenType;
+    position: number;
+    left: Token;
+    right?: Token;
 }
 
 export default class OperatorToken extends Token {

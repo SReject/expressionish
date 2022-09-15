@@ -1,7 +1,7 @@
 import TokenType from '../types/token-types';
 
 export interface IToken {
-    type?: TokenType;
+    type: TokenType;
     position: number;
     value?: any;
 }
