@@ -25,13 +25,13 @@ export default class FunctionalToken extends Token {
 
         if (lookupHandler == null) {
             // TODO: custom errors
-            throw new Error('TODO');
+            throw new Error(`TODO - no lookup handler for ${this.prefix}`);
         }
-        const handler = lookupHandler(meta, this.value);
+        const handler = lookupHandler(this.value, meta);
 
         if (handler == null) {
             // TODO: custom errors
-            throw new Error('TODO');
+            throw new Error(`TODO - No handler for ${this.prefix}${this.value}`);
         }
 
         let args : any[] = [];
