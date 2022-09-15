@@ -1,4 +1,4 @@
-enum TokenType {
+const enum TokenType {
     TOKENLIST,
     IFSTATEMENT,
     FUNCTIONAL,

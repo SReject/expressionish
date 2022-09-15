@@ -1,24 +1,28 @@
 {
     "compilerOptions": {
+        "target": "ES2020",
+
         "module": "commonjs",
-
-        "composite": true,
-
+        "esModuleInterop": true,
         "lib": ["ES2020"],
         "noImplicitAny": true,
 
-        "target": "ES2020",
-        "esModuleInterop": true,
-        "newLine": "lf",
-        "removeComments": true,
-        "sourceMap": true,
-
         "rootDir": "src",
         "outDir": "lib",
-        "tsBuildInfoFile": "lib/tsconfig.tsbuildinfo"
+
+        "incremental": true,
+        "tsBuildInfoFile": "lib/tsconfig.tsbuildinfo",
+        "declaration": true,
+
+        "sourceMap": true,
+
+        "preserveConstEnums": false,
+
+        "newLine": "lf",
+        "removeComments": true
     },
-    "include": [
-        "src/**/*"
+    "files":[
+        "./src/index.ts"
     ],
     "exclude": [
         "node_modules/**/*"
