@@ -47,10 +47,13 @@ export default (options: ParserOptions, subject: string) : IToken[] => {
                 return inc;
             }
 
+            const nextChar = subject[position + 1];
+
+            // \\<char>, $<prefix>
             if (
-                char === '\\' &&
-                subject[position + 1] != null &&
-                subject[position + 1] !== ''
+                nextChar != null &&
+                (char === '\\' && nextChar !== '') ||
+                (char === '$' && nextChar !== '\\')
             ) {
                 if (textToken !== null) {
                     result.push(textToken);
@@ -58,10 +61,10 @@ export default (options: ParserOptions, subject: string) : IToken[] => {
                 }
                 result.push({
                     position: position,
-                    value: '\\'
+                    value: char
                 }, {
                     position: position + 1,
-                    value: subject[position + 1]
+                    value: nextChar
                 });
                 return 1;
             }
