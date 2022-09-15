@@ -16,8 +16,7 @@ export default (
     let { tokens, cursor } = state;
 
     if (
-        tokens[cursor] == null ||
-        tokens[cursor].value !== '$' ||
+        tokens[cursor]?.value !== '$' ||
         tokens[cursor + 1] == null
     ) {
         return false;

@@ -13,8 +13,7 @@ export default (
     }
 
     if (
-        tokens[cursor] == null ||
-        tokens[cursor].value !== '\\' ||
+        tokens[cursor]?.value !== '\\' ||
         tokens[cursor + 1] == null ||
         !characters.includes(tokens[cursor + 1].value)
     ) {

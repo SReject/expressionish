@@ -16,10 +16,7 @@ export default (
 ) : boolean => {
     let { tokens, cursor } = state;
 
-    if (
-        tokens[cursor] == null ||
-        tokens[cursor].value !== '"'
-    ) {
+    if (tokens[cursor]?.value !== '"') {
         return false;
     }
 
