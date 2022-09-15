@@ -1,5 +1,6 @@
 import ParserOptions from '../types/options';
 import TokenType from '../types/token-types';
+import type IPreToken from '../types/pre-token';
 
 import Token from '../tokens/token';
 import IfToken from '../tokens/token-function-if';
@@ -7,6 +8,67 @@ import type OperatorToken from '../tokens/token-operator';
 
 import { type TokenizeState } from './tokenize';
 import tokenizeCondition from './condition';
+import tokenizeArgument from './argument';
+
+const consumeWhitespace = (tokens: IPreToken[], cursor: number) : number => {
+    while (cursor < tokens.length && /^\s$/.test(tokens[cursor].value)) {
+        cursor += 1;
+    }
+    return cursor;
+};
+
+const getNextArg = (options: ParserOptions, meta: any, state: TokenizeState) : TokenizeState => {
+    let { tokens, cursor } = state;
+
+    cursor = consumeWhitespace(tokens, cursor);
+    if (cursor >= tokens.length) {
+        // TODO - custom error - SyntaxError: Unexpected end
+        throw new Error('TODO - SyntaxError: unexpected end');
+    }
+
+    // no argument
+    if (tokens[cursor].value === ']') {
+        return { tokens, cursor };
+    }
+
+    // no leading delimiter
+    if (tokens[cursor].value !== ',') {
+        // TODO - custom error - SyntaxError: Illegal character
+        throw new Error('TODO - SyntaxError: Illegal character');
+    }
+    cursor += 1;
+
+    if (cursor >= tokens.length) {
+        // TODO - custom error - SyntaxError: Unexpected end
+        throw new Error('TODO - SyntaxError: unexpected end');
+    }
+
+    const position = tokens[cursor].position;
+
+    cursor = consumeWhitespace(tokens, cursor);
+
+    // empty argument
+    if (
+        tokens[cursor].value === ',' ||
+        tokens[cursor].value === ']'
+    ) {
+        return {
+            tokens,
+            cursor: cursor + 1,
+            output: new Token({
+                position,
+                type: TokenType.EMPTY
+            })
+        };
+    }
+
+    const mockState : TokenizeState = {
+        tokens,
+        cursor
+    };
+    tokenizeArgument(options, meta, mockState);
+    return mockState;
+};
 
 export default (
     options: ParserOptions,
@@ -26,11 +88,7 @@ export default (
 
     const position = tokens[cursor]?.position;
 
-    cursor += 3;
-
-    while (/^\s$/g.test(tokens[cursor]?.value)) {
-        cursor += 1;
-    }
+    cursor = consumeWhitespace(tokens, cursor + 3);
 
     if (cursor >= tokens.length) {
         // TODO - custom error - SyntaxError: Unexpected end
@@ -65,10 +123,10 @@ export default (
         throw new Error('TODO - SyntaxError: unexpected end');
     }
 
-    // empty conditional
+    // No return values - $if[<condition>]
     if (tokens[cursor].value === ']') {
         state.tokens = tokens;
-        state.cursor = cursor;
+        state.cursor = cursor + 1;
         state.output = new Token({
             position: position,
             type: TokenType.EMPTY
@@ -76,18 +134,43 @@ export default (
         return true;
     }
 
+    if (tokens[cursor]?.value !== ',') {
+        // TODO - custom error - SyntaxError: Illegal character
+        throw new Error('TODO - SyntaxError: Illegal character');
+    }
 
+    const stateWhenTrue = getNextArg(options, meta, { tokens, cursor });
+    const stateWhenFalse = getNextArg(options, meta, { ...stateWhenTrue });
 
-    return false;
-    /*
+    tokens = stateWhenFalse.tokens;
+    cursor = stateWhenFalse.cursor;
+
+    if (tokens[cursor].value !== ']') {
+        // TODO - custom error - SyntaxError: Illegal character
+        throw new Error('TODO - SyntaxError: Illegal character');
+    }
+
     state.tokens = tokens;
-    state.cursor = cursor;
-    state.output = new IfStatementToken({
-        position,
-        condition,
-        whenTrue,
-        whenFalse
-    });
+    state.cursor = cursor + 1;
+    if (stateWhenFalse.output != null && (<Token>stateWhenFalse.output).type !== TokenType.EMPTY) {
+        state.output = new IfToken({
+            position,
+            condition,
+            whenTrue: <Token>stateWhenTrue.output,
+            whenFalse: <Token>stateWhenFalse.output
+        });
+    } else if (stateWhenTrue.output != null && (<Token>stateWhenTrue.output).type !== TokenType.EMPTY) {
+        state.output = new IfToken({
+            position,
+            condition,
+            whenTrue: <Token>stateWhenTrue.output
+        });
+    } else {
+        state.output = new Token({
+            position: position,
+            type: TokenType.EMPTY
+        });
+    }
+
     return true;
-    */
 }
