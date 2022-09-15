@@ -8,7 +8,10 @@ export default (options: ParserOptions, meta: any, state: TokenizeState) : boole
 
     let { tokens, cursor } = state;
 
-    if (tokens[cursor].value !== '[') {
+    if (
+        tokens[cursor] == null ||
+        tokens[cursor].value !== '['
+    ) {
         return false;
     }
     cursor += 1;

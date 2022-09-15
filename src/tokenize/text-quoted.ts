@@ -14,9 +14,12 @@ export default (
     meta: any,
     state: TokenizeState
 ) : boolean => {
-    let { tokens, cursor, output } = state;
+    let { tokens, cursor } = state;
 
-    if (tokens[cursor].value !== '"') {
+    if (
+        tokens[cursor] == null ||
+        tokens[cursor].value !== '"'
+    ) {
         return false;
     }
 
