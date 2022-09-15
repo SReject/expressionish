@@ -18,21 +18,20 @@ export default (
         'r': '\r',
         't': '\t'
     }
-
-    let value : string = tokens[cursor].value;
     if (
-        value[0] !== '\\' ||
-        (value[1] == null || value[1] === '') ||
-        !has(characters, value[1])
+        tokens[cursor] == null ||
+        tokens[cursor].value !== '\\' ||
+        tokens[cursor + 1] == null ||
+        !has(characters, tokens[cursor + 1].value)
     ) {
         return false;
     }
 
     state.output = new TextToken({
         position: state.cursor,
-        value: characters[value[1]]
+        value: tokens[cursor + 1].value
     });
-    state.cursor += 1;
+    state.cursor += 2;
 
     return true;
 }

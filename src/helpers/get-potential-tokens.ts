@@ -47,11 +47,29 @@ export default (options: ParserOptions, subject: string) : IToken[] => {
                 return inc;
             }
 
+            if (
+                char === '\\' &&
+                subject[position + 1] != null &&
+                subject[position + 1] !== ''
+            ) {
+                if (textToken !== null) {
+                    result.push(textToken);
+                    textToken = null;
+                }
+                result.push({
+                    position: position,
+                    value: '\\'
+                }, {
+                    position: position + 1,
+                    value: subject[position + 1]
+                });
+                return 1;
+            }
+
             // Block Escape, Single Escape, &&, ||
             const seq = subject.slice(position, position + 2);
             if (
                 seq === '``' ||
-                (char === '\\' && subject[position + 1]) ||
                 (
                     (seq === '&&' || seq === '||') &&
                     subject[position - 1] === ' ' &&

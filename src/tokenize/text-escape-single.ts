@@ -12,20 +12,19 @@ export default (
         characters = ['\\', '$', '"', '`']
     }
 
-    const value = tokens[cursor].value;
-
     if (
-        value[0] !== '\\' ||
-        (value[1] == null || value[1] === '') ||
-        characters.findIndex(value[1]) !== -1
+        tokens[cursor] == null ||
+        tokens[cursor].value !== '\\' ||
+        tokens[cursor + 1] == null ||
+        !characters.includes(tokens[cursor + 1].value)
     ) {
         return false;
     }
 
     state.output = new TextToken({
         position: cursor,
-        value: value[1]
+        value: tokens[cursor + 1].value
     });
-    state.cursor = cursor + 1;
+    state.cursor += 2;
     return true;
 }
