@@ -3,7 +3,7 @@ interface Handler {
     evaluator: (meta: any, ...args: any[]) => any;
 }
 
-type LookupHandler = (meta: any, name: string) => Handler;
+type LookupHandler = (name: string, meta?: any) => Handler;
 
 export default interface ParserOptions {
     functionalHandlers: Record<string, LookupHandler>;
