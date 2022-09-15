@@ -11,9 +11,9 @@ export interface IIfStatementToken extends IToken {
 }
 
 export default class IfStatementToken extends Token {
-    protected condition: OperatorToken;
-    protected whenTrue: Token;
-    protected whenFalse?: Token;
+    public condition: OperatorToken;
+    public whenTrue: Token;
+    public whenFalse?: Token;
 
     constructor(token: IIfStatementToken) {
         super({
