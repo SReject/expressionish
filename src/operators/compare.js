@@ -35,7 +35,9 @@ const isLooseEqual = (v1, v2) => {
 };
 
 const exists = (v1) => {
-    return v1 != null && v1 !== '';
+    return v1 != null &&
+        v1 !== false &&
+        v1 !== '';
 };
 
 const isNumber = (v1, v2) => {
