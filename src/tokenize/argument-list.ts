@@ -7,9 +7,11 @@ import type { TokenizeState } from "./tokenize";
 import tokenizeArgument from './argument';
 import tokenizeCondition from './condition';
 
+import { ExpressionSyntaxError } from '../errors';
+
 export default async (options: ParserOptions, meta: any, state: TokenizeState) : Promise<boolean> => {
 
-    let { tokens, cursor, meta: stateMeta } = state;
+    let { tokens, cursor, stack, meta: stateMeta } = state;
 
     let isCondition = stateMeta.isConditional || false;
 
@@ -45,7 +47,8 @@ export default async (options: ParserOptions, meta: any, state: TokenizeState) :
 
         const mockState : TokenizeState = {
             tokens,
-            cursor
+            cursor,
+            stack: [...stack, args.length]
         };
 
         if (
@@ -65,21 +68,18 @@ export default async (options: ParserOptions, meta: any, state: TokenizeState) :
             cursor = mockState.cursor;
 
         } else {
-            // TODO - custom error - SyntaxError: Illegal character
-            throw new Error('TODO - SyntaxError: Illegal character');
+            throw new ExpressionSyntaxError('illegal character; expected end of argument', tokens[cursor].position);
         }
 
         isCondition = false;
     }
 
     if (cursor >= tokens.length) {
-        // TODO - custom error - SyntaxError: Unexpected end
-        throw new Error('TODO - SyntaxError: Unexpected end');
+        throw new ExpressionSyntaxError('unexpected end');
     }
 
     if (tokens[cursor].value !== ']') {
-        // TODO - custom error - SyntaxError: Expected ']'
-        throw new Error('TODO - Syntax Error: Expected \']\'');
+        throw new ExpressionSyntaxError('illegal character; expected \]', tokens[cursor].position);
     }
 
     state.tokens = tokens;

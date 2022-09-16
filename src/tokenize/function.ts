@@ -12,7 +12,7 @@ const nameCheck = /^([a-z][a-z\d]{2,})$/i;
 
 export default async (options: ParserOptions, meta: any, state: TokenizeState) : Promise<boolean> => {
 
-    let { tokens, cursor } = state;
+    let { tokens, cursor, stack } = state;
 
     if (tokens[cursor]?.value !== '$' || tokens[cursor + 1] == null) {
         return false;
@@ -54,7 +54,8 @@ export default async (options: ParserOptions, meta: any, state: TokenizeState) :
 
     const mockState : TokenizeState = {
         tokens,
-        cursor
+        cursor,
+        stack: [...stack, `${prefix}${varName}`]
     }
 
     await tokenizeArgumentList(options, meta, mockState);

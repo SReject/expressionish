@@ -8,9 +8,11 @@ import type OperatorToken from '../tokens/token-operator';
 import { type TokenizeState } from './tokenize';
 import tokenizeArgumentList from './argument-list';
 
+import { ExpressionSyntaxError } from '../errors';
+
 export default async (options: ParserOptions, meta: any, state: TokenizeState) : Promise<boolean> => {
 
-    let { tokens, cursor } = state;
+    let { tokens, cursor, stack } = state;
 
     if (
         tokens[cursor]?.value !== '$' ||
@@ -20,11 +22,13 @@ export default async (options: ParserOptions, meta: any, state: TokenizeState) :
         return false;
     }
 
-    const position = tokens[cursor]?.position;
+    const position = tokens[cursor].position;
+    cursor += 2;
 
     const mockState : TokenizeState = {
         tokens,
         cursor,
+        stack: [...stack, '$if'],
         meta: { isConditional: true }
     }
     await tokenizeArgumentList(options, meta, mockState);
@@ -32,8 +36,7 @@ export default async (options: ParserOptions, meta: any, state: TokenizeState) :
     const args = <Token[]>mockState.output;
 
     if (args.length > 3) {
-        // TODO - custom error - SyntaxError: expected end of arguments
-        throw new Error('TODO - SyntaxError: Expected end of arguments')
+        throw new ExpressionSyntaxError('Expected end of arguments', args[3].position);
     }
 
     if (args.length === 3 && args[2].type === TokenType.EMPTY) {

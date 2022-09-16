@@ -19,6 +19,7 @@ export interface TokenizeState {
     tokens: IPreToken[];
     cursor: number;
     meta?: Record<string, any>;
+    stack: Array<string | number>;
     output?: Token | Token[];
 }
 
@@ -38,7 +39,8 @@ export default async (subject: string, options: ParserOptions, meta: any = {}) :
 
         let mockState : TokenizeState = {
             tokens: tokens,
-            cursor: cursor
+            cursor: cursor,
+            stack: []
         };
 
         if (

@@ -13,9 +13,11 @@ import tokenizeTextSpecial from './text-special';
 import tokenizeFunctionIf from './function-if';
 import tokenizeFunction from './function';
 
+import { ExpressionSyntaxError } from '../errors';
+
 export default async (options: ParserOptions, meta: any, state: TokenizeState) : Promise<boolean> => {
 
-    let { tokens, cursor } = state;
+    let { tokens, cursor, stack } = state;
 
     const position = tokens[cursor]?.position;
 
@@ -31,7 +33,8 @@ export default async (options: ParserOptions, meta: any, state: TokenizeState) :
 
         const mockState : TokenizeState = {
             tokens,
-            cursor
+            cursor,
+            stack: [...stack]
         };
 
         if (
@@ -122,14 +125,12 @@ export default async (options: ParserOptions, meta: any, state: TokenizeState) :
     }
 
     if (cursor >= tokens.length) {
-        // TODO - custom error - Syntax Error: Unexpected End
-        throw new Error('TODO - SyntaxError: Unexpected end');
+        throw new ExpressionSyntaxError('unexpected end of expression');
     }
 
-    const next = tokens[cursor + 1].value;
-    if (next !== ',' && next !== ']') {
-        // TODO - custom error - Syntax Error: Illegal character
-        throw new Error('TODO - SyntaxError: Illegal character');
+    const next = tokens[cursor + 1];
+    if (next.value !== ',' && next.value !== ']') {
+        throw new ExpressionSyntaxError('illegal character', next.position, next.value[0]);
     }
 
     state.tokens = tokens;

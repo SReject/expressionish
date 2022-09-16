@@ -11,13 +11,14 @@ import tokenizeFunctionIf from './function-if';
 import tokenizeFunction from './function';
 
 import type { TokenizeState } from './tokenize';
+import { ExpressionSyntaxError } from '../errors';
 
 export default async (
     options: ParserOptions,
     meta: any,
     state: TokenizeState
 ) : Promise<boolean> => {
-    let { tokens, cursor } = state;
+    let { tokens, cursor, stack } = state;
 
     if (tokens[cursor]?.value !== '"') {
         return false;
@@ -28,8 +29,7 @@ export default async (
     cursor += 1;
 
     if (cursor === tokens.length) {
-        // TODO - custom error - unexpected end
-        throw new Error('TODO - Syntax Error: unexpected end');
+        throw new ExpressionSyntaxError('unexpected end of expression');
     }
 
     const quoteTokens : Token[] = [];
@@ -42,7 +42,8 @@ export default async (
 
         const mockState : TokenizeState = {
             tokens,
-            cursor
+            cursor,
+            stack: [...stack, 'text-quoted']
         };
         if (
             await tokenizeEscapeSingle(mockState, ['\\', '"']) ||
@@ -81,13 +82,11 @@ export default async (
     }
 
     if (cursor >= tokens.length) {
-        // TODO - custom error - unexpected end
-        throw new Error('TODO - SyntaxError: unexpected end');
+        throw new ExpressionSyntaxError('unexpected end of expression');
     }
 
     if (tokens[cursor].value !== '"') {
-        // TODO - custom error - expected closing token
-        throw new Error('TODO - Syntax Error: expected closing quote');
+        throw new ExpressionSyntaxError('expected closing quote', tokens[cursor].position);
     }
 
     state.tokens = tokens;

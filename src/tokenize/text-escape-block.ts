@@ -9,9 +9,10 @@ import tokenizeFunctionIf from './function-if';
 import tokenizeFunction from './function';
 
 import type { TokenizeState } from './tokenize';
+import { ExpressionSyntaxError } from '../errors';
 
 export default async (options: ParserOptions, meta: any, state: TokenizeState) : Promise<boolean> => {
-    let { tokens, cursor } = state;
+    let { tokens, cursor, stack } = state;
 
     if (tokens[cursor]?.value !== '``') {
         return false;
@@ -22,8 +23,7 @@ export default async (options: ParserOptions, meta: any, state: TokenizeState) :
     cursor += 1;
 
     if (cursor < (tokens.length - 1)) {
-        // TODO - custom error
-        throw new Error('TODO - Syntax Error: Unexpected end of statement');
+        throw new ExpressionSyntaxError('unexpected end of expression');
     }
 
     const escTokens : Token[] = [];
@@ -31,7 +31,8 @@ export default async (options: ParserOptions, meta: any, state: TokenizeState) :
 
         const mockState : TokenizeState = {
             tokens,
-            cursor
+            cursor,
+            stack: [...stack, 'text-escape-block']
         };
 
         if (
@@ -61,8 +62,7 @@ export default async (options: ParserOptions, meta: any, state: TokenizeState) :
     }
 
     if (tokens[cursor].value !== '``') {
-        // TODO - custom error
-        throw new Error('TODO - Syntax Error: Unexpected end');
+        throw new ExpressionSyntaxError('unexpected end of expression');
     }
 
     state.tokens = tokens;
