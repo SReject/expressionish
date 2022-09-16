@@ -5,10 +5,13 @@ import Token from '../tokens/token';
 
 import type { TokenizeState } from "./tokenize";
 import tokenizeArgument from './argument';
+import tokenizeCondition from './condition';
 
-export default (options: ParserOptions, meta: any, state: TokenizeState) : boolean => {
+export default async (options: ParserOptions, meta: any, state: TokenizeState) : Promise<boolean> => {
 
-    let { tokens, cursor } = state;
+    let { tokens, cursor, meta: stateMeta } = state;
+
+    let isCondition = stateMeta.isConditional || false;
 
     if (tokens[cursor]?.value !== '[') {
         return false;
@@ -22,7 +25,7 @@ export default (options: ParserOptions, meta: any, state: TokenizeState) : boole
         tokens[cursor].value != ']'
     ) {
 
-        while (tokens[cursor].value === ' ') {
+        while (/^\s$/.test(tokens[cursor].value)) {
             cursor += 1;
         }
 
@@ -45,8 +48,10 @@ export default (options: ParserOptions, meta: any, state: TokenizeState) : boole
             cursor
         };
 
-        if (tokenizeArgument(options, meta, mockState)) {
-
+        if (
+            (isCondition && await tokenizeCondition(options, meta, mockState)) ||
+            (!isCondition && await tokenizeArgument(options, meta, mockState))
+        ) {
             if (mockState.output) {
                 args.push(<Token>mockState.output);
 
@@ -63,6 +68,8 @@ export default (options: ParserOptions, meta: any, state: TokenizeState) : boole
             // TODO - custom error - SyntaxError: Illegal character
             throw new Error('TODO - SyntaxError: Illegal character');
         }
+
+        isCondition = false;
     }
 
     if (cursor >= tokens.length) {

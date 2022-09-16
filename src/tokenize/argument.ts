@@ -13,16 +13,11 @@ import tokenizeTextSpecial from './text-special';
 import tokenizeFunctionIf from './function-if';
 import tokenizeFunction from './function';
 
-export default (
-    options: ParserOptions,
-    meta: any,
-    state: TokenizeState
-) : boolean => {
+export default async (options: ParserOptions, meta: any, state: TokenizeState) : Promise<boolean> => {
 
     let { tokens, cursor } = state;
 
     const position = tokens[cursor]?.position;
-
 
     let whitespaceStart = 0,
         whitespace = '';
@@ -40,12 +35,12 @@ export default (
         };
 
         if (
-            tokenizeTextEscapeSingle(mockState, ['"', '$', '\\', ',', ']',]) ||
-            tokenizeTextEscapeBlock(options, meta, mockState) ||
-            tokenizeTextQuoted(options, meta, mockState) ||
-            tokenizeTextSpecial(options, mockState) ||
-            tokenizeFunctionIf(options, meta, mockState) ||
-            tokenizeFunction(options, meta, mockState)
+            await tokenizeTextEscapeSingle(mockState, ['"', '$', '\\', ',', ']',]) ||
+            await tokenizeTextEscapeBlock(options, meta, mockState) ||
+            await tokenizeTextQuoted(options, meta, mockState) ||
+            await tokenizeTextSpecial(options, mockState) ||
+            await tokenizeFunctionIf(options, meta, mockState) ||
+            await tokenizeFunction(options, meta, mockState)
         ) {
             if (mockState.output) {
                 let output : Token = <Token>mockState.output;
@@ -136,7 +131,6 @@ export default (
         // TODO - custom error - Syntax Error: Illegal character
         throw new Error('TODO - SyntaxError: Illegal character');
     }
-
 
     state.tokens = tokens;
     state.cursor = cursor;

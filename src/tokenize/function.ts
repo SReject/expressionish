@@ -10,11 +10,7 @@ import type { TokenizeState } from './tokenize';
 
 const nameCheck = /^([a-z][a-z\d]{2,})$/i;
 
-export default (
-    options: ParserOptions,
-    meta: any,
-    state: TokenizeState
-) : boolean => {
+export default async (options: ParserOptions, meta: any, state: TokenizeState) : Promise<boolean> => {
 
     let { tokens, cursor } = state;
 
@@ -48,7 +44,11 @@ export default (
     }
 
     const lookupHandler = options.functionalHandlers[prefix];
-    if (!lookupHandler?.(varName)) {
+    if (lookupHandler == null) {
+        return false;
+    }
+    const handler = await lookupHandler(varName);
+    if (!handler) {
         return false;
     }
 
@@ -57,7 +57,7 @@ export default (
         cursor
     }
 
-    tokenizeArgumentList(options, meta, mockState);
+    await tokenizeArgumentList(options, meta, mockState);
 
     state.tokens = mockState.tokens;
     state.output = new FunctionalToken({

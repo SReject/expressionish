@@ -10,11 +10,7 @@ import tokenizeFunction from './function';
 
 import type { TokenizeState } from './tokenize';
 
-export default (
-    options: ParserOptions,
-    meta: any,
-    state: TokenizeState,
-) : boolean => {
+export default async (options: ParserOptions, meta: any, state: TokenizeState) : Promise<boolean> => {
     let { tokens, cursor } = state;
 
     if (tokens[cursor]?.value !== '``') {
@@ -39,8 +35,8 @@ export default (
         };
 
         if (
-            tokenizeFunctionIf(options, meta, mockState) ||
-            tokenizeFunction(options, meta, mockState)
+            await tokenizeFunctionIf(options, meta, mockState) ||
+            await tokenizeFunction(options, meta, mockState)
         ) {
             if (mockState.output) {
                 escTokens.push(<Token>mockState.output);

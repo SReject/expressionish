@@ -18,10 +18,11 @@ import tokenizeFunction from './function';
 export interface TokenizeState {
     tokens: IPreToken[];
     cursor: number;
+    meta?: Record<string, any>;
     output?: Token | Token[];
 }
 
-export default (subject: string, options: ParserOptions, meta: any = {}) : TokenList => {
+export default async (subject: string, options: ParserOptions, meta: any = {}) : Promise<TokenList> => {
 
     let tokens = getPotentialTokens(options, subject);
 
@@ -41,12 +42,12 @@ export default (subject: string, options: ParserOptions, meta: any = {}) : Token
         };
 
         if (
-            tokenizeTextEscapeSingle(mockState) ||
-            tokenizeTextEscapeBlock(options, meta, mockState) ||
-            tokenizeTextQuoted(options, meta, mockState) ||
-            tokenizeTextSpecial(options, mockState) ||
-            tokenizeFunctionIf(options, meta, mockState) ||
-            tokenizeFunction(options, meta, mockState)
+            await tokenizeTextEscapeSingle(mockState) ||
+            await tokenizeTextEscapeBlock(options, meta, mockState) ||
+            await tokenizeTextQuoted(options, meta, mockState) ||
+            await tokenizeTextSpecial(options, mockState) ||
+            await tokenizeFunctionIf(options, meta, mockState) ||
+            await tokenizeFunction(options, meta, mockState)
         ) {
             let lastToken : Token = <Token>result[result.length - 1];
             if (

@@ -6,10 +6,7 @@ import TextToken from '../tokens/token-text';
 
 import type { TokenizeState } from './tokenize';
 
-export default (
-    options: ParserOptions,
-    state: TokenizeState
-) : boolean => {
+export default async (options: ParserOptions, state: TokenizeState) : Promise<boolean> => {
     if (!options.specialSequences) {
         return false;
     }
@@ -18,7 +15,7 @@ export default (
         'n': '\n',
         'r': '\r',
         't': '\t'
-    }
+    };
 
     let { tokens, cursor } = state;
     if (

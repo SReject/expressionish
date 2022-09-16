@@ -12,11 +12,11 @@ import tokenizeFunction from './function';
 
 import type { TokenizeState } from './tokenize';
 
-export default (
+export default async (
     options: ParserOptions,
     meta: any,
     state: TokenizeState
-) : boolean => {
+) : Promise<boolean> => {
     let { tokens, cursor } = state;
 
     if (tokens[cursor]?.value !== '"') {
@@ -45,10 +45,10 @@ export default (
             cursor
         };
         if (
-            tokenizeEscapeSingle(mockState, ['\\', '"']) ||
-            tokenizeTextSpecial(options, mockState)  ||
-            tokenizeFunctionIf(options, meta, mockState) ||
-            tokenizeFunction(options, meta, mockState)
+            await tokenizeEscapeSingle(mockState, ['\\', '"']) ||
+            await tokenizeTextSpecial(options, mockState)  ||
+            await tokenizeFunctionIf(options, meta, mockState) ||
+            await tokenizeFunction(options, meta, mockState)
         ) {
 
             if (mockState.output != null) {
