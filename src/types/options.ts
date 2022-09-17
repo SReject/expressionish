@@ -1,15 +1,22 @@
-interface Handler {
-    argsCheck?: (meta: any, ...args: any[]) => any;
-    evaluator: (meta: any, ...args: any[]) => any;
+export interface IFunctionHandler {
+    stackCheck?: (stack: string[]) => Promise<boolean>;
+    argsCheck?: (meta: any, ...args: any[]) => Promise<boolean>;
+    evaluator: (meta: any, ...args: any[]) => Promise<any>;
 }
 
-type LookupHandler = (name: string, meta?: any) => Handler | Promise<Handler>;
+export type IFunctionLookup = (
+    name: string,
+    stack?: string[],
+    meta?: any
+) => IFunctionHandler;
 
 export default interface ParserOptions {
-    functionalHandlers: Record<string, LookupHandler>;
-    verifyOnly?: boolean;
-    skipArgumentsCheck?: boolean;
+    functionHandlers?: Record<string, IFunctionHandler>;
+    functionLookups?: Record<string, IFunctionLookup>;
 
     eol?: 'error' | 'remove' | 'space' | 'keep';
     specialSequences?: boolean;
+
+    verifyOnly?: boolean;
+    skipArgumentsCheck?: boolean;
 };

@@ -5,14 +5,14 @@ import Token from '../tokens/token';
 import IfToken from '../tokens/token-function-if';
 import type OperatorToken from '../tokens/token-operator';
 
-import { type TokenizeState } from './tokenize';
+import type ITokenizeState from '../types/tokenize-state';
 import tokenizeArgumentList from './argument-list';
 
 import { ExpressionSyntaxError } from '../errors';
 
-export default async (options: ParserOptions, meta: any, state: TokenizeState) : Promise<boolean> => {
+export default async (state: ITokenizeState) : Promise<boolean> => {
 
-    let { tokens, cursor, stack } = state;
+    let { tokens, cursor, stack, options } = state;
 
     if (
         tokens[cursor]?.value !== '$' ||
@@ -25,13 +25,13 @@ export default async (options: ParserOptions, meta: any, state: TokenizeState) :
     const position = tokens[cursor].position;
     cursor += 2;
 
-    const mockState : TokenizeState = {
+    const mockState : ITokenizeState = {
+        options: { ...options },
         tokens,
         cursor,
-        stack: [...stack, '$if'],
-        meta: { isConditional: true }
+        stack: [...stack, '$if']
     }
-    await tokenizeArgumentList(options, meta, mockState);
+    await tokenizeArgumentList(mockState, true);
 
     const args = <Token[]>mockState.output;
 

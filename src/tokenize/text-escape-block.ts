@@ -1,4 +1,3 @@
-import type ParserOptions from '../types/options';
 import TokenType from '../types/token-types';
 
 import type Token from '../tokens/token';
@@ -8,10 +7,10 @@ import TextToken from '../tokens/token-text';
 import tokenizeFunctionIf from './function-if';
 import tokenizeFunction from './function';
 
-import type { TokenizeState } from './tokenize';
+import type ITokenizeState from '../types/tokenize-state';
 import { ExpressionSyntaxError } from '../errors';
 
-export default async (options: ParserOptions, meta: any, state: TokenizeState) : Promise<boolean> => {
+export default async (state: ITokenizeState) : Promise<boolean> => {
     let { tokens, cursor, stack } = state;
 
     if (tokens[cursor]?.value !== '``') {
@@ -29,15 +28,16 @@ export default async (options: ParserOptions, meta: any, state: TokenizeState) :
     const escTokens : Token[] = [];
     while (cursor < tokens.length && tokens[cursor].value !== '``') {
 
-        const mockState : TokenizeState = {
+        const mockState : ITokenizeState = {
+            options: { ...(state.options) },
             tokens,
             cursor,
-            stack: [...stack, 'text-escape-block']
+            stack: [ ...stack, 'text-escape-block' ]
         };
 
         if (
-            await tokenizeFunctionIf(options, meta, mockState) ||
-            await tokenizeFunction(options, meta, mockState)
+            await tokenizeFunctionIf(mockState) ||
+            await tokenizeFunction(mockState)
         ) {
             if (mockState.output) {
                 escTokens.push(<Token>mockState.output);

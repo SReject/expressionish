@@ -1,5 +1,5 @@
 import TokenType from '../types/token-types';
-import ParserOptions from '../types/options';
+import ParserOptions, { IFunctionHandler, IFunctionLookup } from '../types/options';
 import Token from './token';
 
 export interface IFunctionalToken {
@@ -7,11 +7,13 @@ export interface IFunctionalToken {
     prefix: string;
     value: string;
     arguments: Token[];
+    lookupFn: IFunctionLookup;
 }
 
 export default class FunctionalToken extends Token {
     public prefix: string;
     public arguments: Token[];
+    public lookupFn : IFunctionLookup;
 
     constructor(token: IFunctionalToken) {
         super({
@@ -20,17 +22,11 @@ export default class FunctionalToken extends Token {
         });
         this.prefix = token.prefix;
         this.arguments = token.arguments;
+        this.lookupFn = token.lookupFn;
     }
 
     async evaluate(options: ParserOptions, meta: any = {}) : Promise<any> {
-        const lookupHandler = options.functionalHandlers[this.prefix];
-
-        if (lookupHandler == null) {
-            // TODO: custom errors
-            throw new Error(`TODO - no lookup handler for ${this.prefix}`);
-        }
-        const handler = lookupHandler(this.value, meta);
-
+        const handler = this.lookupFn(this.value);
         if (handler == null) {
             // TODO: custom errors
             throw new Error(`TODO - No handler for ${this.prefix}${this.value}`);

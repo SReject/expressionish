@@ -1,11 +1,10 @@
-import type ParserOptions from '../types/options';
 import TokenType from '../types/token-types';
+import type ITokenizeState from '../types/tokenize-state';
 
 import type Token from '../tokens/token';
 import TokenList from '../tokens/token-list';
 import TextToken from '../tokens/token-text';
 
-import type { TokenizeState } from './tokenize';
 import tokenizeTextEscapeSingle from './text-escape-single';
 import tokenizeTextEscapeBlock from './text-escape-block';
 import tokenizeTextQuoted from './text-quoted';
@@ -15,9 +14,9 @@ import tokenizeFunction from './function';
 
 import { ExpressionSyntaxError } from '../errors';
 
-export default async (options: ParserOptions, meta: any, state: TokenizeState) : Promise<boolean> => {
+export default async (state: ITokenizeState) : Promise<boolean> => {
 
-    let { tokens, cursor, stack } = state;
+    let { tokens, cursor, stack, options } = state;
 
     const position = tokens[cursor]?.position;
 
@@ -31,7 +30,8 @@ export default async (options: ParserOptions, meta: any, state: TokenizeState) :
     ) {
         const lastToken : Token | void = result[result.length - 1];
 
-        const mockState : TokenizeState = {
+        const mockState : ITokenizeState = {
+            options: { ...options },
             tokens,
             cursor,
             stack: [...stack]
@@ -39,11 +39,11 @@ export default async (options: ParserOptions, meta: any, state: TokenizeState) :
 
         if (
             await tokenizeTextEscapeSingle(mockState, ['"', '$', '\\', ',', ']',]) ||
-            await tokenizeTextEscapeBlock(options, meta, mockState) ||
-            await tokenizeTextQuoted(options, meta, mockState) ||
-            await tokenizeTextSpecial(options, mockState) ||
-            await tokenizeFunctionIf(options, meta, mockState) ||
-            await tokenizeFunction(options, meta, mockState)
+            await tokenizeTextEscapeBlock(mockState) ||
+            await tokenizeTextQuoted(mockState) ||
+            await tokenizeTextSpecial(mockState) ||
+            await tokenizeFunctionIf(mockState) ||
+            await tokenizeFunction(mockState)
         ) {
             if (mockState.output) {
                 let output : Token = <Token>mockState.output;

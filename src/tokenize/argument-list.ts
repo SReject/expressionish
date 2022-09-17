@@ -1,19 +1,16 @@
-import type ParserOptions from '../types/options';
 import TokenType from '../types/token-types';
+import type ITokenizeState from '../types/tokenize-state';
 
 import Token from '../tokens/token';
 
-import type { TokenizeState } from "./tokenize";
 import tokenizeArgument from './argument';
 import tokenizeCondition from './condition';
 
 import { ExpressionSyntaxError } from '../errors';
 
-export default async (options: ParserOptions, meta: any, state: TokenizeState) : Promise<boolean> => {
+export default async (state: ITokenizeState, isCondition: boolean = false) : Promise<boolean> => {
 
-    let { tokens, cursor, stack, meta: stateMeta } = state;
-
-    let isCondition = stateMeta.isConditional || false;
+    let { tokens, cursor, stack, options } = state;
 
     if (tokens[cursor]?.value !== '[') {
         return false;
@@ -45,15 +42,16 @@ export default async (options: ParserOptions, meta: any, state: TokenizeState) :
             continue;
         }
 
-        const mockState : TokenizeState = {
+        const mockState : ITokenizeState = {
+            options: { ...options },
             tokens,
             cursor,
             stack: [...stack, args.length]
         };
 
         if (
-            (isCondition && await tokenizeCondition(options, meta, mockState)) ||
-            (!isCondition && await tokenizeArgument(options, meta, mockState))
+            (isCondition && await tokenizeCondition(mockState)) ||
+            (!isCondition && await tokenizeArgument(mockState))
         ) {
             if (mockState.output) {
                 args.push(<Token>mockState.output);

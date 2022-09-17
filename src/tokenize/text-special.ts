@@ -1,13 +1,10 @@
-import type ParserOptions from '../types/options';
-
 import has from '../helpers/has';
+import type ITokenizeState from '../types/tokenize-state';
 
 import TextToken from '../tokens/token-text';
 
-import type { TokenizeState } from './tokenize';
-
-export default async (options: ParserOptions, state: TokenizeState) : Promise<boolean> => {
-    if (!options.specialSequences) {
+export default async (state: ITokenizeState) : Promise<boolean> => {
+    if (!state.options.specialSequences) {
         return false;
     }
 

@@ -6,6 +6,18 @@ import split from './unicode-safe-split';
 /** Split input string into array of potential tokens */
 export default (options: ParserOptions, subject: string) : IPreToken[] => {
 
+    // remove leading and trailing spaces
+    let startCursor = 0;
+    while (subject.length && subject[startCursor] === ' ') {
+        startCursor += 1;
+    }
+    let endCursor = subject.length - 1;
+    while (subject.length && subject[endCursor] === ' ') {
+        endCursor -= 1;
+    }
+    subject = subject.slice(startCursor, endCursor + 1);
+
+
     const result : IPreToken[] = [];
 
     let textToken : null | {position: number, value: string} = null;

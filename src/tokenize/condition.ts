@@ -1,8 +1,8 @@
-import type ParserOptions from '../types/options';
+import type ITokenizeState from '../types/tokenize-state';
 
-import type { TokenizeState } from "./tokenize";
+export default async (state: ITokenizeState) : Promise<boolean> => {
 
-export default async (options: ParserOptions, meta: any, state: TokenizeState) : Promise<boolean> => {
+    const { options, tokens, cursor, stack } = state;
 
     /*
     // logical operator

@@ -1,8 +1,8 @@
 import TextToken from '../tokens/token-text';
 
-import type { TokenizeState } from './tokenize';
+import type ITokenizeState from '../types/tokenize-state';
 
-export default async (state: TokenizeState, characters?: string[]) : Promise<boolean> => {
+export default async (state: ITokenizeState, characters?: string[]) : Promise<boolean> => {
     let { tokens, cursor } = state;
 
     if (characters == null) {

@@ -1,4 +1,5 @@
 const enum TokenType {
+    EXPRESSION,
     TOKENLIST,
     IFSTATEMENT,
     FUNCTIONAL,
