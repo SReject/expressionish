@@ -30,6 +30,6 @@ export default class Expression extends Token {
             }
             index += 1;
         }
-        return '';
+        return result;
     }
 }

@@ -9,7 +9,7 @@ export interface IComparisonToken extends IOperatorToken {
 }
 
 export default class ComparisonToken extends OperatorToken {
-    protected invert : boolean = false;
+    protected invert  = false;
 
     constructor(token: IComparisonToken) {
         super({
@@ -22,6 +22,7 @@ export default class ComparisonToken extends OperatorToken {
         }
     }
 
+    /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
     async handle(options: ParserOptions, meta?: any) : Promise<boolean> {
         return false;
     }

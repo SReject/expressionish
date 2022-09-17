@@ -4,11 +4,7 @@ export interface IFunctionHandler {
     evaluator: (meta: any, ...args: any[]) => Promise<any>;
 }
 
-export type IFunctionLookup = (
-    name: string,
-    stack?: string[],
-    meta?: any
-) => IFunctionHandler;
+export type IFunctionLookup = (name: string, stack?: string[], meta?: any) => IFunctionHandler;
 
 export default interface ParserOptions {
     functionHandlers?: Record<string, IFunctionHandler>;
@@ -19,4 +15,4 @@ export default interface ParserOptions {
 
     verifyOnly?: boolean;
     skipArgumentsCheck?: boolean;
-};
+}

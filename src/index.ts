@@ -104,7 +104,7 @@ export class Expressionish {
                 await tokenizeFunctionIf(mockState) ||
                 await tokenizeFunction(mockState)
             ) {
-                let lastToken : Token = <Token>result[result.length - 1];
+                const lastToken : Token = <Token>result[result.length - 1];
                 if (
                     lastToken != null &&
                     lastToken.type === TokenType.TEXT &&

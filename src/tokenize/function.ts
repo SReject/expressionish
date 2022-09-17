@@ -11,11 +11,10 @@ import FunctionalToken from '../tokens/token-function';
 
 import tokenizeArgumentList from './argument-list';
 
-const nameCheck = /^([a-z][a-z\d]{2,})$/i;
-
 export default async (state: ITokenizeState) : Promise<boolean> => {
+    const { tokens, stack, options} = state;
+    let cursor = state.cursor;
 
-    let { tokens, cursor, stack, options } = state;
     if (tokens[cursor]?.value !== '$' || tokens[cursor + 1] == null) {
         return false;
     }

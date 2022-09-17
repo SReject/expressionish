@@ -15,7 +15,8 @@ import { ExpressionSyntaxError } from '../errors';
 
 export default async (state: ITokenizeState) : Promise<boolean> => {
 
-    let { tokens, cursor, stack } = state;
+    let { tokens, cursor } = state;
+    const stack = state.stack;
 
     if (tokens[cursor]?.value !== '"') {
         return false;
@@ -35,7 +36,7 @@ export default async (state: ITokenizeState) : Promise<boolean> => {
         tokens[cursor].value !== '"'
     ) {
 
-        let lastToken : Token = quoteTokens[quoteTokens.length - 1];
+        const lastToken : Token = quoteTokens[quoteTokens.length - 1];
 
         const mockState : ITokenizeState = {
             options: {...(state.options)},

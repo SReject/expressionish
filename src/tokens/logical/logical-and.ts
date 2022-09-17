@@ -15,7 +15,7 @@ export default class AndOperator extends LogicalToken {
             throw new Error('TODO');
         }
 
-        let left = await this.left.evaluate(options, meta);
+        const left = await this.left.evaluate(options, meta);
         if (options.verifyOnly) {
             await this.right.evaluate(options, meta);
             return false;

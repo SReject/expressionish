@@ -3,13 +3,13 @@ import split from '../../helpers/unicode-safe-split';
 import toText from '../../helpers/to-text';
 import ComparisonToken, { IComparisonToken } from './base';
 
-const toRegExp = (subject: string, caseSensitive: boolean = false) : RegExp => {
-    let wc = split(subject);
+const toRegExp = (subject: string, caseSensitive = false) : RegExp => {
+    const wc = split(subject);
     let pattern = '';
     let anchorStart = true;
     let anchorEnd = true;
     let idx = 0;
-    let len = wc.length;
+    const len = wc.length;
     while (idx < len) {
 
         const atStart = idx === 0;

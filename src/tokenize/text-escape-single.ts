@@ -3,7 +3,7 @@ import TextToken from '../tokens/token-text';
 import type ITokenizeState from '../types/tokenize-state';
 
 export default async (state: ITokenizeState, characters?: string[]) : Promise<boolean> => {
-    let { tokens, cursor } = state;
+    const { tokens, cursor } = state;
 
     if (characters == null) {
         characters = ['\\', '$', '"', '`']

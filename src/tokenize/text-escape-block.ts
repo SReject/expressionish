@@ -11,7 +11,8 @@ import type ITokenizeState from '../types/tokenize-state';
 import { ExpressionSyntaxError } from '../errors';
 
 export default async (state: ITokenizeState) : Promise<boolean> => {
-    let { tokens, cursor, stack } = state;
+    let { tokens, cursor } = state;
+    const stack = state.stack;
 
     if (tokens[cursor]?.value !== '``') {
         return false;

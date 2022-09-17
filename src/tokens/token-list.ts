@@ -25,7 +25,7 @@ export default class TokenList extends Token {
 
         let res : any;
         for (let idx = 0; idx < parts.length; idx += 1) {
-            let value = await parts[idx].evaluate(options, meta);
+            const value = await parts[idx].evaluate(options, meta);
 
             if (options.verifyOnly) {
                 continue;
@@ -40,13 +40,13 @@ export default class TokenList extends Token {
                 continue;
             }
 
-            let strValue = toText(value);
+            const strValue = toText(value);
             if (strValue == null) {
                 continue;
             }
 
             if (typeof res !== 'string') {
-                let strRes = toText(res);
+                const strRes = toText(res);
                 if (strRes == null) {
                     res = strValue;
 

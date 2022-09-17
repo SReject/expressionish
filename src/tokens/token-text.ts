@@ -1,5 +1,5 @@
 import TokenType from '../types/token-types';
-import Token, { type IToken } from './token';
+import Token from './token';
 
 export interface ITextToken {
     position: number;

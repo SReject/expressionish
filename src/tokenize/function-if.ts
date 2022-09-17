@@ -1,4 +1,3 @@
-import ParserOptions from '../types/options';
 import TokenType from '../types/token-types';
 
 import Token from '../tokens/token';
@@ -11,8 +10,8 @@ import tokenizeArgumentList from './argument-list';
 import { ExpressionSyntaxError } from '../errors';
 
 export default async (state: ITokenizeState) : Promise<boolean> => {
-
-    let { tokens, cursor, stack, options } = state;
+    const { tokens, stack, options } = state;
+    let cursor = state.cursor;
 
     if (
         tokens[cursor]?.value !== '$' ||

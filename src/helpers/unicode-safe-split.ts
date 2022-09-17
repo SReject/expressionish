@@ -91,7 +91,7 @@ export default (
         }
         const char = subject.substring(idx, idx + inc);
         if (callback) {
-            let cbres = callback(subject, char, idx);
+            const cbres = callback(subject, char, idx);
             if (cbres != null) {
                 inc += <number>cbres;
             }

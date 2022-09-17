@@ -9,6 +9,6 @@ const enum TokenType {
     COMPARISON,
     EMPTY,
     UNKNOWN
-};
+}
 
 export default TokenType;

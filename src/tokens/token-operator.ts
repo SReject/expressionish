@@ -19,13 +19,14 @@ export default class OperatorToken extends Token {
         this.right = token.right;
     }
 
+    /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
     async evaluate(options: ParserOptions, meta?: any) : Promise<boolean> {
         return false;
     }
 
     toToken() : object {
 
-        let result : Record<string, object> = {
+        const result : Record<string, object> = {
             ...(super.toToken()),
             left: this.left.toToken()
         }

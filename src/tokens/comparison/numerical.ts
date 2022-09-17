@@ -30,7 +30,7 @@ export default class LessThanToken extends ComparisonToken {
             return true;
         }
 
-        let v2 = await this.right.evaluate(options, meta);
+        const v2 = await this.right.evaluate(options, meta);
         if (v2 == null || v2 === '') {
             return true;
         }

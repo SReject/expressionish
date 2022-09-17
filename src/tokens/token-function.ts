@@ -1,5 +1,5 @@
 import TokenType from '../types/token-types';
-import ParserOptions, { IFunctionHandler, IFunctionLookup } from '../types/options';
+import ParserOptions, { type IFunctionLookup } from '../types/options';
 import Token from './token';
 
 export interface IFunctionalToken {
@@ -32,7 +32,7 @@ export default class FunctionalToken extends Token {
             throw new Error(`TODO - No handler for ${this.prefix}${this.value}`);
         }
 
-        let args : any[] = [];
+        const args : any[] = [];
         if (this.arguments != null) {
             const argList = this.arguments;
             for (let idx = 0; idx < argList.length; idx += 1) {
@@ -50,18 +50,12 @@ export default class FunctionalToken extends Token {
                 await handler.argsCheck(meta, args);
             } catch (err) {
                 // TODO - Custom errors
-                throw err;
+                throw new Error(`TODO - ArgumentsError: ${err.message}`);
             }
         }
 
-        try {
-            const res = handler.evaluator(meta, ...args);
-            return res;
-
-        } catch (err) {
-            // TODO: custom errors
-            throw err;
-        }
+        const res = handler.evaluator(meta, ...args);
+        return res;
     }
 
     toToken() : object {

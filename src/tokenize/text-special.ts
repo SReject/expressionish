@@ -14,7 +14,7 @@ export default async (state: ITokenizeState) : Promise<boolean> => {
         't': '\t'
     };
 
-    let { tokens, cursor } = state;
+    const { tokens, cursor } = state;
     if (
         tokens[cursor]?.value !== '\\' ||
         tokens[cursor + 1] == null ||

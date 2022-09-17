@@ -15,8 +15,8 @@ import tokenizeFunction from './function';
 import { ExpressionSyntaxError } from '../errors';
 
 export default async (state: ITokenizeState) : Promise<boolean> => {
-
-    let { tokens, cursor, stack, options } = state;
+    const { stack, options } = state;
+    let { tokens, cursor } = state;
 
     const position = tokens[cursor]?.position;
 
@@ -46,7 +46,7 @@ export default async (state: ITokenizeState) : Promise<boolean> => {
             await tokenizeFunction(mockState)
         ) {
             if (mockState.output) {
-                let output : Token = <Token>mockState.output;
+                const output : Token = <Token>mockState.output;
 
                 if (lastToken == null) {
                     result.push(output);
@@ -91,7 +91,7 @@ export default async (state: ITokenizeState) : Promise<boolean> => {
             continue;
         }
 
-        let value = tokens[cursor].value;
+        const value = tokens[cursor].value;
         if (value === ' ' || value === '\t' || value === '\n' || value === '\r' ) {
             if (whitespaceStart === 0) {
                 whitespaceStart = cursor;

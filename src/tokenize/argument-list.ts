@@ -8,16 +8,16 @@ import tokenizeCondition from './condition';
 
 import { ExpressionSyntaxError } from '../errors';
 
-export default async (state: ITokenizeState, isCondition: boolean = false) : Promise<boolean> => {
-
-    let { tokens, cursor, stack, options } = state;
+export default async (state: ITokenizeState, isCondition = false) : Promise<boolean> => {
+    const { stack, options } = state;
+    let { tokens, cursor } = state;
 
     if (tokens[cursor]?.value !== '[') {
         return false;
     }
     cursor += 1;
 
-    let args : Token[] = [];
+    const args : Token[] = [];
 
     while (
         cursor < tokens.length &&
@@ -77,7 +77,7 @@ export default async (state: ITokenizeState, isCondition: boolean = false) : Pro
     }
 
     if (tokens[cursor].value !== ']') {
-        throw new ExpressionSyntaxError('illegal character; expected \]', tokens[cursor].position);
+        throw new ExpressionSyntaxError('illegal character; expected ]', tokens[cursor].position);
     }
 
     state.tokens = tokens;

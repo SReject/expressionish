@@ -18,6 +18,7 @@ export default class Token  {
         this.value = token.value;
     }
 
+    /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
     async evaluate(options: any, meta?: any) : Promise<any> {
         return this.value == null ? '' : this.value;
     }
