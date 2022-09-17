@@ -1,16 +1,18 @@
+import type ParserOptions from '../types/options';
+
 import TokenType from '../types/token-types';
 
 export interface IToken {
     type: TokenType;
     position: number;
-    value?: any;
+    value?: unknown;
 }
 
 export default class Token  {
 
     public type: TokenType;
     public position : number;
-    public value : any;
+    public value : unknown;
 
     constructor(token: IToken) {
         this.type = token.type == null ? TokenType.UNKNOWN : token.type;
@@ -19,7 +21,7 @@ export default class Token  {
     }
 
     /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
-    async evaluate(options: any, meta?: any) : Promise<any> {
+    async evaluate(options: ParserOptions, meta: unknown) : Promise<unknown> {
         return this.value == null ? '' : this.value;
     }
 

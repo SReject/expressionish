@@ -25,14 +25,14 @@ export default class FunctionalToken extends Token {
         this.lookupFn = token.lookupFn;
     }
 
-    async evaluate(options: ParserOptions, meta: any = {}) : Promise<any> {
-        const handler = this.lookupFn(this.value);
+    async evaluate(options: ParserOptions, meta: unknown) : Promise<unknown> {
+        const handler = this.lookupFn(<string>this.value);
         if (handler == null) {
             // TODO: custom errors
             throw new Error(`TODO - No handler for ${this.prefix}${this.value}`);
         }
 
-        const args : any[] = [];
+        const args : unknown[] = [];
         if (this.arguments != null) {
             const argList = this.arguments;
             for (let idx = 0; idx < argList.length; idx += 1) {

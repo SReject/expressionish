@@ -20,7 +20,7 @@ export default class OperatorToken extends Token {
     }
 
     /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
-    async evaluate(options: ParserOptions, meta?: any) : Promise<boolean> {
+    async evaluate(options: ParserOptions, meta: unknown) : Promise<boolean> {
         return false;
     }
 

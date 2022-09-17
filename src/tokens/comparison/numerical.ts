@@ -12,7 +12,7 @@ export default class LessThanToken extends ComparisonToken {
         });
     }
 
-    async handle(options: ParserOptions, meta?: any): Promise<boolean> {
+    async handle(options: ParserOptions, meta: unknown): Promise<boolean> {
         let v1 = await this.left.evaluate(options, meta);
 
         if (options.verifyOnly) {

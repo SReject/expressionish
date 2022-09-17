@@ -27,7 +27,7 @@ export default class IfStatementToken extends Token {
         this.whenFalse = token.whenFalse;
     }
 
-    async evaluate(options: ParserOptions, meta?: any) : Promise<any> {
+    async evaluate(options: ParserOptions, meta: unknown) : Promise<unknown> {
         const res = await this.condition.evaluate(options, meta);
 
         if (options.verifyOnly) {
@@ -48,12 +48,11 @@ export default class IfStatementToken extends Token {
     }
 
     toToken() : object {
-        const whenFalse : any = this.whenFalse;
         return {
             ...(super.toToken()),
             condition: this.condition.toToken(),
             whenTrue: this.whenTrue.toToken(),
-            whenFalse
+            whenFalse: this.whenFalse?.toToken()
         }
     }
 }

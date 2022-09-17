@@ -9,7 +9,7 @@ export default class ExistsToken extends ComparisonToken {
         });
     }
 
-    async handle(options: ParserOptions, meta?: any): Promise<boolean> {
+    async handle(options: ParserOptions, meta: unknown): Promise<boolean> {
         const v1 = await this.left.evaluate(options, meta);
 
         if (options.verifyOnly) {

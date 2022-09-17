@@ -3,7 +3,7 @@ import TokenType from '../../types/token-types';
 import { default as OperatorToken, IOperatorToken} from '../token-operator';
 
 export interface ILogicalToken extends IOperatorToken {
-    value: any;
+    value: unknown;
 }
 
 export default class LogicalToken extends OperatorToken {

@@ -20,11 +20,12 @@ export default class Expression extends Token {
         this.options = token.options;
     }
 
-    async evaluate(meta: any = {}) : Promise<string> {
+    async evaluate(meta: unknown = {}) : Promise<string> {
         let index = 0;
         let result = '';
-        while (index < this.value.length) {
-            const value = await this.value[index].evaluate(this.options, meta);
+        while (index < (<Token[]>this.value).length) {
+
+            const value = await (<Token[]>this.value)[index].evaluate(this.options, meta);
             if (value != null) {
                 result += JSON.stringify(value);
             }

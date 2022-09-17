@@ -106,64 +106,69 @@ export default class WildcardToken extends ComparisonToken {
         this.caseSensitive = token.caseSensitive;
     }
 
-    async handle(options: ParserOptions, meta?: any): Promise<boolean> {
+    async handle(options: ParserOptions, meta: unknown): Promise<boolean> {
         if (this.right == null) {
             // TODO - custom error
             throw new Error('TODO - Evaluation Error: Right hand argument missing');
         }
 
-        let v1 = await this.left.evaluate(options, meta);
+        const v1 = await this.left.evaluate(options, meta);
 
         if (options.verifyOnly) {
             await this.right.evaluate(options, meta);
             return false;
         }
 
-        v1 = toText(v1);
-        if (v1 == null) {
+        const v1Text = toText(v1);
+        if (v1Text == null) {
             return false;
         }
 
-        let v2 = await this.right.evaluate(options, meta);
-        v2 = toText(v2);
-        if (v2 == null) {
+        const v2 = await this.right.evaluate(options, meta);
+        const v2Text = toText(v2);
+        if (v2Text == null) {
             return false;
         }
 
-        v2 = toRegExp(v2);
-        if (v2 == null) {
+        const v2RegExp = toRegExp(v2Text);
+        if (v2RegExp == null) {
             return false;
         }
 
-        return v2.test(v1);
+        return v2RegExp.test(v1Text);
     }
 
-    async handleInverse(options: ParserOptions, meta?: any): Promise<boolean> {
+    async handleInverse(options: ParserOptions, meta: unknown): Promise<boolean> {
 
         if (this.right == null) {
             // TODO - custom error
             throw new Error('TODO - Evaluation Error: Right hand argument missing');
         }
 
-        let v1 = await this.left.evaluate(options, meta);
+        const v1 = await this.left.evaluate(options, meta);
 
         if (options.verifyOnly) {
             await this.right.evaluate(options, meta);
             return false;
         }
 
-        v1 = toText(v1);
-        if (v1 == null) {
+        const v1Text = toText(v1);
+        if (v1Text == null) {
             return false;
         }
 
-        let v2 = await this.right.evaluate(options, meta);
-        v2 = toRegExp(v2);
-        if (v2 == null) {
+        const v2 = await this.right.evaluate(options, meta);
+        const v2Text = toText(v2);
+        if (v2Text == null) {
             return false;
         }
 
-        return !v2.test(v1);
+        const v2RegExp = toRegExp(v2Text);
+        if (v2RegExp == null) {
+            return false;
+        }
+
+        return !v2RegExp.test(v1Text);
     }
 
     toToken() : object {

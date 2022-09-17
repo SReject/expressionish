@@ -5,7 +5,7 @@ import OperatorToken, { IOperatorToken } from '../token-operator';
 
 export interface IComparisonToken extends IOperatorToken {
     invert?: boolean;
-    value: any;
+    value: unknown;
 }
 
 export default class ComparisonToken extends OperatorToken {
@@ -23,16 +23,16 @@ export default class ComparisonToken extends OperatorToken {
     }
 
     /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
-    async handle(options: ParserOptions, meta?: any) : Promise<boolean> {
+    async handle(options: ParserOptions, meta: unknown) : Promise<boolean> {
         return false;
     }
 
-    async handleInverse(options: ParserOptions, meta?: any) : Promise<boolean> {
+    async handleInverse(options: ParserOptions, meta: unknown) : Promise<boolean> {
         const result = await this.handle(options, meta);
         return !result;
     }
 
-    async evaluate(options: ParserOptions, meta?: any) : Promise<boolean> {
+    async evaluate(options: ParserOptions, meta: unknown) : Promise<boolean> {
         if (this.invert) {
             return this.handleInverse(options, meta);
         }

@@ -111,7 +111,7 @@ export class Expressionish {
                     mockState.output &&
                     (<Token>mockState.output).type === TokenType.TEXT
                 ) {
-                    lastToken.value += (<Token>mockState.output).value;
+                    (<string>lastToken.value) += (<Token>mockState.output).value;
 
                 } else {
                     result.push(<Token>mockState.output);
@@ -149,7 +149,7 @@ export class Expressionish {
         return parser.tokenize(subject);
     }
 
-    static async evaluate(subject: string, meta: any = {}, options?: ParserOptions) : Promise<string> {
+    static async evaluate(subject: string, meta: unknown = {}, options?: ParserOptions) : Promise<string> {
         const tokens = await Expressionish.tokenize(subject, options);
         return tokens.evaluate(meta);
     }

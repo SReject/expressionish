@@ -1,10 +1,10 @@
 export interface IFunctionHandler {
     stackCheck?: (stack: string[]) => Promise<boolean>;
-    argsCheck?: (meta: any, ...args: any[]) => Promise<boolean>;
-    evaluator: (meta: any, ...args: any[]) => Promise<any>;
+    argsCheck?: (meta: unknown, ...args: unknown[]) => Promise<boolean>;
+    evaluator: (meta: unknown, ...args: unknown[]) => Promise<unknown>;
 }
 
-export type IFunctionLookup = (name: string, stack?: string[], meta?: any) => IFunctionHandler;
+export type IFunctionLookup = (name: string, stack?: string[], meta?: unknown) => IFunctionHandler;
 
 export default interface ParserOptions {
     functionHandlers?: Record<string, IFunctionHandler>;

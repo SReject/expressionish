@@ -9,7 +9,7 @@ export default class OrOperator extends LogicalToken {
         });
     }
 
-    async evaluate(options: ParserOptions, meta?: any): Promise<boolean> {
+    async evaluate(options: ParserOptions, meta: unknown): Promise<boolean> {
         if (this.right == null) {
             // TODO - custom errors
             throw new Error('TODO');

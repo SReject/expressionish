@@ -10,7 +10,7 @@ export default class LessThanToken extends ComparisonToken {
         });
     }
 
-    async handle(options: ParserOptions, meta?: any): Promise<boolean> {
+    async handle(options: ParserOptions, meta: unknown): Promise<boolean> {
         if (this.right == null) {
             // TODO - custom error
             throw new Error('TODO - Evaluation Error: Right hand argument missing');
@@ -37,10 +37,10 @@ export default class LessThanToken extends ComparisonToken {
             return false;
         }
 
-        const parts = /^\/(.*)\/([a-z]*)$/i.exec(v2);
+        const parts = /^\/(.*)\/([a-z]*)$/i.exec(<string>v2);
         if (parts) {
-            return (new RegExp(parts[1], parts[2])).test(v1);
+            return (new RegExp(parts[1], parts[2])).test(<string>v1);
         }
-        return (new RegExp(v2)).test(v1);
+        return (new RegExp(<string>v2)).test(<string>v1);
     }
 }

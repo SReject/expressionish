@@ -10,7 +10,7 @@ export default class GreaterThanEqualToken extends ComparisonToken {
         });
     }
 
-    async handle(options: ParserOptions, meta?: any): Promise<boolean> {
+    async handle(options: ParserOptions, meta: unknown): Promise<boolean> {
         if (this.right == null) {
             // TODO - custom error
             throw new Error('TODO - Evaluation Error: Right hand argument missing');

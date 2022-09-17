@@ -20,10 +20,10 @@ export default class TokenList extends Token {
         });
     }
 
-    async evaluate(options: ParserOptions, meta?: any): Promise<any> {
+    async evaluate(options: ParserOptions, meta: unknown): Promise<unknown> {
         const parts = this.value;
 
-        let res : any;
+        let res : unknown;
         for (let idx = 0; idx < parts.length; idx += 1) {
             const value = await parts[idx].evaluate(options, meta);
 

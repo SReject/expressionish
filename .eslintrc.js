@@ -15,8 +15,7 @@ module.exports = {
         "sourceType": "module"
     },
     "rules": {
-        "linebreak-style": ["error", "unix"],
-        "@typescript-eslint/no-explicit-any": "off"
+        "linebreak-style": ["error", "unix"]
     },
 
     "ignorePatterns": [

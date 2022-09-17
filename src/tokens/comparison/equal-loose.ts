@@ -11,7 +11,7 @@ export default class EqualLooseToken extends ComparisonToken {
         });
     }
 
-    async handle(options: ParserOptions, meta?: any): Promise<boolean> {
+    async handle(options: ParserOptions, meta: unknown): Promise<boolean> {
 
         if (this.right == null) {
             // TODO - custom error
