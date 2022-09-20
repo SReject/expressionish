@@ -1,7 +1,7 @@
 import type ITokenizeState from '../../types/tokenize-state';
 import { ArgumentQuantifier } from '../../types/manifest-comparison';
 
-import { consume as consumeWS, is as isWS } from '../../helpers/whitespace';
+import { consume as consumeWS } from '../../helpers/whitespace';
 
 import tokenizeOperand, { IOperandState } from './operand';
 import tokenizeComparator, { IComparatorState } from './comparator';

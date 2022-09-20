@@ -59,7 +59,7 @@ export default async (state: ITokenizeState) : Promise<boolean> => {
                     if (lastTokenIsText) {
                         lastToken.value += whitespace;
                         if (mockTokenIsText) {
-                            lastToken.value += output.value;
+                            lastToken.value += <string>output.value;
 
                         } else {
                             result.push(output);

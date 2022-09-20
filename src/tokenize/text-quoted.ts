@@ -57,7 +57,7 @@ export default async (state: ITokenizeState) : Promise<boolean> => {
                     lastToken.type === TokenType.TEXT &&
                     (<Token>mockState.output).type === TokenType.TEXT
                 ) {
-                    lastToken.value += (<Token>mockState.output).value;
+                    lastToken.value += <string>(<Token>mockState.output).value;
                 } else {
                     quoteTokens.push(<Token>mockState.output);
                 }
