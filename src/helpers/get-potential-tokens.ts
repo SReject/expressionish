@@ -3,6 +3,10 @@ import ParserOptions from '../types/options';
 
 import split from './unicode-safe-split';
 
+const isPreLogic = (subject: string, index: number) : boolean => index < 1 ? true : /^\s/.test(subject[index - 1]);
+
+const isPostLogic = (subject: string, index: number) : boolean => index + 2 >= subject.length ? true : /^\s$/.test(subject[index + 2]);
+
 /** Split input string into array of potential tokens */
 export default (options: ParserOptions, subject: string) : IPreToken[] => {
 
@@ -87,8 +91,8 @@ export default (options: ParserOptions, subject: string) : IPreToken[] => {
                 seq === '``' ||
                 (
                     (seq === '&&' || seq === '||') &&
-                    subject[position - 1] === ' ' &&
-                    subject[position + 2] === ' '
+                    isPreLogic(subject, position) &&
+                    isPostLogic(subject, position)
                 )
             ) {
                 if (textToken !== null) {
