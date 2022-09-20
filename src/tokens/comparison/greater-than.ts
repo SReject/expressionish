@@ -1,6 +1,16 @@
-import ParserOptions from '../../types/options';
-import ComparisonToken, { IComparisonToken } from './base';
 import toNumber from '../../helpers/to-number';
+
+import type ParserOptions from '../../types/options';
+import { type default as Manifest, ArgumentQuantifier } from '../../types/manifest-comparison';
+
+import ComparisonToken, { IComparisonToken } from './base';
+
+export const manifest : Manifest = {
+    arguments: ArgumentQuantifier.RIGHTREQUIRED,
+    description: "Checks if the left operand is numerical and greater than the right operand",
+    alias: ['>='],
+    inverse: false
+};
 
 export default class GreaterThanToken extends ComparisonToken {
     constructor(token: IComparisonToken) {

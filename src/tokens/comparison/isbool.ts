@@ -1,9 +1,22 @@
-import ParserOptions from '../../types/options';
+import type ParserOptions from '../../types/options';
+import { type default as Manifest, ArgumentQuantifier } from '../../types/manifest-comparison';
+
 import ComparisonToken, { IComparisonToken } from './base';
 
 export interface IIsToken extends IComparisonToken {
     against: null | boolean;
 }
+
+export const manifest : Manifest = {
+    arguments: ArgumentQuantifier.LEFTONLY,
+    description: "Checks if the left operand is boolean",
+    alias: ['isbool'],
+    inverse: {
+        description: "Checks if the left operand is not a boolean",
+        alias: ['!isbool']
+    }
+};
+
 
 export default class IsToken extends ComparisonToken {
     public against : null | boolean;
@@ -11,7 +24,7 @@ export default class IsToken extends ComparisonToken {
     constructor(token: IIsToken) {
         super({
             ...token,
-            value: 'is'
+            value: 'isbool'
         });
 
         this.against = token.against;

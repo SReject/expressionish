@@ -1,5 +1,17 @@
-import ParserOptions from '../../types/options';
+import type ParserOptions from '../../types/options';
+import { type default as Manifest, ArgumentQuantifier } from '../../types/manifest-comparison';
+
 import ComparisonToken, { IComparisonToken } from './base';
+
+export const manifest : Manifest = {
+    arguments: ArgumentQuantifier.RIGHTREQUIRED,
+    description: "Checks if operands are strictly equal",
+    alias: ['==='],
+    inverse: {
+        description: "Checks if operands are not strictly equal",
+        alias: ['!==']
+    }
+};
 
 export default class EqualStrictToken extends ComparisonToken {
     constructor(token: IComparisonToken) {

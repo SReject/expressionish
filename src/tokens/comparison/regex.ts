@@ -1,6 +1,19 @@
-import ParserOptions from '../../types/options';
-import ComparisonToken, { IComparisonToken } from './base';
 import toText from '../../helpers/to-text';
+
+import type ParserOptions from '../../types/options';
+import { type default as Manifest, ArgumentQuantifier } from '../../types/manifest-comparison';
+
+import ComparisonToken, { IComparisonToken } from './base';
+
+export const manifest : Manifest = {
+    arguments: ArgumentQuantifier.RIGHTREQUIRED,
+    description: "Checks if the left operand is a match of the right operand regex",
+    alias: ['regex'],
+    inverse: {
+        description: "Checks if the left operand is not a match of the right operand regex",
+        alias: ['!regex']
+    }
+};
 
 export default class LessThanToken extends ComparisonToken {
     constructor(token: IComparisonToken) {

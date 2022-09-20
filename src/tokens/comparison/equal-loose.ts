@@ -1,7 +1,21 @@
-import ParserOptions from '../../types/options';
-import ComparisonToken, { IComparisonToken } from './base';
 import toNumber from '../../helpers/to-number';
 import isPrimitive from '../../helpers/is-primitive';
+
+import type ParserOptions from '../../types/options';
+import { type default as Manifest, ArgumentQuantifier } from '../../types/manifest-comparison';
+
+import ComparisonToken, { IComparisonToken } from './base';
+
+
+export const manifest : Manifest = {
+    arguments: ArgumentQuantifier.RIGHTREQUIRED,
+    description: "Checks if operands are loosely equal",
+    alias: ['=='],
+    inverse: {
+        description: "Checks if operands are not loosely equal",
+        alias: ['!=']
+    }
+};
 
 export default class EqualLooseToken extends ComparisonToken {
     constructor(token: IComparisonToken) {

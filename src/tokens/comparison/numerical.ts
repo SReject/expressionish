@@ -1,8 +1,21 @@
-import ParserOptions from '../../types/options';
-import ComparisonToken, { IComparisonToken } from './base';
 import toNumber from '../../helpers/to-number';
 
+import type ParserOptions from '../../types/options';
+import { type default as Manifest, ArgumentQuantifier } from '../../types/manifest-comparison';
+
+import ComparisonToken, { IComparisonToken } from './base';
+
 const isRange = /^((?:[+-]?\d+(?:\.\d+)?)|(?:[+-]?\.\d+))-((?:[+-]?\d+(?:\.\d+)?)|(?:[+-]?\.\d+))$/;
+
+export const manifest : Manifest = {
+    arguments: ArgumentQuantifier.RIGHTOPTIONAL,
+    description: "Checks if the left operand is numerical and if specified within the range of the right operand (inclusive)",
+    alias: ['isnum', 'isnumber'],
+    inverse: {
+        description: "Checks if the left operand is not numerical and if specified not within the range of the right operand (inclusive)",
+        alias: ['!isnum', '!isnumber']
+    }
+};
 
 export default class LessThanToken extends ComparisonToken {
     constructor(token: IComparisonToken) {

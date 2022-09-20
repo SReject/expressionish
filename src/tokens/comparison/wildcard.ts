@@ -1,6 +1,9 @@
-import ParserOptions from '../../types/options';
 import split from '../../helpers/unicode-safe-split';
 import toText from '../../helpers/to-text';
+
+import ParserOptions from '../../types/options';
+import { type default as Manifest, ArgumentQuantifier } from '../../types/manifest-comparison';
+
 import ComparisonToken, { IComparisonToken } from './base';
 
 const toRegExp = (subject: string, caseSensitive = false) : RegExp => {
@@ -95,6 +98,17 @@ interface IWildcardToken extends IComparisonToken {
     caseSensitive: boolean;
 }
 
+export const manifest : Manifest = {
+    arguments: ArgumentQuantifier.RIGHTREQUIRED,
+    description: "Checks if the left operand is a match of the right operand wildcard",
+    alias: ['iswm'],
+    casing: true,
+    inverse: {
+        description: "Checks if the left operand is not a match of the right operand wildcard",
+        alias: ['!iswm']
+    }
+};
+
 export default class WildcardToken extends ComparisonToken {
     readonly caseSensitive: boolean
 
@@ -103,7 +117,6 @@ export default class WildcardToken extends ComparisonToken {
             ...token,
             value: 'wildcard'
         });
-        this.caseSensitive = token.caseSensitive;
     }
 
     async handle(options: ParserOptions, meta: unknown): Promise<boolean> {
