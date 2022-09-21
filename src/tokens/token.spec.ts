@@ -1,7 +1,5 @@
 import '../../jest/helpers';
 
-// import assert from 'assert';
-
 import Token from './token';
 
 describe('Token class', function () {
