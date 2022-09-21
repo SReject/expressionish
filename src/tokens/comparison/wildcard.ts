@@ -143,12 +143,12 @@ export default class WildcardToken extends ComparisonToken {
             return false;
         }
 
-        const v2RegExp = toRegExp(v2Text);
+        const v2RegExp = toRegExp(<string>v2Text);
         if (v2RegExp == null) {
             return false;
         }
 
-        return v2RegExp.test(v1Text);
+        return v2RegExp.test(<string>v1Text);
     }
 
     async handleInverse(options: ParserOptions, meta: unknown): Promise<boolean> {
@@ -176,12 +176,12 @@ export default class WildcardToken extends ComparisonToken {
             return false;
         }
 
-        const v2RegExp = toRegExp(v2Text);
+        const v2RegExp = toRegExp(<string>v2Text);
         if (v2RegExp == null) {
             return false;
         }
 
-        return !v2RegExp.test(v1Text);
+        return !v2RegExp.test(<string>v1Text);
     }
 
     toToken() : object {
