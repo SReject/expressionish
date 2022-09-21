@@ -6,6 +6,7 @@ import {
     type IFunctionHandler,
     type IFunctionLookup
 } from './types/options';
+
 import TokenType from './types/token-types';
 import ITokenizeState from './types/tokenize-state';
 
@@ -34,7 +35,7 @@ export class Expressionish {
 
     private config: ParserOptions;
 
-    constructor(options?: ParserOptions) {
+    constructor(options: ParserOptions = {}) {
         this.functionHandlers = options.functionHandlers || {};
         this.functionLookups = options.functionLookups || {};
 
@@ -75,10 +76,14 @@ export class Expressionish {
     }
 
     async tokenize(subject: string) : Promise<Expression> {
-        let tokens = getPotentialTokens(
-            this.config,
-            subject
-        );
+        if (
+            subject == null ||
+            typeof subject !== 'string'
+        ) {
+            throw new TypeError('input must be a string');
+        }
+
+        let tokens = getPotentialTokens(this.config, subject);
         let cursor = 0;
 
         const result : Token[] = [];
