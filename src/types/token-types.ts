@@ -1,4 +1,5 @@
 const enum TokenType {
+    UNKNOWN,
     EXPRESSION,
     TOKENLIST,
     IFSTATEMENT,
@@ -7,8 +8,7 @@ const enum TokenType {
     ARGUMENT,
     LOGICAL,
     COMPARISON,
-    EMPTY,
-    UNKNOWN
+    EMPTY
 }
 
 export default TokenType;
