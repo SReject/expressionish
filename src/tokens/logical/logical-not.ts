@@ -1,8 +1,10 @@
 import ParserOptions from '../../types/options';
 import { default as LogicalToken, ILogicalToken } from './base';
 
+export type INotOperator = Omit<ILogicalToken, "value" | "type">;
+
 export default class NotOperator extends LogicalToken {
-    constructor(token: ILogicalToken) {
+    constructor(token: INotOperator) {
         super({
             ...token,
             value: 'not'

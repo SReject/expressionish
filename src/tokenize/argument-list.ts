@@ -50,7 +50,7 @@ export default async (state: ITokenizeState, isCondition = false) : Promise<bool
         };
 
         if (
-            (isCondition && await tokenizeCondition(mockState)) ||
+            (isCondition && await tokenizeCondition(mockState, true)) ||
             (!isCondition && await tokenizeArgument(mockState))
         ) {
             if (mockState.output) {

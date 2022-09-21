@@ -2,7 +2,7 @@ import TokenType from '../../types/token-types';
 
 import { default as OperatorToken, IOperatorToken} from '../token-operator';
 
-export interface ILogicalToken extends IOperatorToken {
+export interface ILogicalToken extends Omit<IOperatorToken, "type"> {
     value: unknown;
 }
 
