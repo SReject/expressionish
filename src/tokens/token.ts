@@ -20,20 +20,21 @@ export default class Token  {
         this.value = token.value;
     }
 
-    /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
-    async evaluate(options: ParserOptions, meta: unknown) : Promise<unknown> {
-        return this.value == null ? null : this.value;
-    }
-
     toJSON() : Record<string, unknown> {
+
         return {
             type: this.type,
             position: this.position,
-            value: this.value == null ? null : this.value
+            value: this.value
         };
     }
 
     toString() : string {
         return JSON.stringify(this.toJSON());
+    }
+
+    /* eslint-disable-next-line @typescript-eslint/no-unused-vars */
+    async evaluate(options: ParserOptions, meta: unknown) : Promise<unknown> {
+        throw new Error('TODO - ExpressionError: token does not implement evaluate function');
     }
 }

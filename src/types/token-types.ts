@@ -6,6 +6,7 @@ const enum TokenType {
     FUNCTIONAL,
     TEXT,
     ARGUMENT,
+    OPERATOR,
     LOGICAL,
     COMPARISON,
     EMPTY

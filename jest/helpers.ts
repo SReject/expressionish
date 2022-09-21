@@ -3,6 +3,7 @@ export {}
 
 interface CustomMatchers<R = unknown> {
     hasProperty(key: string): R;
+    toAsyncThrow(): R;
 }
 
 declare global {
@@ -26,6 +27,22 @@ expect.extend({
         return {
             pass: false,
             message: () => `expected subject to have '${key}' as a property`
+        }
+    },
+
+    toAsyncThrow: async (subject: () => unknown) : Promise<{ pass: boolean, message: () => string}> => {
+        expect.assertions(1);
+        try {
+            await subject();
+            return {
+                pass: false,
+                message: () => `expected subject to throw an error`
+            };
+        } catch (err) {
+            return {
+                pass: true,
+                message: () => `subject did not throw an error`
+            }
         }
     }
 });
