@@ -49,10 +49,10 @@ export default class IfStatementToken extends Token {
 
     toToken() : object {
         return {
-            ...(super.toToken()),
-            condition: this.condition.toToken(),
-            whenTrue: this.whenTrue.toToken(),
-            whenFalse: this.whenFalse?.toToken()
+            ...(super.toJSON()),
+            condition: this.condition.toJSON(),
+            whenTrue: this.whenTrue.toJSON(),
+            whenFalse: this.whenFalse?.toJSON()
         }
     }
 }

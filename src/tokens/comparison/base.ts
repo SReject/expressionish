@@ -41,7 +41,7 @@ export default class ComparisonToken extends OperatorToken {
 
     toToken() : object {
         return {
-            ...(super.toToken()),
+            ...(super.toJSON()),
             invert: this.invert
         }
     }

@@ -64,8 +64,8 @@ export default class TokenList extends Token {
 
     toToken() : object {
         return {
-            ...(super.toToken()),
-            value: this.value.map(value => value.toToken())
+            ...(super.toJSON()),
+            value: this.value.map(value => value.toJSON())
         };
     }
 }

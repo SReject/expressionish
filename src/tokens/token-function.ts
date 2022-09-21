@@ -60,9 +60,9 @@ export default class FunctionalToken extends Token {
 
     toToken() : object {
         return {
-            ...(super.toToken()),
+            ...(super.toJSON()),
             prefix: this.prefix,
-            arguments: this.arguments.map(value => value.toToken())
+            arguments: this.arguments.map(value => value.toJSON())
         }
     }
 }

@@ -24,15 +24,15 @@ export default class OperatorToken extends Token {
         return false;
     }
 
-    toToken() : object {
+    toJSON() : object {
 
         const result : Record<string, object> = {
-            ...(super.toToken()),
-            left: this.left.toToken()
+            ...(super.toJSON()),
+            left: this.left.toJSON()
         }
 
         if (this.right != null) {
-            result.right = this.right.toToken();
+            result.right = this.right.toJSON();
         }
         return result;
     }
