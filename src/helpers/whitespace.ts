@@ -1,4 +1,4 @@
-import IPreToken from '../types/pre-token';
+import type IPreToken from '../types/pre-token';
 
 export const is = (tokens: IPreToken[], cursor: number) : boolean => {
     return (

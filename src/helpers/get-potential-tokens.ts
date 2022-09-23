@@ -1,5 +1,5 @@
 import type IPreToken from '../types/pre-token';
-import ParserOptions from '../types/options';
+import type ParserOptions from '../types/options';
 
 import split from './unicode-safe-split';
 

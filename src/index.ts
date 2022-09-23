@@ -1,5 +1,6 @@
 import has from './helpers/has';
-import getPotentialTokens from './helpers/get-potential-tokens';
+
+import IParseOptions from './types/options';
 
 import {
     type default as ParserOptions,
@@ -7,20 +8,8 @@ import {
     type IFunctionLookup
 } from './types/options';
 
-import TokenType from './types/token-types';
-import ITokenizeState from './types/tokenize-state';
-
-import Token from './tokens/token';
-import TextToken from './tokens/token-text';
-
-import tokenizeTextEscapeSingle from './tokenize/text-escape-single';
-import tokenizeTextEscapeBlock from './tokenize/text-escape-block';
-import tokenizeTextQuoted from './tokenize/text-quoted';
-import tokenizeTextSpecial from './tokenize/text-special';
-import tokenizeFunctionIf from './tokenize/function-if';
-import tokenizeFunction from './tokenize/function';
-
-import Expression from './expression';
+import Expression from './parse/expression';
+import tokenize from './parse';
 
 export {
     ExpressionError,
@@ -40,6 +29,7 @@ export class Expressionish {
         this.functionLookups = options.functionLookups || {};
 
         this.config = {
+            "if": options.if || true,
             eol: options.eol || 'keep',
             specialSequences: options.specialSequences || true
         };
@@ -76,86 +66,34 @@ export class Expressionish {
     }
 
     async tokenize(subject: string) : Promise<Expression> {
-        if (
-            subject == null ||
-            typeof subject !== 'string'
-        ) {
-            throw new TypeError('input must be a string');
+        const config : IParseOptions = {
+            functionHandlers: { ...(this.functionHandlers) },
+            functionLookups:  { ...(this.functionLookups) },
+            ...(this.config)
         }
-
-        let tokens = getPotentialTokens(this.config, subject);
-        let cursor = 0;
-
-        const result : Token[] = [];
-
-        while (cursor < tokens.length) {
-
-            const mockState : ITokenizeState = {
-                options: {
-                    ...(this.config),
-                    functionHandlers: { ...(this.functionHandlers) },
-                    functionLookups: { ...(this.functionLookups)}
-                },
-                tokens: [...tokens],
-                cursor,
-                stack: []
-            };
-
-            if (
-                await tokenizeTextEscapeSingle(mockState) ||
-                await tokenizeTextEscapeBlock(mockState) ||
-                await tokenizeTextQuoted(mockState) ||
-                await tokenizeTextSpecial(mockState) ||
-                await tokenizeFunctionIf(mockState) ||
-                await tokenizeFunction(mockState)
-            ) {
-                const lastToken : Token = <Token>result[result.length - 1];
-                if (
-                    lastToken != null &&
-                    lastToken.type === TokenType.TEXT &&
-                    mockState.output &&
-                    (<Token>mockState.output).type === TokenType.TEXT
-                ) {
-                    (<string>lastToken.value) += (<Token>mockState.output).value;
-
-                } else {
-                    result.push(<Token>mockState.output);
-                }
-
-                tokens = mockState.tokens;
-                cursor = mockState.cursor;
-                continue;
-            }
-
-            // Assume anything else is plain text
-            const last : Token = <Token>result[result.length - 1];
-            if (last != null && last.type === TokenType.TEXT) {
-                last.value += tokens[cursor].value;
-
-            } else {
-                result.push(new TextToken(tokens[cursor]));
-            }
-
-            cursor += 1;
-        }
-
-        return new Expression({
-            options: {
-                ...(this.config),
-                functionHandlers: { ...(this.functionHandlers) },
-                functionLookups: { ...(this.functionLookups)}
-            },
-            value: result
-        });
+        return tokenize(config, subject);
     }
 
     static async tokenize(subject: string, options?: ParserOptions) : Promise<Expression> {
-        const parser = new Expressionish(options);
-        return parser.tokenize(subject);
+        return tokenize({
+            functionHandlers: {},
+            functionLookups: {},
+            "if": true,
+            eol: 'keep',
+            specialSequences: true,
+            ...options
+        }, subject);
     }
 
     static async evaluate(subject: string, meta: unknown = {}, options?: ParserOptions) : Promise<string> {
-        const tokens = await Expressionish.tokenize(subject, options);
-        return tokens.evaluate(meta);
+        const expression = await tokenize({
+            functionHandlers: {},
+            functionLookups: {},
+            "if": true,
+            eol: 'keep',
+            specialSequences: true,
+            ...options
+        }, subject);
+        return expression.evaluate(meta);
     }
 }

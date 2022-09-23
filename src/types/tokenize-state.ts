@@ -1,6 +1,6 @@
 import type ParserOptions from './options';
 import type IPreToken from './pre-token';
-import type Token from '../tokens/token';
+import type Token from '../parse/token';
 
 export default interface ITokenizeState {
     options: ParserOptions,
