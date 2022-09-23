@@ -8,6 +8,7 @@
         "noImplicitAny": true,
 
         "rootDir": "src",
+        "baseUrl": ".",
         "outDir": "lib",
 
         "incremental": true,
@@ -26,5 +27,5 @@
     ],
     "exclude": [
         "node_modules/**/*"
-    ]
+    ],
 }
