@@ -26,6 +26,12 @@ export default class TokenList extends Token {
             throw new Error('TODO - ExpressionError: token list must be an array')
         }
 
+        for (let idx = 0; idx < token.value.length; idx += 1) {
+            if (!(token.value[idx] instanceof Token)) {
+                throw new Error('value list must contain only tokens');
+            }
+        }
+
         super({
             ...token,
             type: TokenType.TOKENLIST
@@ -51,7 +57,7 @@ export default class TokenList extends Token {
 
         let res : unknown;
         for (let idx = 0; idx < parts.length; idx += 1) {
-            const value = await parts[idx].evaluate(options, {...(<object>meta) });
+            const value = await parts[idx].evaluate(options, meta);
 
             if (options.verifyOnly) {
                 continue;
