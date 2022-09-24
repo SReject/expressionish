@@ -24,15 +24,17 @@ const hasOwnProperty = Object.prototype.hasOwnProperty
 expect.extend({
 
     //eslint-disable-next-line @typescript-eslint/no-explicit-any
-    toHaveOwnProperty: (subject: any, key: string, value?: unknown) : IResult => {
+    toHaveOwnProperty: (...args: any[]) : IResult => {
+
+        const [subject, key, value] = args;
+
         if (!hasOwnProperty.call(subject, key)) {
             return {
                 pass: false,
                 message: () => `expected subject to have '${key}'`
             };
 
-        // @ts-expect-error: checking arguments count
-        } else if (arguments.length < 3) {
+        } else if (args.length < 3) {
             return {
                 pass: true,
                 message: () => `expected subject not to have '${key}' as a property`
