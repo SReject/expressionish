@@ -10,8 +10,8 @@ export default async (state: ITokenizeState, characters?: string[]) : Promise<bo
     }
 
     if (
-        tokens[cursor]?.value !== '\\' ||
-        tokens[cursor + 1] == null ||
+        (cursor + 1) >= tokens.length ||
+        tokens[cursor].value !== '\\' ||
         !characters.includes(tokens[cursor + 1].value)
     ) {
         return false;
