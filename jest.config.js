@@ -9,5 +9,8 @@ module.exports = {
                 tsconfig: "./tsconfig.json"
             }
         ]
-    }
+    },
+    collectCoverageFrom: [
+        "src/**/*{!(.spec),}.ts"
+    ]
 };
