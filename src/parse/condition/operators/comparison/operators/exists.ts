@@ -4,7 +4,7 @@ import { type default as IParseOptions } from '../../../../../types/options';
 export default <IOperator>{
     name: 'exists',
     description: "Checks if operands are strictly equal",
-    arguments: ArgumentsQuantifier.LEFTONLY,
+    quantifier: ArgumentsQuantifier.LEFTONLY,
     alias: ['exists'],
     inverse: {
         description: "Checks if operands are not strictly equal",

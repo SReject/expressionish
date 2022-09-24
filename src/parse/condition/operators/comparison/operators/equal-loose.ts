@@ -7,7 +7,7 @@ import toNumber from '../../../../../helpers/to-number';
 export default <IOperator>{
     name: 'equals-loose',
     description: "Checks if operands are loosely equal",
-    arguments: ArgumentsQuantifier.RIGHTREQUIRED,
+    quantifier: ArgumentsQuantifier.RIGHTREQUIRED,
     alias: ['=='],
     inverse: {
         description: "Checks if operands are not loosely equal",

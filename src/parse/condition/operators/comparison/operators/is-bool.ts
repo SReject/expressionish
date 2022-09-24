@@ -19,7 +19,7 @@ const toBool = (subject: unknown) => {
 
 export default <IOperator>{
     name: "isbool",
-    arguments: ArgumentsQuantifier.LEFTONLY,
+    quantifier: ArgumentsQuantifier.LEFTONLY,
     description: "Checks if the left operand is boolean and if specified matches the right operand",
     alias: ['isbool'],
     inverse: {

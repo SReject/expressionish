@@ -6,7 +6,7 @@ const isRange = /^((?:[+-]?\d+(?:\.\d+)?)|(?:[+-]?\.\d+))-((?:[+-]?\d+(?:\.\d+)?
 
 export default <IOperator>{
     name: 'numerical',
-    arguments: ArgumentsQuantifier.RIGHTOPTIONAL,
+    quantifier: ArgumentsQuantifier.RIGHTOPTIONAL,
     description: "Checks if the left operand is numerical and if specified within the range of the right operand (inclusive)",
     alias: ['isnum', 'isnumber'],
     inverse: {

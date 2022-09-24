@@ -4,7 +4,7 @@ import toText from '../../../../../helpers/to-text';
 
 export default <IOperator>{
     name: 'regex',
-    arguments: ArgumentsQuantifier.RIGHTREQUIRED,
+    quantifier: ArgumentsQuantifier.RIGHTREQUIRED,
     description: "Checks if the left operand is a match of the right operand regex",
     alias: ['regex'],
     inverse: {

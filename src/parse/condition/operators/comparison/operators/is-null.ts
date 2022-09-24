@@ -3,8 +3,8 @@ import { type default as IParseOptions } from '../../../../../types/options';
 
 export default <IOperator>{
     name: 'isnull',
-    arguments: ArgumentsQuantifier.LEFTONLY,
     description: "Checks if the left operand is null or undefined",
+    quantifier: ArgumentsQuantifier.LEFTONLY,
     alias: ['isnull'],
     inverse: {
         description: "Checks if the left operand is not null or undefined",

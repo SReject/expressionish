@@ -52,7 +52,7 @@ export default async (state: ITokenizeState, leftCondition: Token, asArgument = 
         position: startPosition,
         value: operator.name,
         arguments: [leftCondition, rightCondition],
-        argumentsQuantifier: operator.arguments,
+        quantifier: operator.quantifier,
         handle: operator.handle
     });
     return true;

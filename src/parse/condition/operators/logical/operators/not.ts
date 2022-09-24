@@ -4,7 +4,7 @@ import { type IOperator, type IHandleStateDeferred, ArgumentsQuantifier } from '
 export default <IOperator>{
     name: 'logical-not',
     description: "Checks if two conditions are truthy",
-    arguments: ArgumentsQuantifier.LEFTONLY,
+    quantifier: ArgumentsQuantifier.LEFTONLY,
     defer: true,
     alias: [],
     handle: async function (options: IParseOptions, meta: unknown, state: IHandleStateDeferred) : Promise<boolean | undefined> {

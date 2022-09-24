@@ -5,7 +5,7 @@ import toNumber from '../../../../../helpers/to-number';
 export default <IOperator>{
     name: 'less-than-or-equal',
     description: "Checks if the left operand is numerical and less than or equal to the right operand",
-    arguments: ArgumentsQuantifier.RIGHTREQUIRED,
+    quantifier: ArgumentsQuantifier.RIGHTREQUIRED,
     alias: ['<='],
     handle: async function(options: IParseOptions, meta: unknown, state: IHandleState) : Promise<boolean | unknown> {
         const { left, right } = state;

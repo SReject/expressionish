@@ -87,7 +87,7 @@ export default async (state: ITokenizeState, asArgument = true) : Promise<boolea
 
     let right : undefined | Token;
 
-    const argQuant = (<IOperator>operator).arguments;
+    const argQuant = (<IOperator>operator).quantifier;
     if (argQuant !== ArgumentsQuantifier.LEFTONLY) {
         const mockState : ITokenizeState = {
             options: { ...options },
@@ -120,7 +120,7 @@ export default async (state: ITokenizeState, asArgument = true) : Promise<boolea
         state.output = new OperatorToken({
             position: startPosition,
             value: (<IOperator>operator).name,
-            argumentsQuantifier: (<IOperator>operator).arguments,
+            quantifier: (<IOperator>operator).quantifier,
             arguments: args,
             handle: (<IOperator>operator).handle
         });

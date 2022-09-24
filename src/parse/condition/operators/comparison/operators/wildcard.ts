@@ -93,7 +93,7 @@ const toRegExp = (subject: string, caseSensitive: boolean) : RegExp => {
 
 export default <IOperator>{
     name: 'wildcard',
-    arguments: ArgumentsQuantifier.RIGHTREQUIRED,
+    quantifier: ArgumentsQuantifier.RIGHTREQUIRED,
     description: "Checks if the left operand is a match of the right operand wildcard",
     alias: ['iswm'],
     cased: true,

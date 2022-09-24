@@ -5,7 +5,7 @@ import { type default as IParseOptions } from '../../../../../types/options';
 export default <IOperator>{
     name: 'contains',
     description: "Checks if the left operand contains the right operand",
-    arguments: ArgumentsQuantifier.RIGHTREQUIRED,
+    quantifier: ArgumentsQuantifier.RIGHTREQUIRED,
     cased: true,
     alias: ['contains'],
     inverse: {

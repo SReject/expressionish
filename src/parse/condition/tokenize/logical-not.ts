@@ -36,7 +36,7 @@ export default async (state: ITokenizeState) : Promise<boolean> => {
         state.output = new OperatorToken({
             position: startPosition,
             value: notOperator.name,
-            argumentsQuantifier: notOperator.arguments,
+            quantifier: notOperator.quantifier,
             arguments: [<Token>mockState.output],
             handle: notOperator.handle
         });

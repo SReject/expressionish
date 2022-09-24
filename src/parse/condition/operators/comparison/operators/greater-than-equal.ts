@@ -4,7 +4,7 @@ import toNumber from '../../../../../helpers/to-number';
 
 export default <IOperator>{
     name: "greater-than-or-equal",
-    arguments: ArgumentsQuantifier.RIGHTREQUIRED,
+    quantifier: ArgumentsQuantifier.RIGHTREQUIRED,
     description: "Checks if the left operand is numerical and greater than or equal to the right operand",
     alias: ['>='],
     handle: async function (options: IParseOptions, meta: unknown, state: IHandleState) : Promise<boolean | undefined> {

@@ -29,7 +29,7 @@ export type IHandleFn = (options: IParseOptions, meta: unknown, state: IHandleSt
 export interface IOperator {
     name: string;
     description: string;
-    arguments: ArgumentsQuantifier;
+    quantifier: ArgumentsQuantifier;
     defer: boolean;
     cased?: boolean,
     alias: string[];
@@ -43,31 +43,64 @@ export interface IOperator {
 
 export interface IOperatorToken extends IToken {
     caseSensitive?: boolean;
-    argumentsQuantifier: ArgumentsQuantifier;
+    quantifier: ArgumentsQuantifier;
     arguments: Token[];
     defer?: boolean;
     handle: IHandleFn;
 }
 
 export default class OperatorToken extends Token {
-    public caseSensitive : boolean;
+    public quantifier: ArgumentsQuantifier;
     public arguments: Token[];
     public defer: boolean;
+    public caseSensitive : boolean;
     public handle : IHandleFn;
 
     constructor(token: IOperatorToken) {
-        if (token.arguments == null || !Array.isArray(token.arguments)) {
-            throw new Error('TODO - ExpressionError - invalid arguments list');
-        }
-        if (token.arguments.length === 0) {
-            throw new Error('TODO - ExpressionError - at least one argument is required');
-        }
-        if (token.arguments.length > 2) {
-            throw new Error('TODO - ExpressionError - too many arguments specified')
+        if (token == null) {
+            throw new Error('TODO - ExpressionError: token must not be nullish');
         }
 
-        if (token.arguments.length !== 2 && token.argumentsQuantifier === ArgumentsQuantifier.RIGHTREQUIRED) {
-            throw new Error('TODO - ExpressionError - right argument required');
+        if (token.quantifier == null) {
+            throw new Error('TODO - ExpressionError: arguments quantifier not specified');
+        }
+        if (!Number.isFinite(token.quantifier)) {
+            throw new Error('TODO - ExpressionError: must be a number');
+        }
+
+        if (token.arguments == null) {
+            throw new Error('TODO - ExpressionError: arguments list not specified');
+        }
+        if (!Array.isArray(token.arguments)) {
+            throw new Error('TODO - ExpressionError: arguments list must be an array')
+        }
+        if (token.arguments.length === 0) {
+            throw new Error('TODO - ExpressionError: at least one argument is required');
+        }
+        if (token.arguments.length > 2) {
+            throw new Error('TODO - ExpressionError: too many arguments specified')
+        }
+        if (token.arguments.length !== 2 && token.quantifier === ArgumentsQuantifier.RIGHTREQUIRED) {
+            throw new Error('TODO - ExpressionError: right argument required');
+        }
+
+        if (token.defer != null && token.defer !== false && token.defer !== true) {
+            throw new Error('TODO - ExpressionError: if specified defer must be boolean');
+        }
+
+        if (token.caseSensitive != null && token.caseSensitive !== false && token.caseSensitive !== true) {
+            throw new Error('TODO - ExpressionError: if specified caseSensitive must be boolean');
+        }
+
+        if (token.handle == null) {
+            throw new Error('TODO - ExpressionError: handle function not specified');
+        }
+        if (
+            typeof token.handle !== 'function' &&
+            //eslint-disable-next-line @typescript-eslint/no-explicit-any
+            <any>token.handle instanceof Function
+        ) {
+            throw new Error('TODO - ExpressionError: specified handle must be a function');
         }
 
         super({
@@ -75,8 +108,10 @@ export default class OperatorToken extends Token {
             type: TokenType.OPERATOR
         });
 
-        this.caseSensitive = token.caseSensitive === true;
+        this.quantifier = token.quantifier;
+        this.arguments = [ ...(token.arguments) ];
         this.defer = token.defer === true;
+        this.caseSensitive = token.caseSensitive === true;
         this.handle = token.handle;
     }
 
