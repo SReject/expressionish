@@ -21,11 +21,10 @@ export default class Token  {
     }
 
     toJSON() : Record<string, unknown> {
-
         return {
             type: this.type,
             position: this.position,
-            value: this.value
+            value: this.value == null ? null : this.value
         };
     }
 
