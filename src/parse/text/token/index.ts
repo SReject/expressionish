@@ -10,6 +10,9 @@ export interface ITextToken extends IToken {
 export default class TextToken extends Token {
     public value: string;
     constructor(token: ITextToken = {}) {
+        if (token.value != null && typeof token.value !== 'string') {
+            throw new Error('TODO - ExpressionError: value must be a string');
+        }
         super({
             ...token,
             type: TokenType.TEXT,
