@@ -3,7 +3,7 @@ import type IParserOptions from '../../../types/options';
 
 import Token from '../../token';
 
-import { type OperatorToken } from '../../condition';
+import { OperatorToken } from '../../condition';
 
 export interface IIfStatementToken {
     position: number;
@@ -18,6 +18,28 @@ export default class IfStatementToken extends Token {
     public whenFalse?: Token;
 
     constructor(token: IIfStatementToken) {
+        if (token == null) {
+            throw new Error('TODO - ExpressionError: token not specified');
+        }
+        if (typeof token !== 'object') {
+            throw new Error('TODO - ExpressionError: token must be an object');
+        }
+        if (token.condition == null) {
+            throw new Error('TODO - ExpressionError: condition not specified');
+        }
+        if (!(token.condition instanceof OperatorToken)) {
+            throw new Error('TODO - ExpressionError: condition must be an instance of OperatorToken');
+        }
+        if (token.whenTrue == null) {
+            throw new Error('TODO - ExpressionError: truthy argument must be specified');
+        }
+        if (!(token.whenTrue instanceof Token)) {
+            throw new Error('TODO - ExpressionError: truthy argument must be a token instance');
+        }
+        if (token.whenFalse !== null && !(token.whenFalse instanceof Token)) {
+            throw new Error('TODO - ExpressionError: falsy argument must be a token instance');
+        }
+
         super({
             ...token,
             type: TokenType.IFSTATEMENT,
@@ -26,6 +48,15 @@ export default class IfStatementToken extends Token {
         this.condition = token.condition;
         this.whenTrue = token.whenTrue;
         this.whenFalse = token.whenFalse;
+    }
+
+    toTJSON() : object {
+        return {
+            ...(super.toJSON()),
+            condition: this.condition.toJSON(),
+            whenTrue: this.whenTrue.toJSON(),
+            whenFalse: this.whenFalse?.toJSON()
+        }
     }
 
     async evaluate(options: IParserOptions, meta: unknown) : Promise<unknown> {
@@ -54,15 +85,6 @@ export default class IfStatementToken extends Token {
 
         if (this.whenFalse != null) {
             return this.whenFalse.evaluate(options, {...(<object>meta) });
-        }
-    }
-
-    toToken() : object {
-        return {
-            ...(super.toJSON()),
-            condition: this.condition.toJSON(),
-            whenTrue: this.whenTrue.toJSON(),
-            whenFalse: this.whenFalse?.toJSON()
         }
     }
 }
