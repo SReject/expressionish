@@ -2,7 +2,7 @@
 export {}
 
 interface CustomMatchers<R = unknown> {
-    hasProperty(key: string): R;
+    toHaveOwnProperty(key: string, value?: unknown): R;
     toAsyncThrow(): R;
 }
 
@@ -14,23 +14,44 @@ declare global {
     }
 }
 
+interface IResult {
+    pass: boolean;
+    message: () => string;
+}
+
 const hasOwnProperty = Object.prototype.hasOwnProperty
 
 expect.extend({
-    hasProperty: (subject: unknown, key: string) : {pass: boolean, message: () => string} => {
-        if (hasOwnProperty.call(subject, key)) {
+
+    //eslint-disable-next-line @typescript-eslint/no-explicit-any
+    toHaveOwnProperty: (subject: any, key: string, value?: unknown) : IResult => {
+        if (!hasOwnProperty.call(subject, key)) {
+            return {
+                pass: false,
+                message: () => `expected subject to have '${key}'`
+            };
+
+        // @ts-expect-error: checking arguments count
+        } else if (arguments.length < 3) {
             return {
                 pass: true,
                 message: () => `expected subject not to have '${key}' as a property`
             };
-        }
-        return {
-            pass: false,
-            message: () => `expected subject to have '${key}' as a property`
+
+        } else if (subject[key] === value) {
+            return {
+                pass: true,
+                message: () => `expected subject '${key}' not to equal ${value}`
+            };
+        } else {
+            return {
+                pass: false,
+                message: () => `expected subject '${key}' to equal ${value}`
+            };
         }
     },
 
-    toAsyncThrow: async (subject: () => unknown) : Promise<{ pass: boolean, message: () => string}> => {
+    toAsyncThrow: async (subject: () => unknown) : Promise<IResult> => {
         expect.assertions(1);
         try {
             await subject();
