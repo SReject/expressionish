@@ -32,10 +32,7 @@ export default async (state: ITokenizeState) : Promise<boolean> => {
     }
 
     const quoteTokens : Token[] = [];
-    while (
-        cursor < tokens.length &&
-        tokens[cursor].value !== '"'
-    ) {
+    while (cursor < tokens.length && tokens[cursor].value !== '"') {
 
         const lastToken : Token = quoteTokens[quoteTokens.length - 1];
 
