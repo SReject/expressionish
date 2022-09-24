@@ -1,7 +1,10 @@
 import isPrimitive from "./is-primitive";
 
 export default (subject: unknown) : string | void => {
-    if (subject != null) {
+    if (
+        subject != null &&
+        typeof subject !== 'function'
+    ) {
 
         if (isPrimitive(subject)) {
             return String(subject);
