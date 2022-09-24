@@ -5,7 +5,7 @@ import type ITokenizeState from '../../../types/tokenize-state';
 import TextToken from '../token';
 
 export default async (state: ITokenizeState) : Promise<boolean> => {
-    if (!state.options.specialSequences) {
+    if (state.options.specialSequences === false) {
         return false;
     }
 
@@ -17,8 +17,8 @@ export default async (state: ITokenizeState) : Promise<boolean> => {
 
     const { tokens, cursor } = state;
     if (
-        tokens[cursor]?.value !== '\\' ||
-        tokens[cursor + 1] == null ||
+        (cursor + 1) >= tokens.length ||
+        tokens[cursor].value !== '\\' ||
         !has(characters, tokens[cursor + 1].value)
     ) {
         return false;
@@ -26,7 +26,7 @@ export default async (state: ITokenizeState) : Promise<boolean> => {
 
     state.output = new TextToken({
         position: tokens[cursor].position,
-        value: tokens[cursor + 1].value
+        value: characters[tokens[cursor + 1].value]
     });
     state.cursor += 2;
 
