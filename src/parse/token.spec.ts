@@ -25,6 +25,7 @@ test('Has .evaluate() function', () => {
 
 test('Constructs without error', () => {
     expect(() => new Token()).not.toThrow();
+    expect(new Token()).toBeInstanceOf(Token);
 });
 
 test('Stores type correctly', () => {
