@@ -1,12 +1,12 @@
-import { type IOperator, type IHandleState, ArgumentsQuantifier } from '../../token';
-import { type default as IParseOptions } from '../../../../../types/options';
-import toNumber from '../../../../../helpers/to-number';
+import { type IOperator, type IHandleState, ArgumentsQuantifier } from '../../../token';
+import { type default as IParseOptions } from '../../../../../../types/options';
+import toNumber from '../../../../../../helpers/to-number';
 
 export default <IOperator>{
-    name: 'less-than',
-    description: "Checks if the left operand is numerical and less than the right operand",
+    name: 'less-than-or-equal',
+    description: "Checks if the left operand is numerical and less than or equal to the right operand",
     quantifier: ArgumentsQuantifier.RIGHTREQUIRED,
-    alias: ['<'],
+    alias: ['<='],
     handle: async function(options: IParseOptions, meta: unknown, state: IHandleState) : Promise<boolean | unknown> {
         const { left, right } = state;
 

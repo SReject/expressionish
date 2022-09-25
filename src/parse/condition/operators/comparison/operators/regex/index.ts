@@ -1,6 +1,6 @@
-import { type IOperator, type IHandleState, ArgumentsQuantifier } from '../../token';
-import { type default as IParseOptions } from '../../../../../types/options';
-import toText from '../../../../../helpers/to-text';
+import { type IOperator, type IHandleState, ArgumentsQuantifier } from '../../../token';
+import { type default as IParseOptions } from '../../../../../../types/options';
+import toText from '../../../../../../helpers/to-text';
 
 export default <IOperator>{
     name: 'regex',

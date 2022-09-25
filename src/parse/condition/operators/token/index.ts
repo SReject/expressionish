@@ -30,13 +30,13 @@ export interface IOperator {
     name: string;
     description: string;
     quantifier: ArgumentsQuantifier;
-    defer: boolean;
+    defer?: boolean;
     cased?: boolean,
     alias: string[];
     inverse?: {
         description: string;
         alias: string[];
-        handle: IHandleFn;
+        handle?: IHandleFn;
     };
     handle: IHandleFn;
 }

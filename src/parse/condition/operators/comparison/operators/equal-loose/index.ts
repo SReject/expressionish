@@ -1,8 +1,8 @@
-import { type IOperator, type IHandleState, ArgumentsQuantifier } from '../../token';
-import { type default as IParseOptions } from '../../../../../types/options';
+import { type IOperator, type IHandleState, ArgumentsQuantifier } from '../../../token';
+import { type default as IParseOptions } from '../../../../../../types/options';
 
-import isPrimitive from '../../../../../helpers/is-primitive';
-import toNumber from '../../../../../helpers/to-number';
+import isPrimitive from '../../../../../../helpers/is-primitive';
+import toNumber from '../../../../../../helpers/to-number';
 
 export default <IOperator>{
     name: 'equals-loose',

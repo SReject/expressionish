@@ -1,7 +1,7 @@
-import { type IOperator, type IHandleState, ArgumentsQuantifier } from '../../token';
-import { type default as IParseOptions } from '../../../../../types/options';
-import split from '../../../../../helpers/unicode-safe-split';
-import toText from '../../../../../helpers/to-text';
+import { type IOperator, type IHandleState, ArgumentsQuantifier } from '../../../token';
+import { type default as IParseOptions } from '../../../../../../types/options';
+import split from '../../../../../../helpers/unicode-safe-split';
+import toText from '../../../../../../helpers/to-text';
 
 const toRegExp = (subject: string, caseSensitive: boolean) : RegExp => {
     const wc = split(subject);

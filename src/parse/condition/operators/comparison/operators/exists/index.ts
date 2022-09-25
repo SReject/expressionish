@@ -1,5 +1,5 @@
-import { type IOperator, type IHandleState, ArgumentsQuantifier } from '../../token';
-import { type default as IParseOptions } from '../../../../../types/options';
+import { type IOperator, type IHandleState, ArgumentsQuantifier } from '../../../token';
+import { type default as IParseOptions } from '../../../../../../types/options';
 
 export default <IOperator>{
     name: 'exists',
