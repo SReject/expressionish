@@ -11,6 +11,6 @@ export default <IOperator>{
         alias: ['!exists']
     },
     handle: async function (options: IParseOptions, meta: unknown, state: IHandleState) : Promise<boolean> {
-        return state.left != null && state.left !== '' && state.left !== false;
+        return state.left != null && state.left !== false && state.left !== '';
     }
 }
