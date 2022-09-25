@@ -4,7 +4,7 @@ import type ITokenizeState from '../../../types/tokenize-state';
 import { ExpressionSyntaxError } from '../../../errors';
 
 import type Token from '../../token';
-import TokenList from '../../token-list';
+import ListToken from '../../list';
 
 import TextToken from '../token';
 
@@ -88,7 +88,7 @@ export default async (state: ITokenizeState) : Promise<boolean> => {
 
     state.tokens = tokens;
     state.cursor = cursor + 2;
-    state.output = new TokenList({
+    state.output = new ListToken({
         position,
         value: quoteTokens
     });

@@ -1,7 +1,7 @@
 const enum TokenType {
     UNKNOWN,
     EXPRESSION,
-    TOKENLIST,
+    LIST,
     IFSTATEMENT,
     FUNCTIONAL,
     TEXT,

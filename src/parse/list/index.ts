@@ -1,18 +1,18 @@
-import TokenType from '../types/token-types';
-import type IParserOptions from '../types/options';
+import TokenType from '../../types/token-types';
+import type IParserOptions from '../../types/options';
 
-import toText from '../helpers/to-text';
+import toText from '../../helpers/to-text';
 
-import Token, { type IToken } from './token';
+import Token, { type IToken } from '../token';
 
-export interface ITokenList extends IToken {
+export interface IListToken extends IToken {
     value: Token[];
 }
 
-export default class TokenList extends Token {
+export default class ListToken extends Token {
     public value : Token[];
 
-    constructor(token: ITokenList) {
+    constructor(token: IListToken) {
         if (token == null) {
             throw new Error('TODO - ExpressionError: token not specified');
         }
@@ -34,7 +34,7 @@ export default class TokenList extends Token {
 
         super({
             ...token,
-            type: TokenType.TOKENLIST
+            type: TokenType.LIST
         });
     }
 

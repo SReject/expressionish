@@ -1,85 +1,85 @@
-import '../../jest/helpers';
+import '../../../jest/helpers';
 
-import TokenType from '../types/token-types';
-import IParseOptions from '../types/options';
+import TokenType from '../../types/token-types';
+import IParseOptions from '../../types/options';
 
-import Token from './token';
-import TokenList from './token-list';
+import Token from '../token';
+import ListToken from './index';
 
 test('Exports a constructor', () => {
-    expect(typeof TokenList).toBe('function');
-    expect(TokenList.prototype).toBeDefined();
+    expect(typeof ListToken).toBe('function');
+    expect(ListToken.prototype).toBeDefined();
 });
 
 test('Has .toJSON() function', () => {
-    expect(TokenList.prototype).toHaveOwnProperty('toJSON');
-    expect(typeof TokenList.prototype.toJSON).toBe('function');
+    expect(ListToken.prototype).toHaveOwnProperty('toJSON');
+    expect(typeof ListToken.prototype.toJSON).toBe('function');
 });
 
 test('Has .evaluate() function', () => {
-    expect(TokenList.prototype).toHaveOwnProperty('evaluate');
-    expect(typeof TokenList.prototype.evaluate).toBe('function');
+    expect(ListToken.prototype).toHaveOwnProperty('evaluate');
+    expect(typeof ListToken.prototype.evaluate).toBe('function');
 });
 
 test('Constructor errors when token is nullish', () => {
     expect(() => {
         // @ts-expect-error: Testing nullish token
-        new TokenList();
+        new ListToken();
     }).toThrow();
 });
 
 test('Constructor errors when token is not an object', () => {
     expect(() => {
         // @ts-expect-error: Testing invalid token
-        new TokenList(true);
+        new ListToken(true);
     }).toThrow();
 });
 
 test('Constructor errors when token.value is nullish', () => {
     expect(() => {
         // @ts-expect-error: Testing nullish token.value
-        new TokenList({});
+        new ListToken({});
     }).toThrow();
 });
 
 test('Constructor errors when token.value is not an array', () => {
     expect(() => {
         // @ts-expect-error: Testing invalid token.value
-        new TokenList({value: ''});
+        new ListToken({value: ''});
     }).toThrow();
 });
 
 test('Constructor errors when token.value contains a non-token instance', () => {
     expect(() => {
         // @ts-expect-error: Testing invalid token.value
-        new TokenList({value: ['']});
+        new ListToken({value: ['']});
     }).toThrow();
 });
 
 test('Constructs without error', () => {
-    expect(() => new TokenList({value: []})).not.toThrow();
+    expect(() => new ListToken({value: []})).not.toThrow();
 });
 
-test('Instance to be instance of TokenList and Token', () => {
-    const token = new TokenList({value: []});
-    expect(token).toBeInstanceOf(TokenList);
+test('Instance to be instance of ListToken and Token', () => {
+    const token = new ListToken({value: []});
+    expect(token).toBeInstanceOf(ListToken);
     expect(token).toBeInstanceOf(Token);
 });
 
-test('.type is set to TOKENLIST', () => {
-    const token = new TokenList({value: []});
-    expect(token).toHaveOwnProperty('type', TokenType.TOKENLIST);
+test('.type is set to TokenType.LIST', () => {
+    const token = new ListToken({value: []});
+    expect(token).toHaveOwnProperty('type', TokenType.LIST);
 });
 
 test('.value is set to input', () => {
     const value : Token[] = [];
-    const token = new TokenList({ value });
+    const token = new ListToken({ value });
     expect(token).toHaveOwnProperty('value', value);
 });
 
 test('.toJSON() calls super.toJSON()', () => {
     const spy = jest.spyOn(Token.prototype, 'toJSON');
-    const token = new TokenList({ value: [] });
+    const token = new ListToken({ value: [] });
     expect(() => token.toJSON()).not.toThrow();
     expect(spy).toHaveBeenCalledTimes(1);
     jest.clearAllMocks();
@@ -93,7 +93,7 @@ test('.toJSON() returns valid representation', () => {
         return Token.prototype.toJSON.call(this);
     };
 
-    const token = new TokenList({value: [value]});
+    const token = new ListToken({value: [value]});
     const json = token.toJSON();
     expect(calls).toBe(1);
 
@@ -112,7 +112,7 @@ test('.evaluate() calls evaluate for values/falls back to defaults for inputs', 
         receivedMeta = meta;
         return;
     };
-    const token = new TokenList({value: [value]});
+    const token = new ListToken({value: [value]});
 
     // @ts-expect-error : Testing nulled inputs
     await token.evaluate();
@@ -125,7 +125,7 @@ test('.evaluate() returns undefined when options.verifyOnly is specified', async
     value.evaluate = async function() : Promise<unknown> {
         return 'text';
     }
-    const token = new TokenList({value: [value]});
+    const token = new ListToken({value: [value]});
 
     const result = await token.evaluate({verifyOnly: true}, {});
     expect(result).toBeUndefined();
@@ -136,7 +136,7 @@ test('.evaluate() sets result to value when result is not set', async () => {
     value.evaluate = async function() : Promise<unknown> {
         return 'test';
     }
-    const token = new TokenList({value: [value]});
+    const token = new ListToken({value: [value]});
 
     const result = await token.evaluate({}, {});
     expect(result).toBe('test');
@@ -147,7 +147,7 @@ test('.evaluate() returns null if only a single value is given and its null', as
     value.evaluate = async function() : Promise<unknown> {
         return null;
     }
-    const token = new TokenList({value: [value]});
+    const token = new ListToken({value: [value]});
 
     const result = await token.evaluate({}, {});
     expect(result).toBeNull();
@@ -166,7 +166,7 @@ test('.evaluate() does not append non-textable values', async () => {
     const value4 = new Token();
     value4.evaluate = async function() : Promise<unknown> { return 'b'; }
 
-    const token = new TokenList({value: [value1, value2, value3, value4]});
+    const token = new ListToken({value: [value1, value2, value3, value4]});
 
     const result = await token.evaluate({}, {});
     expect(result).toBe('ab');
@@ -179,7 +179,7 @@ test('.evaluate() converts to text when appending', async () => {
     const value2 = new Token();
     value2.evaluate = async function() : Promise<unknown> { return 'a'; }
 
-    const token = new TokenList({value: [value1, value2]});
+    const token = new ListToken({value: [value1, value2]});
 
     const result = await token.evaluate({}, {});
     expect(result).toBe('{}a');
@@ -192,7 +192,7 @@ test('.evaluate() ignores functions', async () => {
     const value2 = new Token();
     value2.evaluate = async function() : Promise<unknown> { return 'a'; }
 
-    const token = new TokenList({value: [value1, value2]});
+    const token = new ListToken({value: [value1, value2]});
 
     const result = await token.evaluate({}, {});
     expect(result).toBe('a');

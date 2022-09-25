@@ -15,7 +15,7 @@ import { tokenizeIf } from '../../if';
 import { tokenizeFunction } from '../../function';
 
 import type Token from '../../token';
-import TokenList from '../../token-list';
+import ListToken from '../../list';
 
 export interface IOperandState extends ITokenizeState {
     endOfOperand?: boolean;
@@ -157,7 +157,7 @@ export default async (
 
     state.tokens = tokens;
     state.cursor = cursor;
-    state.output = new TokenList({
+    state.output = new ListToken({
         position: startPosition,
         value: operand
     });

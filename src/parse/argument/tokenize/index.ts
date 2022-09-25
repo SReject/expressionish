@@ -2,7 +2,7 @@ import TokenType from '../../../types/token-types';
 import type ITokenizeState from '../../../types/tokenize-state';
 
 import type Token from '../../token';
-import TokenList from '../../token-list';
+import ListToken from '../../list';
 import {
     TextToken,
     tokenizeEscape,
@@ -137,7 +137,7 @@ export default async (state: ITokenizeState) : Promise<boolean> => {
 
     state.tokens = tokens;
     state.cursor = cursor;
-    state.output = new TokenList({
+    state.output = new ListToken({
         position,
         value: result
     })
