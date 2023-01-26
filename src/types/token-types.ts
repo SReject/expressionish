@@ -3,7 +3,7 @@ const enum TokenType {
     EXPRESSION,
     LIST,
     IFSTATEMENT,
-    FUNCTIONAL,
+    FUNCTION,
     TEXT,
     ARGUMENT,
     OPERATOR,

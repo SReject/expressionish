@@ -23,7 +23,8 @@
         "removeComments": true
     },
     "files":[
-        "./src/index.ts"
+        "./src2/types/global.d.ts",
+        "./src/expressionish/index.ts"
     ],
     "exclude": [
         "node_modules/**/*"

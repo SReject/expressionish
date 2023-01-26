@@ -63,13 +63,16 @@ export default (options: ParserOptions, subject: string) : IPreToken[] => {
                 return inc;
             }
 
-            const nextChar = subject[position + 1];
-
             // \\<char>, $<prefix>
+            const nextChar = subject[position + 1];
             if (
                 nextChar != null &&
-                (char === '\\' && nextChar !== '') ||
-                (char === '$' && nextChar !== '\\')
+                nextChar !== '' &&
+                /^\s$/.test(nextChar) &&
+                (
+                    char === '\\' ||
+                    (char === '$' && /^[^a-z\d\\]$/i.test(nextChar))
+                )
             ) {
                 if (textToken !== null) {
                     result.push(textToken);
@@ -85,7 +88,7 @@ export default (options: ParserOptions, subject: string) : IPreToken[] => {
                 return 1;
             }
 
-            // Block Escape, Single Escape, &&, ||
+            // Block Escape, &&, ||
             const seq = subject.slice(position, position + 2);
             if (
                 seq === '``' ||
