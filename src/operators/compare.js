@@ -27,7 +27,7 @@ const isLooseEqual = (v1, v2) => {
     if (v1 === v2) {
         return true;
     }
-    if (v1.toLowerCase() === v2.toLowerCase()) {
+    if (('' + v1).toLowerCase() === ('' + v2).toLowerCase()) {
         return true;
     }
     const [v1Num, v2Num] = toNumber(v1, v2);

@@ -35,15 +35,19 @@ class ComparisonToken extends BaseToken {
         let args = [];
         if (this.arguments && this.arguments.length) {
             for (let idx = 0; idx < this.arguments.length; idx += 1) {
-                let accumulator = '';
+                let accumulator;
                 const parts = this.arguments[idx];
                 for (let partsIdx = 0; partsIdx < parts.length; partsIdx += 1) {
                     let res = await parts[partsIdx].evaluate(options);
                     if (res != null) {
-                        accumulator += res;
+                        if (accumulator !== undefined) {
+                            accumulator += ('' + res);
+                        } else {
+                            accumulator = res;
+                        }
                     }
                 }
-                args.push(accumulator);
+                args.push(accumulator != null ? accumulator : '');
             }
         }
 

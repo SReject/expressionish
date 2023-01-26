@@ -32,7 +32,9 @@ const vars = new Map([
     }}],
     ['inout', {handle: 'inout', argsCheck: () => {}, evaluator: (meta, ...args) => {
         return args.join('');
-    }}]
+    }}],
+    ['iftrue', {handle: 'iftrue', argCheck: () => {}, evaluator: () => true }],
+    ['iffalse', {handle: 'iffalse', argCheck: () => {}, evaluator: () => false }]
 ]);
 const options = {
     handlers: vars,
@@ -346,6 +348,25 @@ describe('evaluate()', function () {
             const expression = `a \\b \\$ "c \\d \\"" $ten $sum[$ten, 1] $if[$NOT[$AND[1 === 1, $ten == 9]], 12, -1]\\`
             const expect = `a \\b $ "c \\d "" 10 11 12\\`
             await expectEqual(() => evaluate({...options, expression}), expect);
+        });
+    });
+
+    describe('if single property', function () {
+        it('returns truthy if condition is true', async function () {
+            await expectEqual(() => {
+                return evaluate({
+                    ...options,
+                    expression: '$if[$iftrue, yes, no]'
+                });
+            }, 'yes')
+        });
+        it('returns falsey if condition is false', async function () {
+            await expectEqual(() => {
+                return evaluate({
+                    ...options,
+                    expression: '$if[$iffalse, yes, no]'
+                });
+            }, 'no')
         });
     })
 });
