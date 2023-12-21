@@ -24,6 +24,7 @@ const expectEqual = async (fnc, value) => {
     assert.equal(result, value);
 };
 
+let callCount = 0;
 const vars = new Map([
     ['txt', {handle: 'txt', argsCheck: () => {}, evaluator: () => 'evaled_var_text'}],
     ['ten', {handle: 'ten', argsCheck: () => {}, evaluator: () => 10}],
@@ -34,7 +35,10 @@ const vars = new Map([
         return args.join('');
     }}],
     ['iftrue', {handle: 'iftrue', argCheck: () => {}, evaluator: () => true }],
-    ['iffalse', {handle: 'iffalse', argCheck: () => {}, evaluator: () => false }]
+    ['iffalse', {handle: 'iffalse', argCheck: () => {}, evaluator: () => false }],
+
+    ['onlytrue', {handle: 'iftrue', argCheck: () => {}, evaluator: () => { callCount += 1; return true }}],
+    ['onlyfalse', {handle: 'iffalse', argCheck: () => {}, evaluator: () => { callCount += 1; return false }}]
 ]);
 const options = {
     handlers: vars,
@@ -165,6 +169,12 @@ describe('evaluate()', function () {
         });
         it('Does not throw an error for valid statement', async function () {
             await evaluate({...options, expression: '$if[1 === 1, true, false]'});
+        });
+        it('Only evaluates the argument respective of condition result', async () => {
+            await evaluate({ ...options, expression: '$if[1 === 1, $onlytrue, $onlyFalse]' });
+            if (callCount !== 1) {
+                throw new Error('call count did not equal 1')
+            }
         });
     });
 

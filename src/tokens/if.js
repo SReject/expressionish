@@ -21,21 +21,6 @@ class IfToken extends BaseToken {
     async evaluate(options = {}) {
         let result = await this.condition.evaluate(options);
 
-        const args = [];
-        if (this.arguments && this.arguments.length) {
-            for (let idx = 0; idx < this.arguments.length; idx += 1) {
-                let accumulator = '';
-                const parts = this.arguments[idx];
-                for (let partsIdx = 0; partsIdx < parts.length; partsIdx += 1) {
-                    let res = await parts[partsIdx].evaluate(options);
-                    if (res != null) {
-                        accumulator += res;
-                    }
-                }
-                args.push(accumulator);
-            }
-        }
-
         // Only validating: validate both arguments
         if (options.onlyValidate) {
             const args = [];
