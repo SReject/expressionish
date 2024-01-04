@@ -1,6 +1,7 @@
 const { ExpressionVariableError, ExpressionArgumentsError } = require('../errors.js');
 
 const types = require('../helpers/token-types.js');
+const { evalArgsList } = require('../helpers/arg-eval.js');
 
 const BaseToken = require('./base.js');
 const argumentsHandler = require('./arguments.js');
@@ -23,35 +24,15 @@ class VariableToken extends BaseToken {
 
         const variable = options.handlers.get(this.value);
 
-        if (variable.triggers) {
-            let trigger = variable.triggers[options.trigger.type],
-                display = options.trigger.type ? options.trigger.type.toLowerCase() : "unknown trigger";
-
-            if (trigger == null || trigger === false) {
-                throw new ExpressionVariableError(`$${this.value} does not support being triggered by: ${display}`, this.position, this.value);
-            }
-
-            if (Array.isArray(trigger)) {
-                if (!trigger.some(id => id === options.trigger.id)) {
-                    throw new ExpressionVariableError(`$${this.value} does not support this specific trigger type: ${display}`, this.position, this.value);
-                }
-            }
+        if (options.preeval) {
+            await options.preeval(options, variable);
+        }
+        if (variable.preeval) {
+            await variable.preeval(options, variable);
         }
 
-        let args = [];
-        if (this.arguments && this.arguments.length) {
-            for (let idx = 0; idx < this.arguments.length; idx += 1) {
-                const parts = this.arguments[idx];
-                let accumulator = '';
-                for (let partIdx = 0; partIdx < parts.length; partIdx += 1) {
-                    let part = await parts[partIdx].evaluate(options);
-                    if (part != null) {
-                        accumulator += part;
-                    }
-                }
-                args.push(accumulator);
-            }
-        }
+        const args = await evalArgsList(options, this.arguments);
+
         if (options.onlyValidate) {
             return '';
         }

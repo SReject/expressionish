@@ -31,18 +31,16 @@ const vars = new Map([
     ['sum', {handle: 'sum', argsCheck: () => {}, evaluator: (meta, ...args) => {
         return args.map(item => Number(item)).reduce((acc, cur) => acc + cur, 0);
     }}],
-    ['inout', {handle: 'inout', argsCheck: () => {}, evaluator: (meta, ...args) => {
-        return args.join('');
-    }}],
+    ['inout', {handle: 'inout', argsCheck: () => {}, evaluator: (meta, ...args) => args.join('') }],
     ['iftrue', {handle: 'iftrue', argCheck: () => {}, evaluator: () => true }],
     ['iffalse', {handle: 'iffalse', argCheck: () => {}, evaluator: () => false }],
-
     ['onlytrue', {handle: 'iftrue', argCheck: () => {}, evaluator: () => { callCount += 1; return true }}],
-    ['onlyfalse', {handle: 'iffalse', argCheck: () => {}, evaluator: () => { callCount += 1; return false }}]
+    ['onlyfalse', {handle: 'iffalse', argCheck: () => {}, evaluator: () => { callCount += 1; return false }}],
+    ['json', {handle: 'json', argCheck: () => {}, evaluator: () => ({key: "value"}) }],
+    ['walk', { handle: 'walk', argCheck: () => {}, evaluator: (meta, json, prop) => json[prop] }]
 ]);
 const options = {
-    handlers: vars,
-    trigger: ''
+    handlers: vars
 };
 
 describe('evaluate()', function () {
@@ -52,22 +50,16 @@ describe('evaluate()', function () {
             await expectThrow(() => evaluate(), TypeError);
         });
         it('variable-handlers is undefined', async function () {
-            await expectThrow(() => evaluate({}), TypeError);
+            await expectThrow(() => evaluate({expression: ''}), TypeError);
         });
         it('variable-handlers is not a Map', async function () {
-            await expectThrow(() => evaluate({handlers: ''}), TypeError);
-        });
-        it('options.trigger is undefined', async function () {
-            await expectThrow(() => evaluate({handlers: vars}), TypeError);
-        });
-        it('options.trigger is null', async function () {
-            await expectThrow(() => evaluate({handlers: vars, trigger: null}), TypeError);
+            await expectThrow(() => evaluate({handlers: '', expression: ''}), TypeError);
         });
         it('options.expression is undefined', async function () {
-            await expectThrow(() => evaluate({handlers: vars, trigger: ''}), TypeError);
+            await expectThrow(() => evaluate({handlers: vars }), TypeError);
         });
         it('options.expression is not a string', async function () {
-            await expectThrow(() => evaluate({handlers: vars, trigger: '', expression: true}), TypeError);
+            await expectThrow(() => evaluate({handlers: vars, expression: true}), TypeError);
         });
     });
 
@@ -143,6 +135,16 @@ describe('evaluate()', function () {
         it('Evaluates variable', async function () {
             await expectEqual(() => evaluate({...options, expression: '$txt'}), 'evaled_var_text');
         });
+        it('Calls global preeval() hook', async function () {
+            let testCallCount = 0;
+            await evaluate({ ...options, preeval: async () => { testCallCount += 1; }, expression: '$txt' });
+            expectEqual(testCallCount, 1);
+        });
+        it('Calls variable-specific preeval() hook', async function () {
+            let testCallCount = 0;
+            await evaluate({ handlers: new Map(Object.entries({ 'txt': { handle: 'txt', argCheck: () => {}, preeval: () => { testCallCount += 1 }, evaluator: () => 'evaled_var_text' }})), expression: '$txt'});
+            expectEqual(testCallCount, 1);
+        })
         it('Evaluates variable with arguments', async function () {
             await expectEqual(() => evaluate({...options, expression: '$sum[1,2]'}), '3');
         });
@@ -160,6 +162,9 @@ describe('evaluate()', function () {
         });
         it('Evaluates vars in block escapes', async function () {
             await expectEqual(() => evaluate({...options, expression: '$inout[``"$ten"``]'}), '"10"');
+        });
+        it('Evaluates and passes instances without stringification', async function () {
+            await expectEqual(() => evaluate({ ...options, expression: '$walk[$json, key]'}), "value")
         });
     });
 
@@ -353,6 +358,15 @@ describe('evaluate()', function () {
         });
     });
 
+    describe('Input is $if with a singleton condition', function () {
+        it('returns truthy if condition is true', async function () {
+            await expectEqual(() => evaluate({ ...options, expression: '$if[$iftrue, yes, no]'}), 'yes')
+        });
+        it('returns falsey if condition is false', async function () {
+            await expectEqual(() => evaluate({ ...options, expression: '$if[$iffalse, yes, no]'}), 'no')
+        });
+    });
+
     describe('Input all the things', function () {
         it('Properly evaluates all the things', async function () {
             const expression = `a \\b \\$ "c \\d \\"" $ten $sum[$ten, 1] $if[$NOT[$AND[1 === 1, $ten == 9]], 12, -1]\\`
@@ -360,23 +374,4 @@ describe('evaluate()', function () {
             await expectEqual(() => evaluate({...options, expression}), expect);
         });
     });
-
-    describe('if single property', function () {
-        it('returns truthy if condition is true', async function () {
-            await expectEqual(() => {
-                return evaluate({
-                    ...options,
-                    expression: '$if[$iftrue, yes, no]'
-                });
-            }, 'yes')
-        });
-        it('returns falsey if condition is false', async function () {
-            await expectEqual(() => {
-                return evaluate({
-                    ...options,
-                    expression: '$if[$iffalse, yes, no]'
-                });
-            }, 'no')
-        });
-    })
 });

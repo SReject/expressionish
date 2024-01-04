@@ -11,6 +11,7 @@ const {
     tokenizeEscape,
     tokenizeQuote
 } = require('./text.js');
+const { evalArgsList } = require('../helpers/arg-eval.js');
 
 class ComparisonToken extends BaseToken {
 
@@ -32,24 +33,7 @@ class ComparisonToken extends BaseToken {
             return false;
         }
 
-        let args = [];
-        if (this.arguments && this.arguments.length) {
-            for (let idx = 0; idx < this.arguments.length; idx += 1) {
-                let accumulator;
-                const parts = this.arguments[idx];
-                for (let partsIdx = 0; partsIdx < parts.length; partsIdx += 1) {
-                    let res = await parts[partsIdx].evaluate(options);
-                    if (res != null) {
-                        if (accumulator !== undefined) {
-                            accumulator += ('' + res);
-                        } else {
-                            accumulator = res;
-                        }
-                    }
-                }
-                args.push(accumulator != null ? accumulator : '');
-            }
-        }
+        const args = await evalArgsList(options, this.arguments);
 
         if (options.onlyValidate) {
             return false;

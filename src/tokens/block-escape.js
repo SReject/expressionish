@@ -22,7 +22,6 @@ const tokenize = (output, tokens) => {
 
     // copy tokens list, remove opening ``
     let tokensCopy = tokens.slice(1);
-    // tokensCopy.shift();
 
     let result = [];
     while (tokensCopy.length) {

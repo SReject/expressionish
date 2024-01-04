@@ -1,5 +1,7 @@
 const types = require('../helpers/token-types.js');
+
 const { removeWhitespace } = require('../helpers/misc.js');
+const { evalArgsList, evalArg } = require('../helpers/arg-eval.js');
 
 const { ExpressionSyntaxError } = require('../errors.js');
 
@@ -23,20 +25,7 @@ class IfToken extends BaseToken {
 
         // Only validating: validate both arguments
         if (options.onlyValidate) {
-            const args = [];
-            if (this.arguments && this.arguments.length) {
-                for (let idx = 0; idx < this.arguments.length; idx += 1) {
-                    let accumulator = '';
-                    const parts = this.arguments[idx];
-                    for (let partsIdx = 0; partsIdx < parts.length; partsIdx += 1) {
-                        let res = await parts[partsIdx].evaluate(options);
-                        if (res != null) {
-                            accumulator += res;
-                        }
-                    }
-                    args.push(accumulator);
-                }
-            }
+            await evalArgsList(options, this.arguments);
             return '';
         }
 
@@ -47,30 +36,12 @@ class IfToken extends BaseToken {
 
         // Evaluate conditional argument
         if (result) {
-            let accumulator = '';
-            const parts = this.arguments[0];
-            for (let partsIdx = 0; partsIdx < parts.length; partsIdx += 1) {
-                let res = await parts[partsIdx].evaluate(options);
-                if (res != null) {
-                    accumulator += res;
-                }
-            }
-            return accumulator;
-
-        } else if (this.arguments[1] == null) {
-            return '';
-
-        } else {
-            let accumulator = '';
-            const parts = this.arguments[1];
-            for (let partsIdx = 0; partsIdx < parts.length; partsIdx += 1) {
-                let res = await parts[partsIdx].evaluate(options);
-                if (res != null) {
-                    accumulator += res;
-                }
-            }
-            return accumulator;
+            return await evalArg(options, this.arguments[0]);
         }
+        if (this.arguments[1] == null) {
+            return '';
+        }
+        return await evalArg(options, this.arguments[1]);
     }
 }
 

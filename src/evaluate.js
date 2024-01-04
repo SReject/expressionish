@@ -28,11 +28,6 @@ async function evaluate(options) {
         throw new TypeError('handlers list is not a Map');
     }
 
-    // validate options.trigger
-    if (options.trigger == null) {
-        throw new TypeError('No trigger defined in options');
-    }
-
     // Validate expression
     if (options.expression == null) {
         throw new TypeError('expression not specified');
@@ -48,10 +43,15 @@ async function evaluate(options) {
     const result = [];
     for (let idx = 0; idx < tokens.length; idx += 1) {
         let token = await tokens[idx].evaluate(options);
+
         if (token == null) {
             result.push('');
-        } else {
+
+        } else if (typeof token === 'string') {
             result.push(token);
+
+        } else {
+            result.push(JSON.stringify(token));
         }
     }
 

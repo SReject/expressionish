@@ -22,13 +22,12 @@ class LogicToken extends BaseToken {
         if (!operator) {
             return false;
         }
-
-        let args = [];
-        for (let idx = 0; idx < this.arguments.length; idx += 1) {
-            let arg = await this.arguments[idx].evaluate(options);
-            args.push(arg);
+        const args = [];
+        for (const arg of this.arguments) {
+            args.push(await arg.evaluate(options));
         }
 
+        // const args = await evalArgsList(options, this.arguments);
         if (options.onlyValidate) {
             return false;
         }
