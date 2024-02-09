@@ -166,13 +166,31 @@ module.exports.tokenize = input => {
             result.push({position: idx, value: '``'});
             idx += 1;
 
+        // Windows EoL: \r\n
+        } else if (input[idx] === '\r' && input[idx + 1] === '\n') {
+            if (tok != null) {
+                result.push(tok);
+                tok = null;
+            }
+            result.push({position: idx, value: '\n' });
+            idx += 1;
+
+
+        // Mac & nix EoL: \r|\n
+        } else if (input[idx] === '\r' || input[idx] === '\n') {
+            if (tok != null) {
+                result.push(tok);
+                tok = null;
+            }
+            result.push({position: idx, value: '\n' });
+
         // Significant Characters
         } else if (isSignificant(input[idx])) {
             if (tok != null) {
                 result.push(tok);
                 tok = null;
             }
-            result.push({position: idx, value: input[idx] === '\n' ? ' ' : input[idx]});
+            result.push({position: idx, value: input[idx] });
 
         // Non-emoji, Non-significant characters
         } else if (tok == null) {

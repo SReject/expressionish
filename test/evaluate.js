@@ -163,6 +163,13 @@ describe('evaluate()', function () {
         it('Evaluates vars in block escapes', async function () {
             await expectEqual(() => evaluate({...options, expression: '$inout[``"$ten"``]'}), '"10"');
         });
+        it('Handles multiline block escapes with commas, brackets, etc', async function () {
+            const testCase = `[a,b]\nc[]`;
+            await expectEqual(() => evaluate({
+                ...options,
+                expression: '$inout[``' + testCase + '``]'
+            }), testCase);
+        })
         it('Evaluates and passes instances without stringification', async function () {
             await expectEqual(() => evaluate({ ...options, expression: '$walk[$json, key]'}), "value")
         });
