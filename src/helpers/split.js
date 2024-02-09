@@ -172,7 +172,7 @@ module.exports.tokenize = input => {
                 result.push(tok);
                 tok = null;
             }
-            result.push({position: idx, value: '\n' });
+            result.push({position: idx, value: '\r\n' });
             idx += 1;
 
 
@@ -182,7 +182,7 @@ module.exports.tokenize = input => {
                 result.push(tok);
                 tok = null;
             }
-            result.push({position: idx, value: '\n' });
+            result.push({position: idx, value: input[idx] });
 
         // Significant Characters
         } else if (isSignificant(input[idx])) {

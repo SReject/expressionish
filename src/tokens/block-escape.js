@@ -51,7 +51,14 @@ const tokenize = (output, tokens) => {
     tokensCopy.shift();
 
     // Escape block not the only token in the argument
-    while (tokensCopy.length && tokensCopy[0].value === ' ') {
+    while (
+        tokensCopy.length && (
+            tokensCopy[0].value === ' ' ||
+            tokensCopy[0].value === '\n' ||
+            tokensCopy[0].value === '\r' ||
+            tokensCopy[0].value === '\r\n'
+        )
+    ) {
         tokensCopy.shift();
     }
     if (!tokensCopy.length || (tokensCopy[0].value !== ',' && tokensCopy[0].value !== ']')) {
