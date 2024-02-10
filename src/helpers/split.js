@@ -44,6 +44,7 @@ const isSignificant = char => (
     char === '"' ||
     char === '\\' ||
     char === '$' ||
+    char === '&' ||
     char === '[' ||
     char === ',' ||
     char === ']' ||

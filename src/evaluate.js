@@ -10,6 +10,7 @@ const tokenize = require('./tokens/index.js');
 /**
 ** @param {object} options
 ** @param {Map<string, object>} options.handlers
+** @param {function} options.lookup
 ** @param {string} options.expression
 ** @param {object} options.metadata
 ** @param {!any} options.trigger
@@ -26,6 +27,11 @@ async function evaluate(options) {
     }
     if (!(options.handlers instanceof Map)) {
         throw new TypeError('handlers list is not a Map');
+    }
+
+    // validate lookup handler
+    if (options.lookup != null && typeof options.lookup !== 'function') {
+        throw new TypeError('lookup must be a function');
     }
 
     // Validate expression

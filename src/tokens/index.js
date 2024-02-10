@@ -7,6 +7,7 @@ const { tokenize } = require('../helpers/split.js');
 const { tokenizeEscape, TextToken } = require('./text.js');
 const ifHandler = require('./if.js');
 const variableHandler = require('./variable.js');
+const lookupHandler = require('./lookup.js');
 
 // tokenize(expression)
 module.exports = expression => {
@@ -20,14 +21,6 @@ module.exports = expression => {
             continue;
         }
 
-        /*
-
-        // Attempt to consume token as quoted text
-        if (tokenizeQuote(result, tokens)) {
-            continue;
-        }
-        */
-
         // Attempt to consume token as $if
         if (ifHandler.tokenize(result, tokens)) {
             continue;
@@ -35,6 +28,11 @@ module.exports = expression => {
 
         // Attempt to consume token as a variable
         if (variableHandler.tokenize(result, tokens)) {
+            continue;
+        }
+
+        // Attempt to consume lookup
+        if (lookupHandler.tokenize(result, tokens)) {
             continue;
         }
 

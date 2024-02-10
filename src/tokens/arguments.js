@@ -9,6 +9,7 @@ const blockEscapeHandler = require('./block-escape.js');
 
 const ifHandler = require('./if.js');
 const varHandler = require('./variable.js');
+const lookupHandler = require('./lookup.js');
 
 // tokenizeArguments();
 module.exports.tokenize = (output, tokens) => {
@@ -74,6 +75,10 @@ module.exports.tokenize = (output, tokens) => {
         }
 
         if (varHandler.tokenize(parts, tokens)) {
+            continue;
+        }
+
+        if (lookupHandler.tokenize(parts, tokens)) {
             continue;
         }
 
