@@ -29,9 +29,11 @@ async function evaluate(options) {
         throw new TypeError('handlers list is not a Map');
     }
 
-    // validate lookup handler
-    if (options.lookup != null && typeof options.lookup !== 'function') {
-        throw new TypeError('lookup must be a function');
+    if (options.lookups == null) {
+        options.lookups = new Map();
+
+    } else if (!(options.lookups instanceof Map)) {
+        throw new TypeError('lookup list is not a map');
     }
 
     // Validate expression
@@ -43,7 +45,7 @@ async function evaluate(options) {
     }
 
     // tokenize expression
-    const tokens = tokenize(options.expression);
+    const tokens = tokenize(options.expression, [ ...options.lookups.keys() ]);
 
     // evaluate
     const result = [];

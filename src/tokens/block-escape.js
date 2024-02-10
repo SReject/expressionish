@@ -4,6 +4,7 @@ const { TextToken } = require('./text.js');
 
 const ifHandler = require('./if.js');
 const variableHandler = require('./variable.js');
+const lookupHandler = require('./lookup.js');
 
 /**
  *
@@ -11,7 +12,7 @@ const variableHandler = require('./variable.js');
  * @param {string[]} tokens
  * @returns
  */
-const tokenize = (output, tokens) => {
+const tokenize = (output, tokens, lookups) => {
     if (
         output.length > 0 ||
         !tokens.length ||
@@ -29,10 +30,13 @@ const tokenize = (output, tokens) => {
             break;
         }
 
-        if (ifHandler.tokenize(result, tokensCopy)) {
+        if (ifHandler.tokenize(result, tokensCopy, lookups)) {
             continue;
         }
-        if (variableHandler.tokenize(result, tokensCopy)) {
+        if (variableHandler.tokenize(result, tokensCopy, lookups)) {
+            continue;
+        }
+        if (lookupHandler.tokenize(result, tokensCopy, lookups)) {
             continue;
         }
 

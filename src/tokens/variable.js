@@ -50,7 +50,7 @@ class VariableToken extends BaseToken {
 }
 
 // tokenizeVariable()
-module.exports.tokenize = (output, tokens) => {
+module.exports.tokenize = (output, tokens, lookups) => {
 
     let nameMatch;
     if (
@@ -74,7 +74,7 @@ module.exports.tokenize = (output, tokens) => {
     }
 
     const args = [];
-    if (argumentsHandler.tokenize(args, tokens)) {
+    if (argumentsHandler.tokenize(args, tokens, lookups)) {
         token.arguments = args;
     }
 

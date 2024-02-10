@@ -175,6 +175,27 @@ describe('evaluate()', function () {
         });
     });
 
+    describe('Input is lookup', function () {
+        it('Lookups up handler', async function () {
+            let testCallCount = 0;
+            const result = await evaluate({
+                ...options,
+                lookups: new Map(Object.entries({
+                    '&': () => {
+                        return {
+                            evaluator: () => {
+                                return "value for &test"
+                            }
+                        }
+                    }
+                })),
+                expression: "&test"
+            });
+            expectEqual(result, "value for &test");
+            expectEqual(testCallCount, 1);
+        });
+    });
+
     describe('Input is $if', function () {
         it('throws an error if no arguments', async function () {
             await expectThrow(() => evaluate({...options, expression: '$if'}), errors.ExpressionSyntaxError);

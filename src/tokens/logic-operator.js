@@ -36,7 +36,7 @@ class LogicToken extends BaseToken {
 }
 
 // tokenizeLogicOperator()
-const tokenize = tokens => {
+const tokenize = (tokens, lookups) => {
     // Not a logical operator
     if (
         tokens.length < 4 ||
@@ -72,7 +72,7 @@ const tokenize = tokens => {
         // Consume condition and trailing whitespace
         let token = tokenize(tokens);
         if (token == null) {
-            token = comparisonHandler.tokenize(tokens);
+            token = comparisonHandler.tokenize(tokens, lookups);
             if (token == null) {
                 throw new ExpressionSyntaxError('condition expected', position);
             }

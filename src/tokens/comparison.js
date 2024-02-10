@@ -4,8 +4,9 @@ const { removeWhitespace } = require('../helpers/misc.js');
 const  operators = require('../operators/compare.js');
 
 const BaseToken = require('./base.js');
-const variableHandler = require('./variable.js');
 const ifHandler = require('./if.js');
+const variableHandler = require('./variable.js');
+const lookupHandler = require('./lookup.js');
 const {
     TextToken,
     tokenizeEscape,
@@ -44,7 +45,7 @@ class ComparisonToken extends BaseToken {
 }
 
 // tokenizeComparison()
-module.exports.tokenize = (tokens) => {
+module.exports.tokenize = (tokens, lookups) => {
 
     // nothing to consume
     if (!tokens.length || tokens[0].value === ',' || tokens[0].value === ']') {
@@ -103,11 +104,14 @@ module.exports.tokenize = (tokens) => {
             continue;
         }
 
-        if (ifHandler.tokenize(side, tokens)) {
+        if (ifHandler.tokenize(side, tokens, lookups)) {
             continue;
         }
 
-        if (variableHandler.tokenize(side, tokens)) {
+        if (variableHandler.tokenize(side, tokens, lookups)) {
+            continue;
+        }
+        if (lookupHandler.tokenize(side, tokens, lookups)) {
             continue;
         }
 

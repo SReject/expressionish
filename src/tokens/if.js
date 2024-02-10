@@ -46,7 +46,7 @@ class IfToken extends BaseToken {
 }
 
 // tokenizeIf();
-module.exports.tokenize = (output, tokens) => {
+module.exports.tokenize = (output, tokens, lookups) => {
 
     // not an $if[ token
     if (
@@ -72,11 +72,11 @@ module.exports.tokenize = (output, tokens) => {
     const openToken = tokens.shift();
 
     // Attempt to consume logic condition
-    let condition = logicOperatorHandler.tokenize(tokens);
+    let condition = logicOperatorHandler.tokenize(tokens, lookups);
     if (!condition) {
 
         // Attempt to consume comparison condition
-        condition = comparisonHandler.tokenize(tokens);
+        condition = comparisonHandler.tokenize(tokens, lookups);
         if (!condition) {
             throw new ExpressionSyntaxError('$if requires the first argument to be a conditional', openToken.position + 1);
         }
@@ -94,7 +94,7 @@ module.exports.tokenize = (output, tokens) => {
 
     // Re-add opening bracket token so tokenizeArguments() can be used to finish parsing the $if[]
     tokens.unshift(openToken);
-    argumentsHandler.tokenize(args, tokens);
+    argumentsHandler.tokenize(args, tokens, lookups);
 
     // check result
     if (args.length < 1) {

@@ -1,4 +1,4 @@
-const { ExpressionArgumentsError } = require('../errors.js');
+const { ExpressionVariableError, ExpressionArgumentsError } = require('../errors.js');
 
 const types = require('../helpers/token-types.js');
 const { evalArgsList } = require('../helpers/arg-eval.js');
@@ -15,15 +15,17 @@ class LookupToken extends BaseToken {
             type: types.LOOKUP
         });
         this.arguments = options.arguments;
+        this.prefix = options.prefix
     }
 
     async evaluate(options = {}) {
-        if (!options.lookup) {
-            return null;
+        if (!options.lookups || !options.lookups.has(options, this.prefix, this.value)) {
+            throw new ExpressionVariableError(`unknown lookup`, this.position, this.value);
         }
-        const variable = options.lookup(this.value);
+        const lookupHandler = options.lookups.get(options, this.prefix);
+        const variable = lookupHandler(this.value);
         if (variable == null) {
-            return null;
+            return '';
         }
 
         if (options.preeval) {
@@ -52,19 +54,22 @@ class LookupToken extends BaseToken {
 }
 
 // tokenizeVariable()
-module.exports.tokenize = (output, tokens) => {
+module.exports.tokenize = (output, tokens, lookup) => {
 
     let nameMatch;
     if (
         tokens.length < 2 ||
-        tokens[0].value !== '&' ||
-        !(nameMatch = nameCheck.exec(tokens[1].value))
+        tokens[0].value !== '$' ||
+        tokens[1].value == null ||
+        !lookup.includes(tokens[1].value) ||
+        !(nameMatch = nameCheck.exec(tokens[2].value))
     ) {
         return false;
     }
     tokens.shift();
 
     const token = tokens.shift();
+    token.prefix = tokens.shift();
 
     // trailing character after variable name
     if (nameMatch[2] !== '') {
@@ -76,11 +81,12 @@ module.exports.tokenize = (output, tokens) => {
     }
 
     const args = [];
-    if (argumentsHandler.tokenize(args, tokens)) {
+    if (argumentsHandler.tokenize(args, tokens, lookup)) {
         token.arguments = args;
     }
 
-    output.push(new LookupToken(token))
+    output.push(new LookupToken(token));
+    console.log('Tokenized lookup token', token);
     return true;
 };
 module.exports.LookupToken = LookupToken;

@@ -12,7 +12,7 @@ const varHandler = require('./variable.js');
 const lookupHandler = require('./lookup.js');
 
 // tokenizeArguments();
-module.exports.tokenize = (output, tokens) => {
+module.exports.tokenize = (output, tokens, lookups) => {
     if (!tokens.length || tokens[0].value !== '[') {
         return false;
     }
@@ -47,7 +47,7 @@ module.exports.tokenize = (output, tokens) => {
             continue;
         }
 
-        if (blockEscapeHandler.tokenize(parts, tokens)) {
+        if (blockEscapeHandler.tokenize(parts, tokens, lookups)) {
             continue;
         }
 
@@ -70,15 +70,15 @@ module.exports.tokenize = (output, tokens) => {
             continue;
         }
 
-        if (ifHandler.tokenize(parts, tokens)) {
+        if (ifHandler.tokenize(parts, tokens, lookups)) {
             continue;
         }
 
-        if (varHandler.tokenize(parts, tokens)) {
+        if (varHandler.tokenize(parts, tokens, lookups)) {
             continue;
         }
 
-        if (lookupHandler.tokenize(parts, tokens)) {
+        if (lookupHandler.tokenize(parts, tokens, lookups)) {
             continue;
         }
 

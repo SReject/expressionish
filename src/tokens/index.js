@@ -10,8 +10,8 @@ const variableHandler = require('./variable.js');
 const lookupHandler = require('./lookup.js');
 
 // tokenize(expression)
-module.exports = expression => {
-    let tokens = tokenize(expression);
+module.exports = (expression, lookups) => {
+    let tokens = tokenize(expression, lookups);
     const result = [];
 
     while (tokens.length) {
@@ -22,17 +22,17 @@ module.exports = expression => {
         }
 
         // Attempt to consume token as $if
-        if (ifHandler.tokenize(result, tokens)) {
+        if (ifHandler.tokenize(result, tokens, lookups)) {
             continue;
         }
 
         // Attempt to consume token as a variable
-        if (variableHandler.tokenize(result, tokens)) {
+        if (variableHandler.tokenize(result, tokens, lookups)) {
             continue;
         }
 
         // Attempt to consume lookup
-        if (lookupHandler.tokenize(result, tokens)) {
+        if (lookupHandler.tokenize(result, tokens, lookups)) {
             continue;
         }
 

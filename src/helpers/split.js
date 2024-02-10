@@ -44,7 +44,6 @@ const isSignificant = char => (
     char === '"' ||
     char === '\\' ||
     char === '$' ||
-    char === '&' ||
     char === '[' ||
     char === ',' ||
     char === ']' ||
@@ -103,7 +102,7 @@ module.exports.split = string => {
 };
 
 // Unicode safe tokenizer
-module.exports.tokenize = input => {
+module.exports.tokenize = (input, externalSignificantChars) => {
 
     if (typeof input !== 'string') {
         throw new Error('string cannot be undefined or null')
@@ -176,7 +175,6 @@ module.exports.tokenize = input => {
             result.push({position: idx, value: '\r\n' });
             idx += 1;
 
-
         // Mac & nix EoL: \r|\n
         } else if (input[idx] === '\r' || input[idx] === '\n') {
             if (tok != null) {
@@ -187,6 +185,14 @@ module.exports.tokenize = input => {
 
         // Significant Characters
         } else if (isSignificant(input[idx])) {
+            if (tok != null) {
+                result.push(tok);
+                tok = null;
+            }
+            result.push({position: idx, value: input[idx] });
+
+        // External significant characters
+        } else if (externalSignificantChars && externalSignificantChars.indexOf(input[idx]) > -1) {
             if (tok != null) {
                 result.push(tok);
                 tok = null;
