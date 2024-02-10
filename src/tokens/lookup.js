@@ -19,10 +19,14 @@ class LookupToken extends BaseToken {
     }
 
     async evaluate(options = {}) {
-        if (!options.lookups || !options.lookups.has(options, this.prefix, this.value)) {
-            throw new ExpressionVariableError(`unknown lookup`, this.position, this.value);
+        if (!options.lookups) {
+            throw new ExpressionVariableError(`lookup map invalid`, this.position, this.value);
+
+        } else if (!options.lookups.has(this.prefix)) {
+            throw new ExpressionVariableError(`unknown lookup prefix`, this.position, this.prefix);
         }
-        const lookupHandler = options.lookups.get(options, this.prefix);
+
+        const lookupHandler = options.lookups.get(this.prefix);
         const variable = lookupHandler(this.value);
         if (variable == null) {
             return '';
@@ -68,8 +72,8 @@ module.exports.tokenize = (output, tokens, lookup) => {
     }
     tokens.shift();
 
+    const prefix = tokens.shift();
     const token = tokens.shift();
-    token.prefix = tokens.shift();
 
     // trailing character after variable name
     if (nameMatch[2] !== '') {
@@ -79,6 +83,7 @@ module.exports.tokenize = (output, tokens, lookup) => {
         });
         token.value = nameMatch[1];
     }
+    token.prefix = prefix.value;
 
     const args = [];
     if (argumentsHandler.tokenize(args, tokens, lookup)) {
