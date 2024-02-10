@@ -91,7 +91,6 @@ module.exports.tokenize = (output, tokens, lookup) => {
     }
 
     output.push(new LookupToken(token));
-    console.log('Tokenized lookup token', token);
     return true;
 };
 module.exports.LookupToken = LookupToken;
