@@ -6,7 +6,7 @@ const { evalArgsList } = require('../helpers/arg-eval.js');
 const BaseToken = require('./base.js');
 const argumentsHandler = require('./arguments.js');
 
-const nameCheck = /^([a-z][a-z\d._-]+)([\s\S]*)$/i;
+const nameCheck = /^([a-z][a-z\d_-]+)([\s\S]*)$/i;
 
 class LookupToken extends BaseToken {
     constructor(options) {
