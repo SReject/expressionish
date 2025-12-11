@@ -177,22 +177,39 @@ describe('evaluate()', function () {
 
     describe('Input is lookup', function () {
         it('Lookups up handler', async function () {
-            let testCallCount = 0;
-            const result = await evaluate({
-                ...options,
-                lookups: new Map(Object.entries({
-                    '&': () => {
-                        return {
-                            evaluator: () => {
-                                return "value for &test"
+            await expectEqual(() => {
+                return evaluate({
+                    ...options,
+                    lookups: new Map(Object.entries({
+                        '&': () => {
+                            return {
+                                evaluator: () => {
+                                    return "value for $&test"
+                                }
                             }
                         }
-                    }
-                })),
-                expression: "&test"
-            });
-            expectEqual(result, "value for &test");
-            expectEqual(testCallCount, 1);
+                    })),
+                    expression: "$&test"
+                });
+            }, "value for $&test");
+        });
+
+        it('Appropriately handles potentially significant characters', async function () {
+            await expectEqual(() => {
+                return evaluate({
+                    ...options,
+                    lookups: new Map(Object.entries({
+                        '!': () => {
+                            return {
+                                evaluator: () => {
+                                    return "value for $!test"
+                                }
+                            }
+                        }
+                    })),
+                    expression: "$!test"
+                });
+            }, "value for $!test");
         });
     });
 
@@ -367,6 +384,23 @@ describe('evaluate()', function () {
         it('Properly evaluates !iswcmcs', async function () {
             await expectEqual(() => evaluate({...options, expression: '$if[ab !iswcmcs a?, yes, no]'}), 'no');
             await expectEqual(() => evaluate({...options, expression: '$if[Ab !iswcmcs a?, yes, no]'}), 'yes');
+        });
+        it('Properly handles negated operators when \'!\' is used as a variable lookup indicator', async function () {
+            await expectEqual(() => {
+                return evaluate({
+                    ...options,
+                    lookups: new Map(Object.entries({
+                        '!': () => {
+                            return {
+                                evaluator: () => {
+                                    return "value"
+                                }
+                            }
+                        }
+                    })),
+                    expression: "$if[2 != 2, incorrect, correct]"
+                });
+            }, "correct");
         });
     });
 
