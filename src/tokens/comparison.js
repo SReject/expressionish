@@ -85,6 +85,26 @@ module.exports.tokenize = (tokens, lookups) => {
             continue;
         }
 
+        // consume negated operator: must be prefixed with whitespace and suffixed with whitespace or end-of-conditional
+        if (
+            value == null &&
+            (leadingWs || ws) &&
+            tokens[0].value === '!' &&
+            tokens[1] &&
+            operators.has('!' + tokens[1].value) &&
+            (
+                !tokens[2] ||
+                tokens[2].value === ' ' ||
+                tokens[2].value === ',' ||
+                tokens[2].value === ']'
+            )
+        ) {
+            value = '!' + tokens[1].value;
+            tokens.splice(0, 2);
+            removeWhitespace(tokens);
+            continue;
+        }
+
         const side = value == null ? left : right;
 
         // Add whitespace to side token array
