@@ -1,11 +1,12 @@
-import type { TokenizeOptions, PreEvalFnc, EvaluateMetaData, LookupMap, VariableMap } from '../../types';
+import type { RootTokenJSON } from '../../tojson-types';
+import type { TokenizeOptions, PreEval, EvaluateMetaData, LookupMap, VariableMap } from '../../types';
 
 import SequenceToken from '../sequence-token';
 
 export type RootTokenOptions = TokenizeOptions;
 export interface RootEvaluateOptions {
     onlyValidate?: boolean;
-    preeval?: PreEvalFnc;
+    preeval?: PreEval;
     metadata?: EvaluateMetaData;
     lookups?: LookupMap;
     variables?: VariableMap;
@@ -23,6 +24,9 @@ export default class RootToken extends SequenceToken {
         this.lookups = options.lookups;
         this.variables = options.variables;
         this.expression = options.expression;
+    }
+    toJSON(): RootTokenJSON {
+        return super.toJSON();
     }
 
     async evaluate(options: RootEvaluateOptions = {}): Promise<unknown> {

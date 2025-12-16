@@ -1,7 +1,8 @@
 import type { EvaluateOptions } from '../../types';
+import type { ArgumentsTokenJSON } from '../../tojson-types';
 
-import BaseToken from '../base-token';
-import type ArgumentsToken from '../arguments/token';
+import BaseToken, { type BaseTokenJSON } from '../base-token';
+import type { default as ArgumentsToken } from '../arguments/token';
 
 import operators from './operators';
 
@@ -9,6 +10,11 @@ export interface LogicTokenOptions {
     position: number;
     value: string;
     arguments: ArgumentsToken;
+}
+
+export interface LogicTokenJSON extends BaseTokenJSON {
+    value: string,
+    arguments: ArgumentsTokenJSON
 }
 
 export default class LogicToken extends BaseToken {
@@ -23,11 +29,11 @@ export default class LogicToken extends BaseToken {
         this.arguments = options.arguments;
     }
 
-    toJSON() {
+    toJSON() : LogicTokenJSON {
         return {
             ...super.toJSON(),
             arguments: this.arguments.toJSON()
-        }
+        } as LogicTokenJSON;
     }
 
     async evaluate(options: EvaluateOptions): Promise<unknown> {

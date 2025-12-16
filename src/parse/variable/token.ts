@@ -1,4 +1,5 @@
 import type { EvaluateOptions, Variable } from '../../types';
+import type { VariableTokenJSON } from '../../tojson-types'
 
 import type ArgumentsToken from '../arguments/token';
 import BaseToken from '../base-token';
@@ -8,6 +9,7 @@ export interface VariableTokenOptions {
     value: string;
     arguments?: ArgumentsToken
 }
+
 export default class VariableToken extends BaseToken {
     value: string = '';
     arguments?: ArgumentsToken;
@@ -22,17 +24,13 @@ export default class VariableToken extends BaseToken {
         }
     }
 
-    toJSON() {
-        const result : {
-            position: number,
-            value: unknown,
-            type: string,
-            arguments?: unknown
-        }= super.toJSON();
-        if (this.arguments) {
-            result.arguments = this.arguments.toJSON();
+    toJSON() : VariableTokenJSON {
+        return {
+            position: this.position,
+            type: this.type,
+            value: this.value,
+            arguments: this.arguments ? this.arguments.toJSON() : undefined
         }
-        return result;
     }
 
     async evaluate(options: EvaluateOptions): Promise<unknown> {

@@ -6,6 +6,12 @@ export interface BaseTokenOptions {
     value?: unknown
 }
 
+export interface BaseTokenJSON {
+    position: number,
+    type: string,
+    value?: unknown
+}
+
 export default class BaseToken {
     position: number;
     type: string;
@@ -17,7 +23,7 @@ export default class BaseToken {
         this.value = options.value;
     }
 
-    toJSON() {
+    toJSON() : BaseTokenJSON {
         return {
             position: this.position,
             type: this.type,

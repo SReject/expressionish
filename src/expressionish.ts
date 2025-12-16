@@ -13,37 +13,47 @@ export { default as VariableToken, VariableTokenOptions } from './parse/variable
 export { ExpressionError, ExpressionArgumentsError, ExpressionSyntaxError, ExpressionVariableError } from './errors';
 
 
-
-export const tokenize = (options: TokenizeOptions) => {
+/** Parses a string expression into a usable Expressionish-Token instance */
+export const tokenize = (
+    /** Options to use during tokenization */
+    options: TokenizeOptions
+) => {
     if (options == null) {
         throw new TypeError('options not specified');
     }
 
-    // variables
+    // Validate options.variables
     if (options.variables == null) {
-        throw new TypeError('variables list is null');
+        throw new TypeError('variables map is null');
     }
     if (!(options.variables instanceof Map)) {
-        throw new TypeError('variables list is not a Map instance');
+        throw new TypeError('variables map is not a Map instance');
     }
 
-    // lookups
+    // validate options.lookups
     if (options.lookups == null) {
         options.lookups = new Map() as LookupMap;
     } else if (!(options.lookups instanceof Map)) {
-        throw new TypeError('lookups list is not a Map instance');
+        throw new TypeError('lookups map is not a Map instance');
     }
 
+    // validate options.expression
     if (options.expression == null) {
         throw new TypeError('expression not specified');
     }
     if (typeof options.expression !== 'string') {
         throw new TypeError('expression must be a string');
     }
+
+    // tokenize the expression
     return tokenizeRoot(options);
 }
 
-export const evaluate = async (options: EvaluateOptions) => await tokenize(options).evaluate({
+/** Parses then evaluates expression text */
+export const evaluate = async (
+    /** Options passed to the parser and evaluator */
+    options: EvaluateOptions
+) => tokenize(options).evaluate({
     onlyValidate: options.onlyValidate,
     preeval: options.preeval,
     metadata: options.metadata

@@ -42,8 +42,13 @@ const codePointFromSurrogatePair = (pair: string) => {
     return (highOffset << 10) + lowOffset + 0x10000;
 };
 
-/** Unicode-aware character splitting */
-export const split = (input: string) : string[] => {
+/** Splits the input into an array of unicode-aware characters
+ * @returns {string[]} An array containing the delimited characters where each entry is a character
+*/
+export const split = (
+    /** Input text to split into characters */
+    input: string
+) : string[] => {
     if (typeof input !== 'string') {
         throw new Error('string cannot be undefined or null')
     }
@@ -93,7 +98,14 @@ export const split = (input: string) : string[] => {
     return result;
 };
 
-/** Unicode-aware tokenizer */
+/** Converts the input into a list of Generic tokens for further processing
+ * * Unicode multi-byte/character glyphs are treated as a singular entry
+ * * Each whitespace character is treated as a singular entry
+ * * `\` is treated as a singular entry, the following character is also treated as a singular entry regardless of what it is
+ * * \`\` is treated as a singular entry
+ * * All other ascii punctionation is treated as a singular entry
+ * * Non-unicode characters that are not whitespace or punctuation are grouped together and treated as a singular entry
+*/
 export const tokenize = (input: string) : GenericToken[] => {
 
     if (typeof input !== 'string') {
@@ -111,6 +123,8 @@ export const tokenize = (input: string) : GenericToken[] => {
     while (idx < input.length) {
         const idxInc = idx + inc;
         const current = input[idxInc];
+
+        // unicode multi-byte character
         if (
             idxInc < (input.length - 1) &&
             current &&
@@ -145,7 +159,7 @@ export const tokenize = (input: string) : GenericToken[] => {
             continue;
         }
 
-        // Emoji
+        // Emoji/unicode character
         if (inc > 1) {
             if (tok != null) {
                 result.push(tok);
@@ -154,6 +168,7 @@ export const tokenize = (input: string) : GenericToken[] => {
             result.push({ position: idx, value: input.substring(idx, idx + inc) });
             escaped = false;
 
+        // block-escape denoter
         } else if (input.substring(idx, idx + 1) === '``') {
             if (escaped) {
                 result.push({ position: idx, value: '`'});
@@ -167,6 +182,7 @@ export const tokenize = (input: string) : GenericToken[] => {
                 inc += 2;
             }
 
+        // singular character escape denoter
         } else if (input[idx] === '\\') {
             if (tok != null) {
                 result.push(tok);
@@ -175,7 +191,7 @@ export const tokenize = (input: string) : GenericToken[] => {
             result.push({ position: idx, value: '\\'});
             escaped = !escaped;
 
-        // All ascii punctuation assumed to be potentially significant
+        // All ascii punctuation and whitespace assumed to be potentially significant
         } else if (asciiPunct.test(input[idx])) {
             if (tok != null) {
                 result.push(tok);
@@ -184,7 +200,7 @@ export const tokenize = (input: string) : GenericToken[] => {
             result.push({ position: idx, value: input[idx] });
             escaped = false;
 
-        // Non-emoji, non-punctuation characters
+        // Non-emoji, non-punctuation, no-whitespace characters
         } else if (escaped) {
             result.push({ position: idx, value: input[idx] });
             escaped = false;

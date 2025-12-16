@@ -1,6 +1,7 @@
 import type { GenericToken, TokenizeOptions, TokenizeResult } from '../../types';
+import type IfToken from '../if/token';
+import type VariableToken from '../variable/token';
 
-import type BaseToken from '../base-token';
 import ComparisonToken from './token';
 import SequenceToken from '../sequence-token';
 import TextToken from '../text/token';
@@ -13,6 +14,7 @@ import tokenizeVariable from '../variable/tokenize';
 import tokenizeWhitespace from '../whitespace/tokenize';
 
 import operators from './operators';
+import LookupToken from '../lookup/token';
 
 const tokenizeOperator = (tokens: GenericToken[], cursor: number) : [success: false ] | [success: true, cursor: number, result: string ]=> {
     const count = cursor;
@@ -81,9 +83,6 @@ const tokenizeOperator = (tokens: GenericToken[], cursor: number) : [success: fa
     return [true, cursor, operator];
 }
 
-
-
-
 export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions) : TokenizeResult<ComparisonToken> => {
     const count = tokens.length;
 
@@ -143,9 +142,9 @@ export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions
         }
 
         // Quoted text
-        let [tokenized, tCursor, tResult] : [ tokenized: boolean, cursor?: number, result?: BaseToken ] = tokenizeQuote(tokens, cursor);
+        let [tokenized, tCursor, tResult] : [ tokenized: boolean, cursor?: number, result?: LookupToken | IfToken | VariableToken | TextToken ] = tokenizeQuote(tokens, cursor);
         if (tokenized) {
-            parts.add(tResult as BaseToken);
+            parts.add(tResult as TextToken);
             cursor = tCursor as number;
             continue;
         }
@@ -153,7 +152,7 @@ export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions
         // Lookup
         [tokenized, tCursor, tResult] = tokenizeLookup(tokens, cursor, options);
         if (tokenized) {
-            parts.add(tResult as BaseToken);
+            parts.add(tResult as LookupToken);
             cursor = tCursor as number;
             continue;
         }
@@ -161,7 +160,7 @@ export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions
         // $if
         [tokenized, tCursor, tResult] = tokenizeIf(tokens, cursor, options);
         if (tokenized) {
-            parts.add(tResult as BaseToken);
+            parts.add(tResult as IfToken);
             cursor = tCursor as number;
             continue;
         }
@@ -169,7 +168,7 @@ export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions
         // Variable
         [tokenized, tCursor, tResult] = tokenizeVariable(tokens, cursor, options);
         if (tokenized) {
-            parts.add(tResult as BaseToken);
+            parts.add(tResult as VariableToken);
             cursor = tCursor as number;
             continue;
         }
@@ -190,7 +189,7 @@ export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions
         return [false];
     }
 
-    let uright: undefined | BaseToken;
+    let uright: undefined | LookupToken | IfToken | VariableToken | TextToken | SequenceToken;
     if (right) {
         uright = right.unwrap;
         if (uright.type === 'UNDEFINED') {

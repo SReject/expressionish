@@ -1,4 +1,5 @@
 import type { EvaluateOptions } from '../../types';
+import type { LookupTokenJSON } from '../../tojson-types';
 
 import BaseToken from '../base-token';
 import ArgumentsToken from '../arguments/token';
@@ -26,22 +27,14 @@ export default class LookupToken extends BaseToken {
         this.arguments = options.arguments;
     }
 
-    toJSON() : ({
-        position: number,
-        type: string,
-        prefix: string,
-        value: unknown,
-        arguments: unknown
-    }) {
-        const result = {
-            ...super.toJSON(),
+    toJSON() : LookupTokenJSON {
+        return {
+            position: this.position,
+            type: this.type,
             prefix: this.prefix,
-            arguments: undefined as unknown
-        };
-        if (this.arguments != null) {
-            result.arguments = this.arguments.toJSON();
+            value: this.value,
+            arguments: this.arguments ? this.arguments.toJSON() : undefined
         }
-        return result;
     }
 
     async evaluate(options: EvaluateOptions): Promise<unknown> {

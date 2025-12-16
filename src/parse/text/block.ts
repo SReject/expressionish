@@ -1,6 +1,8 @@
 import type { GenericToken, TokenizeOptions, TokenizeResult } from '../../types';
+import type IfToken from '../if/token';
+import type LookupToken from '../lookup/token';
+import type VariableToken from '../variable/token';
 
-import type BaseToken from '../base-token';
 import SequenceToken from '../sequence-token';
 import TextToken from './token';
 
@@ -23,25 +25,25 @@ export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions
             break;
         }
 
-        let tokenized: boolean, tokenizedCursor: undefined | number, tokenizedResult : undefined | BaseToken;
+        let tokenized: boolean, tokenizedCursor: undefined | number, tokenizedResult : undefined | LookupToken | IfToken | VariableToken;
 
         [tokenized, tokenizedCursor, tokenizedResult] = tokenizeLookup(tokens, cursor,  options);
         if (tokenized) {
-            result.add(tokenizedResult as BaseToken);
+            result.add(tokenizedResult as LookupToken);
             cursor = tokenizedCursor as number;
             continue;
         }
 
         [tokenized, tokenizedCursor, tokenizedResult] = tokenizeIf(tokens, cursor, options);
         if (tokenized) {
-            result.add(tokenizedResult as BaseToken);
+            result.add(tokenizedResult as IfToken);
             cursor = tokenizedCursor as number;
             continue;
         }
 
         [tokenized, tokenizedCursor, tokenizedResult] = tokenizeVariable(tokens, cursor, options);
         if (tokenized) {
-            result.add(tokenizedResult as BaseToken);
+            result.add(tokenizedResult as VariableToken);
             cursor = tokenizedCursor as number;
             continue;
         }

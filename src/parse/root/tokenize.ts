@@ -1,8 +1,10 @@
 import type { TokenizeOptions } from '../../types';
+import type IfToken from '../if/token';
+import type LookupToken from '../lookup/token';
+import type VariableToken from '../variable/token';
 
 import { tokenize as split } from '../../misc/split';
 
-import type BaseToken from '../base-token';
 import RootToken from './token';
 import TextToken from '../text/token';
 
@@ -27,23 +29,23 @@ export default (options: TokenizeOptions) : RootToken => {
             continue;
         }
 
-        let [tokenized, tCursor, tResult] : [tokenized: boolean, cursor?: number, result?: BaseToken] = tokenizeLookup(tokens, cursor, options);
+        let [tokenized, tCursor, tResult] : [tokenized: boolean, cursor?: number, result?: LookupToken | IfToken | VariableToken | TextToken] = tokenizeLookup(tokens, cursor, options);
         if (tokenized) {
-            result.add(tResult as BaseToken);
+            result.add(tResult as LookupToken);
             cursor = tCursor as number;
             continue
         }
 
         [tokenized, tCursor, tResult] = tokenizeIf(tokens, cursor, options);
         if (tokenized) {
-            result.add(tResult as BaseToken);
+            result.add(tResult as IfToken);
             cursor = tCursor as number;
             continue
         }
 
         [tokenized, tCursor, tResult] = tokenizeVariable(tokens, cursor, options);
         if (tokenized) {
-            result.add(tResult as BaseToken);
+            result.add(tResult as VariableToken);
             cursor = tCursor as number;
             continue
         }

@@ -1,7 +1,9 @@
 import type { GenericToken, TokenizeOptions, TokenizeResult } from '../../types';
-
-import type BaseToken from '../base-token';
+import type IfToken from '../if/token';
+import type LookupToken from '../lookup/token';
 import type SequenceToken from '../sequence-token';
+import type TextToken from '../text/token';
+import type VariableToken from '../variable/token';
 
 import ArgumentsToken from './token'
 
@@ -29,7 +31,7 @@ export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions
     }
     consumeWS();
 
-    const args : Array<BaseToken | SequenceToken> = [];
+    const args : Array<LookupToken | IfToken | VariableToken | TextToken | SequenceToken> = [];
     while (cursor < count) {
         consumeWS();
         if (cursor >= count) {
@@ -45,7 +47,7 @@ export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions
         if (cursor >= count) {
             break;
         }
-        args.push(aResult as BaseToken);
+        args.push(aResult as (LookupToken | IfToken | VariableToken | TextToken | SequenceToken));
 
         // End of arguments list
         if (tokens[cursor].value === ']') {

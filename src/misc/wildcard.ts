@@ -1,7 +1,15 @@
 import { split } from './split';
 
 /** Converts `input` as a wildcard pattern into a `RegExp` instance */
-export default (input: string, caseSensitive?: boolean) : RegExp => {
+export default (
+
+    /** The wildcard pattern to be convertedinto a RegExp instance */
+    input: string,
+
+    /** Whether or not the resulting RegExp instance should be case sensitive */
+    caseSensitive: boolean = false
+
+) : RegExp => {
     const wc = split(input);
 
     let isStart = true;
@@ -16,7 +24,7 @@ export default (input: string, caseSensitive?: boolean) : RegExp => {
 
         let char : string | null = wc[idx];
 
-        // Char needs to be escaped
+        // Characters that need to be escaped in the RegExp pattern
         if (
             char === '^' ||
             char === '.' ||
@@ -96,5 +104,5 @@ export default (input: string, caseSensitive?: boolean) : RegExp => {
     if (endAnchor) {
         pattern = pattern + '$';
     }
-    return new RegExp(pattern, caseSensitive ? '' : 'i');
+    return new RegExp(pattern, caseSensitive ? 'u' : 'iu');
 };

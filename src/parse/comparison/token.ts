@@ -1,4 +1,11 @@
 import type { EvaluateOptions } from '../../types';
+import type { ComparisonTokenJSON } from '../../tojson-types';
+import type { default as TextToken } from '../text/token';
+import type { default as LookupToken } from '../lookup/token';
+import type { default as IfToken } from '../if/token';
+import type { default as VariableToken } from '../variable/token';
+import type { default as SequenceToken } from '../sequence-token';
+type operand = LookupToken | IfToken | VariableToken | TextToken | SequenceToken;
 
 import BaseToken from '../base-token';
 
@@ -7,13 +14,14 @@ import operators from './operators';
 export interface ComparisonTokenOptions {
     position: number;
     value: string;
-    left: BaseToken;
-    right?: BaseToken;
+    left: operand;
+    right?: operand;
 }
+
 export default class ComparisonToken extends BaseToken {
     value: string = '';
-    left: BaseToken;
-    right?: BaseToken;
+    left: operand;
+    right?: operand;
 
     constructor(options: ComparisonTokenOptions) {
         super({
@@ -24,10 +32,12 @@ export default class ComparisonToken extends BaseToken {
         this.right = options.right;
     }
 
-    toJSON() {
+    toJSON() : ComparisonTokenJSON {
         return {
-            ...super.toJSON(),
-            left: this.left.toJSON(),
+            position: this.position,
+            type: this.type,
+            value: this.value,
+            left:  this.left.toJSON(),
             right: this.right ? this.right.toJSON() : undefined
         };
     }

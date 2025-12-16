@@ -1,8 +1,10 @@
 import type { GenericToken, TokenizeOptions, TokenizeResult } from '../../types';
 
-import type BaseToken from '../base-token';
+import IfToken from '../if/token';
+import LookupToken from '../lookup/token';
 import SequenceToken from '../sequence-token';
 import TextToken from '../text/token';
+import VariableToken from '../variable/token';
 
 import tokenizeQuote from '../text/quote';
 import tokenizeEscape from '../text/escape';
@@ -14,7 +16,7 @@ import tokenizeWhitespace from '../whitespace/tokenize';
 
 import { ExpressionSyntaxError } from '../../errors';
 
-export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions) : TokenizeResult<BaseToken | SequenceToken> => {
+export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions) : TokenizeResult<LookupToken | IfToken | VariableToken | TextToken | SequenceToken> => {
     const count = tokens.length;
 
     if (cursor >= count) {
@@ -60,9 +62,9 @@ export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions
         }
 
         // Block escape
-        let [tokenized, tCursor, tResult] : [ tokenized: boolean, cursor?: number, result?: BaseToken ] = tokenizeBlockEscape(tokens, cursor, options);
+        let [tokenized, tCursor, tResult] : [ tokenized: boolean, cursor?: number, result?: LookupToken | IfToken | VariableToken | TextToken | SequenceToken ] = tokenizeBlockEscape(tokens, cursor, options);
         if (tokenized) {
-            parts.add(tResult as BaseToken);
+            parts.add(tResult as SequenceToken);
             cursor = tCursor as number;
             continue;
         }
@@ -70,7 +72,7 @@ export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions
         // Quoted text
         [tokenized, tCursor, tResult] = tokenizeQuote(tokens, cursor);
         if (tokenized) {
-            parts.add(tResult as BaseToken);
+            parts.add(tResult as TextToken);
             cursor = tCursor as number;
             continue;
         }
@@ -78,7 +80,7 @@ export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions
         // Lookup
         [tokenized, tCursor, tResult] = tokenizeLookup(tokens, cursor, options);
         if (tokenized) {
-            parts.add(tResult as BaseToken);
+            parts.add(tResult as LookupToken);
             cursor = tCursor as number;
             continue;
         }
@@ -86,7 +88,7 @@ export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions
         // $if
         [tokenized, tCursor, tResult] = tokenizeIf(tokens, cursor, options);
         if (tokenized) {
-            parts.add(tResult as BaseToken);
+            parts.add(tResult as IfToken);
             cursor = tCursor as number;
             continue;
         }
@@ -94,7 +96,7 @@ export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions
         // Variable
         [tokenized, tCursor, tResult] = tokenizeVariable(tokens, cursor, options);
         if (tokenized) {
-            parts.add(tResult as BaseToken);
+            parts.add(tResult as VariableToken);
             cursor = tCursor as number;
             continue;
         }

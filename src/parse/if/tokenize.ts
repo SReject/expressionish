@@ -1,6 +1,12 @@
 import type { GenericToken, TokenizeOptions, TokenizeResult } from '../../types';
+import type ComparisonToken from '../comparison/token';
+import type LogicToken from '../logic/token';
+import type LookupToken from '../lookup/token';
+import type SequenceToken from '../sequence-token';
+import type TextToken from '../text/token';
+import type VariableToken from '../variable/token';
+type ConditionToken = ComparisonToken | LogicToken;
 
-import type BaseToken from '../base-token';
 import IfToken from './token';
 
 import tokenizeArgument from '../arguments/argument';
@@ -40,14 +46,14 @@ export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions
     consumeWS();
 
     // condition
-    let [tokenize, tCursor, tResult] : [tokenize: boolean, tCursor?: number, tResult?: BaseToken] = tokenizeLogicOperator(tokens, cursor, options);
+    let [tokenize, tCursor, tResult] : [tokenize: boolean, tCursor?: number, tResult?: ConditionToken ] = tokenizeLogicOperator(tokens, cursor, options);
     if (!tokenize) {
         [tokenize, tCursor, tResult] = tokenizeComparison(tokens, cursor, options);
     }
     if (!tokenize) {
         throw new ExpressionArgumentsError('$if requires the first argument to be a conditional', tokens[cursor].position, 0, 'if');
     }
-    const condition = tResult as BaseToken;
+    const condition = tResult as ConditionToken;
     cursor = tCursor as number;
     if (cursor >= count) {
         throw new ExpressionSyntaxError('unexpected end of expression');
@@ -73,7 +79,7 @@ export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions
     // when false
     let wfTokenize : boolean,
         wfCursor: undefined | number,
-        whenFalse: undefined | BaseToken;
+        whenFalse: undefined | LookupToken | IfToken | VariableToken | TextToken | SequenceToken;
     if (tokens[cursor].value === ',') {
         [wfTokenize, wfCursor, whenFalse] = tokenizeArgument(tokens, cursor + 1, options);
         if (!wfTokenize) {
@@ -93,7 +99,7 @@ export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions
         cursor + 1,
         new IfToken({
             position: start,
-            condition,
+            value: condition,
             whenTrue,
             whenFalse
         })
