@@ -1,3 +1,5 @@
+import { type EvaluateOptions } from '../types';
+
 export interface BaseTokenOptions {
     position: number,
     type?: string,

@@ -1,3 +1,5 @@
+import type { GenericToken, TokenizeOptions, TokenizeResult } from '../../types';
+
 import type BaseToken from '../base-token';
 import SequenceToken from '../sequence-token';
 import TextToken from '../text/token';

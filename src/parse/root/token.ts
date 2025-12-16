@@ -1,3 +1,5 @@
+import type { TokenizeOptions, PreEvalFnc, EvaluateMetaData, LookupMap, VariableMap } from '../../types';
+
 import SequenceToken from '../sequence-token';
 
 export type RootTokenOptions = TokenizeOptions;

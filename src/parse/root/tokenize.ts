@@ -1,3 +1,5 @@
+import type { TokenizeOptions } from '../../types';
+
 import { tokenize as split } from '../../misc/split';
 
 import type BaseToken from '../base-token';

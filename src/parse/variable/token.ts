@@ -1,3 +1,5 @@
+import type { EvaluateOptions, Variable } from '../../types';
+
 import type ArgumentsToken from '../arguments/token';
 import BaseToken from '../base-token';
 

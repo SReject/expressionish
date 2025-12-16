@@ -1,3 +1,5 @@
+import type { GenericToken, TokenizeOptions, TokenizeResult } from '../../types';
+
 import LookupToken from './token';
 
 import tokenizeArguments from '../arguments/tokenize';

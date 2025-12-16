@@ -1,3 +1,5 @@
+import { type EvaluateOptions } from '../types';
+
 import BaseToken from './base-token';
 
 export interface SequenceTokenOptions {

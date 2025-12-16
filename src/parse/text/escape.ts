@@ -1,3 +1,5 @@
+import type { GenericToken, TokenizeResult } from '../../types';
+
 export default (tokens: GenericToken[], cursor: number, escapeChars?: string) : TokenizeResult<GenericToken> => {
     const count = tokens.length;
 

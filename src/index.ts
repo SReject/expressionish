@@ -1,4 +1,5 @@
 import tokenizeRoot from './parse/root/tokenize';
+import { TokenizeOptions, LookupMap, EvaluateOptions } from './types';
 
 export { default as BaseToken, BaseTokenOptions } from './parse/base-token';
 export { default as ArgumentsToken, ArgumentsTokenOptions } from './parse/arguments/token';
@@ -10,6 +11,8 @@ export { default as RootToken, RootTokenOptions, RootEvaluateOptions } from './p
 export { default as TextToken, TextTokenOptions } from './parse/text/token';
 export { default as VariableToken, VariableTokenOptions } from './parse/variable/token';
 export { ExpressionError, ExpressionArgumentsError, ExpressionSyntaxError, ExpressionVariableError } from './errors';
+
+
 
 export const tokenize = (options: TokenizeOptions) => {
     if (options == null) {

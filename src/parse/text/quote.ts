@@ -1,3 +1,5 @@
+import type { GenericToken, TokenizeResult } from '../../types';
+
 import tokenizeEscape from './escape';
 import TextToken from './token';
 

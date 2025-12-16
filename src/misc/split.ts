@@ -1,4 +1,6 @@
-/*
+import { type GenericToken } from '../types';
+
+/*!
 The MIT License (MIT) @ Copyright (c) 2016 Justin Sippel, Vitaly Domnikov
 https://github.com/bluelovers/runes/blob/8013b6e4021a41d6b579d76b3332c87389c5f092/LICENSE
 */
@@ -39,8 +41,6 @@ const codePointFromSurrogatePair = (pair: string) => {
     const lowOffset = pair.charCodeAt(1) - LOW_SURROGATE_START;
     return (highOffset << 10) + lowOffset + 0x10000;
 };
-
-
 
 /** Unicode-aware character splitting */
 export const split = (input: string) : string[] => {
