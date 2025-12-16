@@ -9,6 +9,38 @@ import tokenizeIf from './parse/if/tokenize';
 import tokenizeLookup from './parse/lookup/tokenize';
 import tokenizeVariable from './parse/variable/tokenize';
 
+interface RootEvaluateOptions {
+    onlyValidate?: boolean;
+    preeval?: PreEvalFnc;
+    metadata?: EvaluateMetaData;
+    lookups?: LookupMap;
+    variables?: VariableMap;
+}
+
+class RootToken extends SequenceToken {
+    lookups: LookupMap;
+    variables: VariableMap;
+    expression: string;
+
+    constructor(options: TokenizeOptions) {
+        super({
+            position: 0
+        });
+        this.lookups = options.lookups;
+        this.variables = options.variables;
+        this.expression = options.expression;
+    }
+
+    async evaluate(options: RootEvaluateOptions): Promise<unknown> {
+        return super.evaluate({
+            lookups: this.lookups,
+            variables: this.variables,
+            ...options,
+            expression: this.expression
+        });
+    }
+}
+
 export const tokenize = (options: TokenizeOptions) => {
     if (options == null) {
         throw new TypeError('options not specified');
@@ -36,7 +68,7 @@ export const tokenize = (options: TokenizeOptions) => {
         throw new TypeError('expression must be a string');
     }
 
-    const result = new SequenceToken({ position: 0 });
+    const result = new RootToken(options);
 
     const tokens = split(options.expression);
     const count = tokens.length;
@@ -78,4 +110,8 @@ export const tokenize = (options: TokenizeOptions) => {
     return result;
 }
 
-export const evaluate = async (options: EvaluateOptions) => await tokenize(options).evaluate(options);
+export const evaluate = async (options: EvaluateOptions) => await tokenize(options).evaluate({
+    onlyValidate: options.onlyValidate,
+    preeval: options.preeval,
+    metadata: options.metadata
+});
