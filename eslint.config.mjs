@@ -6,4 +6,14 @@ import tseslint from 'typescript-eslint';
 export default defineConfig(
     eslint.configs.recommended,
     tseslint.configs.recommended,
+    [
+        {
+            files: ["**/*.ts"],
+            ignores: [
+                ".git/**",
+                "dist/**",
+                "node_modules/**"
+            ]
+        }
+    ]
 );
