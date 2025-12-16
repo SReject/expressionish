@@ -1,7 +1,8 @@
-const { split } = require('./split.js');
+import { split } from './split';
 
-module.exports = (input, caseSensitive) => {
-    let wc = split(input);
+/** Converts `input` as a wildcard pattern into a `RegExp` instance */
+export default (input: string, caseSensitive?: boolean) : RegExp => {
+    const wc = split(input);
 
     let isStart = true;
     let startAnchor = true;
@@ -13,7 +14,7 @@ module.exports = (input, caseSensitive) => {
     let processTokens = false;
     while (idx < wc.length) {
 
-        let char = wc[idx];
+        let char : string | null = wc[idx];
 
         // Char needs to be escaped
         if (
@@ -95,6 +96,5 @@ module.exports = (input, caseSensitive) => {
     if (endAnchor) {
         pattern = pattern + '$';
     }
-    let res = new RegExp(pattern, caseSensitive ? '' : 'i');
-    return res;
+    return new RegExp(pattern, caseSensitive ? '' : 'i');
 };

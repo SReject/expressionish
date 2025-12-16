@@ -30,44 +30,36 @@ const GRAPHEMS = new Set([
     0x11A8  // ( ᆨ ) HANGUL JONGSEONG KIYEOK
 ]);
 
-const betweenInclusive = (value, lower, upper) => {
+const betweenInclusive = (value: number, lower: number, upper: number) => {
     return (value >= lower && value <= upper);
 };
 
-const codePointFromSurrogatePair = pair => {
+const codePointFromSurrogatePair = (pair: string) => {
     const highOffset = pair.charCodeAt(0) - HIGH_SURROGATE_START;
     const lowOffset = pair.charCodeAt(1) - LOW_SURROGATE_START;
     return (highOffset << 10) + lowOffset + 0x10000;
 };
 
-const isSignificant = char => (
-    char === '"' ||
-    char === '\\' ||
-    char === '$' ||
-    char === '[' ||
-    char === ',' ||
-    char === ']' ||
-    char === ' '
-);
 
-// Unicode-safe splitting
-module.exports.split = string => {
-    if (typeof string !== 'string') {
+
+/** Unicode-aware character splitting */
+export const split = (input: string) : string[] => {
+    if (typeof input !== 'string') {
         throw new Error('string cannot be undefined or null')
     }
-    const result = [];
+    const result : string[] = [];
     let idx = 0;
     let inc = 0;
-    while (idx < string.length) {
+    while (idx < input.length) {
         const idxInc = idx + inc;
-        const current = string[idxInc];
+        const current = input[idxInc];
         if (
-            idxInc < (string.length - 1) &&
+            idxInc < (input.length - 1) &&
             current &&
             betweenInclusive(current.charCodeAt(0), HIGH_SURROGATE_START, HIGH_SURROGATE_END)
         ) {
-            const currPair = codePointFromSurrogatePair(current + string[idxInc + 1]);
-            const nextPair = codePointFromSurrogatePair(string.substring(idxInc + 2, idxInc + 5));
+            const currPair = codePointFromSurrogatePair(current + input[idxInc + 1]);
+            const nextPair = codePointFromSurrogatePair(input.substring(idxInc + 2, idxInc + 5));
             if (
                 betweenInclusive(currPair, REGIONAL_INDICATOR_START, REGIONAL_INDICATOR_END) &&
                 betweenInclusive(nextPair, REGIONAL_INDICATOR_START, REGIONAL_INDICATOR_END)
@@ -81,37 +73,41 @@ module.exports.split = string => {
         } else {
             inc += 1;
         }
-        if (GRAPHEMS.has((string[idx + inc] + '').charCodeAt(0))) {
+        if (GRAPHEMS.has((input[idx + inc] + '').charCodeAt(0))) {
             inc += 1;
         }
-        if (betweenInclusive((string[idx + inc] + '').charCodeAt(0), VARIATION_MODIFIER_START, VARIATION_MODIFIER_END)) {
+        if (betweenInclusive((input[idx + inc] + '').charCodeAt(0), VARIATION_MODIFIER_START, VARIATION_MODIFIER_END)) {
             inc += 1;
         }
-        if (betweenInclusive((string[idx + inc] + '').charCodeAt(0), DIACRITICAL_MARKS_START, DIACRITICAL_MARKS_END)) {
+        if (betweenInclusive((input[idx + inc] + '').charCodeAt(0), DIACRITICAL_MARKS_START, DIACRITICAL_MARKS_END)) {
             inc += 1;
         }
-        if ((string[idx + inc] + '').charCodeAt(0) === ZWJ) {
+        if ((input[idx + inc] + '').charCodeAt(0) === ZWJ) {
             inc += 1;
             continue;
         }
-        result.push(string.substring(idx, idx + inc));
+        result.push(input.substring(idx, idx + inc));
         idx += inc;
         inc = 0;
     }
     return result;
 };
 
-// Unicode safe tokenizer
-module.exports.tokenize = (input, externalSignificantChars) => {
+/** Unicode-aware tokenizer */
+export const tokenize = (input: string) : GenericToken[] => {
 
     if (typeof input !== 'string') {
         throw new Error('string cannot be undefined or null')
     }
 
-    const result = [];
+    // eslint-disable-next-line no-control-regex
+    const asciiPunct = /^[\x01-\x2F\x3A-\x40\x5B-\x60\x7B-\x7E]$/;
+
+    const result : GenericToken[] = [];
     let idx = 0;
     let inc = 0;
     let tok = null;
+    let escaped = false;
     while (idx < input.length) {
         const idxInc = idx + inc;
         const current = input[idxInc];
@@ -151,57 +147,49 @@ module.exports.tokenize = (input, externalSignificantChars) => {
 
         // Emoji
         if (inc > 1) {
-            if (tok == null) {
-                tok = {position: idx, value: ''};
-            }
-            tok.value += input.substring(idx, idx + inc);
-
-        // ``
-        } else if (input[idx] === '`' && input[idx + 1] === '`') {
             if (tok != null) {
                 result.push(tok);
                 tok = null;
             }
+            result.push({ position: idx, value: input.substring(idx, idx + inc) });
+            escaped = false;
 
-            result.push({position: idx, value: '``'});
-            idx += 1;
+        } else if (input.substring(idx, idx + 1) === '``') {
+            if (escaped) {
+                result.push({ position: idx, value: '`'});
+                escaped = false;
+            } else {
+                if (tok != null) {
+                    result.push(tok);
+                    tok = null;
+                }
+                result.push({ position: idx, value: '``'});
+                inc += 2;
+            }
 
-        // Windows EoL: \r\n
-        } else if (input[idx] === '\r' && input[idx + 1] === '\n') {
+        } else if (input[idx] === '\\') {
             if (tok != null) {
                 result.push(tok);
                 tok = null;
             }
-            result.push({position: idx, value: '\r\n' });
-            idx += 1;
+            result.push({ position: idx, value: '\\'});
+            escaped = !escaped;
 
-        // Mac & nix EoL: \r|\n
-        } else if (input[idx] === '\r' || input[idx] === '\n') {
+        // All ascii punctuation assumed to be potentially significant
+        } else if (asciiPunct.test(input[idx])) {
             if (tok != null) {
                 result.push(tok);
                 tok = null;
             }
-            result.push({position: idx, value: input[idx] });
+            result.push({ position: idx, value: input[idx] });
+            escaped = false;
 
-        // Significant Characters
-        } else if (isSignificant(input[idx])) {
-            if (tok != null) {
-                result.push(tok);
-                tok = null;
-            }
-            result.push({position: idx, value: input[idx] });
-
-        // External significant characters
-        } else if (externalSignificantChars && externalSignificantChars.indexOf(input[idx]) > -1) {
-            if (tok != null) {
-                result.push(tok);
-                tok = null;
-            }
-            result.push({position: idx, value: input[idx] });
-
-        // Non-emoji, Non-significant characters
+        // Non-emoji, non-punctuation characters
+        } else if (escaped) {
+            result.push({ position: idx, value: input[idx] });
+            escaped = false;
         } else if (tok == null) {
-            tok = {position: idx, value: input[idx]};
+            tok = { position: idx, value: input[idx] };
         } else {
             tok.value += input[idx];
         }

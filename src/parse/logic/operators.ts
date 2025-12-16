@@ -1,23 +1,23 @@
-const $not = arg => (arg == null || arg === false || arg === '');
+const $not = (arg: unknown) => (arg == null || arg === false || arg === '');
 
-const $and = (...args) => {
+const $and = (...args: unknown[]) => {
     if (!args || !args.length) {
         return false;
     }
     return !args.some(item => $not(item));
 };
 
-const $or = (...args) => {
+const $or = (...args: unknown[]) => {
     if (!args || !args.length) {
         return false;
     }
     return args.some(item => (item != null && item !== false && item !== ''));
 }
 
-const $nand = (...args) => $not($and(...args));
-const $nor = (...args) => $not($or(...args));
+const $nand = (...args: unknown[]) => $not($and(...args));
+const $nor = (...args: unknown[]) => $not($or(...args));
 
-module.exports = new Map([
+export default (new Map([
     ['$NOT', $not],
 
     ['$AND', $and],
@@ -31,4 +31,4 @@ module.exports = new Map([
 
     ['$NOR',  $nor],
     ['$NANY', $nor]
-]);
+]));
