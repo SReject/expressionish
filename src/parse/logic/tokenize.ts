@@ -7,6 +7,7 @@ import tokenizeWhitespace from '../whitespace/tokenize';
 import tokenizeComparison from '../comparison/tokenize';
 
 import operators from './operators';
+import { ExpressionSyntaxError } from '../../errors';
 
 const tokenizeLogicOperator = (tokens: GenericToken[], cursor: number, options: TokenizeOptions) : TokenizeResult<LogicToken> => {
     const count = tokens.length;
@@ -20,7 +21,7 @@ const tokenizeLogicOperator = (tokens: GenericToken[], cursor: number, options: 
     }
 
     if ( cursor + 3 >= count || tokens[cursor + 2].value !== '[') {
-        throw new Error('logic operators require atleast one argument');
+        throw new ExpressionSyntaxError('Logic Operators require atleast one argument', tokens[cursor + 1].position);
     }
 
     const name = '$' + tokens[cursor + 1];
@@ -45,7 +46,7 @@ const tokenizeLogicOperator = (tokens: GenericToken[], cursor: number, options: 
         consumeWS();
 
         if (cursor >= count) {
-            throw new Error('unexpected end of expression');
+            break;
         }
 
         let [tokenize, tCursor, tResult] : [tokenize: boolean, tCursor?: number, tResult?: BaseToken] = tokenizeLogicOperator(tokens, cursor, options);
@@ -53,7 +54,7 @@ const tokenizeLogicOperator = (tokens: GenericToken[], cursor: number, options: 
             [tokenize, tCursor, tResult] = tokenizeComparison(tokens, cursor, options);
         }
         if (!tokenize) {
-            throw new Error('condition expected');
+            throw new ExpressionSyntaxError('condition expected', tokens[cursor].position);
         }
         args.push(tResult as BaseToken);
         cursor = tCursor as number;
@@ -78,9 +79,9 @@ const tokenizeLogicOperator = (tokens: GenericToken[], cursor: number, options: 
             ];
         }
 
-        throw new Error('SYNTAX ERROR');
+        throw new ExpressionSyntaxError('unexpected token', tokens[cursor].position);
     }
 
-    throw new Error('unexpected end of expression');
+    throw new ExpressionSyntaxError('unexpected end of expression', count);
 }
 export default tokenizeLogicOperator;

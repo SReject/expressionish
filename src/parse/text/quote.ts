@@ -1,6 +1,8 @@
 import tokenizeEscape from './escape';
 import TextToken from './token';
 
+import { ExpressionSyntaxError } from '../../errors';
+
 export default (tokens: GenericToken[], cursor: number) : TokenizeResult<TextToken> => {
     const count = tokens.length;
 
@@ -39,6 +41,5 @@ export default (tokens: GenericToken[], cursor: number) : TokenizeResult<TextTok
         cursor += 1;
     }
 
-    // TODO: Expressionish Errors
-    throw new Error('end-quote missing');
+    throw new ExpressionSyntaxError('End quote missing', tokens[start].position);
 }

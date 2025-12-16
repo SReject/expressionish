@@ -6,6 +6,8 @@ import ArgumentsToken from './token'
 import tokenizeArgument from './argument';
 import tokenizeWhitespace from '../whitespace/tokenize';
 
+import { ExpressionSyntaxError } from '../../errors';
+
 export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions) : TokenizeResult<ArgumentsToken> => {
     const count = tokens.length;
 
@@ -28,15 +30,18 @@ export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions
     const args : Array<BaseToken | SequenceToken> = [];
     while (cursor < count) {
         consumeWS();
+        if (cursor >= count) {
+            break;
+        }
 
         // get next argument
         const [aTokenized, aCursor, aResult] = tokenizeArgument(tokens, cursor, options);
         if (!aTokenized) {
-            throw new Error('invalid argument');
+            throw new ExpressionSyntaxError('encountered missing or invalid argument', tokens[cursor].position);
         }
         cursor = aCursor as number;
         if (cursor >= count) {
-            throw new Error('unexpected end of expression')
+            break;
         }
         args.push(aResult as BaseToken);
 
@@ -53,15 +58,15 @@ export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions
         }
 
         if (tokens[cursor].value !== ',') {
-            throw new Error('expected end of argument')
+            throw new ExpressionSyntaxError('expected end of argument', tokens[cursor].position);
         }
         cursor += 1;
     }
 
 
     if (cursor >= count) {
-        throw new Error('unexpected end of expression');
+        throw new ExpressionSyntaxError('unexpected end of expression');
     }
 
-    throw new Error('unexpected end of arguments list');
+    throw new ExpressionSyntaxError('unexpected end of arguments list', tokens[cursor].position);
 }

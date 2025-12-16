@@ -1,7 +1,7 @@
 import type ArgumentsToken from '../arguments/token';
 import BaseToken from '../base-token';
 
-interface VariableTokenOptions {
+export interface VariableTokenOptions {
     position: number;
     value: string;
     arguments?: ArgumentsToken

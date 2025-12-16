@@ -10,6 +10,8 @@ import tokenizeIf from '../if/tokenize';
 import tokenizeVariable from '../variable/tokenize';
 import tokenizeWhitespace from '../whitespace/tokenize';
 
+import { ExpressionSyntaxError } from '../../errors';
+
 export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions) : TokenizeResult<BaseToken | SequenceToken> => {
     const count = tokens.length;
 
@@ -100,5 +102,5 @@ export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions
         cursor += 1;
     }
 
-    throw new Error('unexpected end of arguments list')
+    throw new ExpressionSyntaxError('unexpected end of arguments list')
 }

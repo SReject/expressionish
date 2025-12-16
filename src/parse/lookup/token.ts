@@ -1,6 +1,8 @@
 import BaseToken from '../base-token';
 import ArgumentsToken from '../arguments/token';
 
+import { ExpressionVariableError } from '../../errors';
+
 export interface LookupTokenOptions {
     position: number;
     prefix: string;
@@ -42,11 +44,11 @@ export default class LookupToken extends BaseToken {
 
     async evaluate(options: EvaluateOptions): Promise<unknown> {
         if (!options.lookups) {
-            throw new Error(`lookups map invalid ${this.position} ${this.value}`)
+            throw new ExpressionVariableError(`lookup map invalid`, this.position, this.value);
         }
         const lookup = options.lookups.get(this.prefix);
         if (lookup == null) {
-            throw new Error(`unknown lookup prefix ${this.position} ${this.prefix} ${this.value}`);
+            throw new ExpressionVariableError(`unknown lookup prefix`, this.position, this.prefix);
         }
 
         const variable = lookup(this.value);
@@ -71,6 +73,7 @@ export default class LookupToken extends BaseToken {
         }
 
         if (variable.argsCheck) {
+            // Should throw an ExpressionArgumentsError if argsCheck fails
             await variable.argsCheck(options.metadata || {}, ...args);
         }
 

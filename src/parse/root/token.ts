@@ -1,5 +1,6 @@
 import SequenceToken from '../sequence-token';
 
+export type RootTokenOptions = TokenizeOptions;
 export interface RootEvaluateOptions {
     onlyValidate?: boolean;
     preeval?: PreEvalFnc;
@@ -13,7 +14,7 @@ export default class RootToken extends SequenceToken {
     variables: VariableMap;
     expression: string;
 
-    constructor(options: TokenizeOptions) {
+    constructor(options: RootTokenOptions) {
         super({
             position: 0
         });
