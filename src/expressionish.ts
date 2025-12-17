@@ -1,13 +1,14 @@
 import tokenizeRoot from './parse/root/tokenize';
 import { TokenizeOptions, LookupMap, EvaluateOptions } from './types';
 
-export { default as BaseToken, BaseTokenOptions } from './parse/base-token';
 export { default as ArgumentsToken, ArgumentsTokenOptions } from './parse/arguments/token';
+export { default as BaseToken, BaseTokenOptions } from './parse/base-token';
 export { default as ComparisonToken, ComparisonTokenOptions } from './parse/comparison/token';
 export { default as IfToken, IfTokenOptions } from './parse/if/token';
 export { default as LogicToken, LogicTokenOptions } from './parse/logic/token';
 export { default as LookupToken, LookupTokenOptions } from './parse/lookup/token';
 export { default as RootToken, RootTokenOptions, RootEvaluateOptions } from './parse/root/token';
+export { default as SequenceToken } from './parse/sequence-token';
 export { default as TextToken, TextTokenOptions } from './parse/text/token';
 export { default as VariableToken, VariableTokenOptions } from './parse/variable/token';
 export { ExpressionError, ExpressionArgumentsError, ExpressionSyntaxError, ExpressionVariableError } from './errors';
@@ -56,5 +57,5 @@ export const evaluate = async (
 ) => tokenize(options).evaluate({
     onlyValidate: options.onlyValidate,
     preeval: options.preeval,
-    metadata: options.metadata
+    data: options.data
 });

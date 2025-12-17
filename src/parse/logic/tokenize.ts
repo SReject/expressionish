@@ -15,7 +15,6 @@ import tokenizeComparison from '../comparison/tokenize';
 import operators from './operators';
 import { ExpressionSyntaxError } from '../../errors';
 
-
 const tokenizeLogicOperator = (tokens: GenericToken[], cursor: number, options: TokenizeOptions) : TokenizeResult<LogicToken> => {
     const count = tokens.length;
 

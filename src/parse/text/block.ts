@@ -10,41 +10,38 @@ import tokenizeLookup from '../lookup/tokenize';
 import tokenizeIf from '../if/tokenize';
 import tokenizeVariable from '../variable/tokenize';
 
-export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions) : TokenizeResult<SequenceToken> => {
+export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions) : TokenizeResult<LookupToken | IfToken | VariableToken | TextToken | SequenceToken> => {
     const count = tokens.length;
-    if ((cursor + 2) >= count || tokens[cursor].value !== '``') {
+    if ((cursor + 1) >= count || tokens[cursor].value !== '``') {
         return [false];
     }
 
-    const result = new SequenceToken({ position: cursor });
-
     cursor += 1;
+    const result = new SequenceToken({ position: tokens[cursor].position });
 
     while (cursor < count) {
         if (tokens[cursor].value === '``') {
-            break;
+            return [true, cursor + 1, result.unwrap];
         }
 
-        let tokenized: boolean, tokenizedCursor: undefined | number, tokenizedResult : undefined | LookupToken | IfToken | VariableToken;
-
-        [tokenized, tokenizedCursor, tokenizedResult] = tokenizeLookup(tokens, cursor,  options);
+        let [tokenized, tCursor, tResult] : [success: boolean, cursor?: number, result?: LookupToken | IfToken | VariableToken] = tokenizeLookup(tokens, cursor,  options);
         if (tokenized) {
-            result.add(tokenizedResult as LookupToken);
-            cursor = tokenizedCursor as number;
+            result.add(tResult as LookupToken);
+            cursor = tCursor as number;
             continue;
         }
 
-        [tokenized, tokenizedCursor, tokenizedResult] = tokenizeIf(tokens, cursor, options);
+        [tokenized, tCursor, tResult] = tokenizeIf(tokens, cursor, options);
         if (tokenized) {
-            result.add(tokenizedResult as IfToken);
-            cursor = tokenizedCursor as number;
+            result.add(tResult as IfToken);
+            cursor = tCursor as number;
             continue;
         }
 
-        [tokenized, tokenizedCursor, tokenizedResult] = tokenizeVariable(tokens, cursor, options);
+        [tokenized, tCursor, tResult] = tokenizeVariable(tokens, cursor, options);
         if (tokenized) {
-            result.add(tokenizedResult as VariableToken);
-            cursor = tokenizedCursor as number;
+            result.add(tResult as VariableToken);
+            cursor = tCursor as number;
             continue;
         }
 
@@ -52,9 +49,5 @@ export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions
         cursor += 1;
     }
 
-    if (cursor >= count || tokens[cursor].value !== '``') {
-        return [false];
-    }
-
-    return [true, cursor + 1, result];
+    return [false];
 }

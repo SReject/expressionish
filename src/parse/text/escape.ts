@@ -8,7 +8,16 @@ export default (tokens: GenericToken[], cursor: number, escapeChars?: string) : 
     }
 
     if (escapeChars == null) {
-        escapeChars = '"$[,]\\rnt'
+        escapeChars = '"$[,]\\rnt`'
+    }
+
+    // block-escape indicator escaped
+    if (
+        escapeChars.includes('`') &&
+        tokens[cursor + 1].value === '`' &&
+        tokens[cursor + 2].value === '`'
+    ) {
+        return [ true, cursor + 3, { position: cursor, value: '``' } ];
     }
 
     // Escape Denoter followed by non-escape char

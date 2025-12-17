@@ -1,8 +1,8 @@
 import type { EvaluateOptions } from '../../types';
-import type { ArgumentsTokenJSON } from '../../tojson-types';
+import type { LogicTokenJSON } from '../../tojson-types';
+import type ArgumentsToken from '../arguments/token';
 
-import BaseToken, { type BaseTokenJSON } from '../base-token';
-import type { default as ArgumentsToken } from '../arguments/token';
+import BaseToken from '../base-token';
 
 import operators from './operators';
 
@@ -10,11 +10,6 @@ export interface LogicTokenOptions {
     position: number;
     value: string;
     arguments: ArgumentsToken;
-}
-
-export interface LogicTokenJSON extends BaseTokenJSON {
-    value: string,
-    arguments: ArgumentsTokenJSON
 }
 
 export default class LogicToken extends BaseToken {

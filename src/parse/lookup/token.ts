@@ -52,10 +52,10 @@ export default class LookupToken extends BaseToken {
         }
 
         if (options.preeval) {
-            options.preeval(options, variable);
+            options.preeval(options.data || {}, variable);
         }
         if (variable.preeval) {
-            variable.preeval(options, variable);
+            variable.preeval(options.data || {}, variable);
         }
 
         let args : unknown[] = [];
@@ -69,9 +69,9 @@ export default class LookupToken extends BaseToken {
 
         if (variable.argsCheck) {
             // Should throw an ExpressionArgumentsError if argsCheck fails
-            await variable.argsCheck(options.metadata || {}, ...args);
+            await variable.argsCheck(options.data || {}, ...args);
         }
 
-        return variable.evaluate(options.metadata || {}, ...args);
+        return variable.evaluate(options.data || {}, ...args);
     }
 }

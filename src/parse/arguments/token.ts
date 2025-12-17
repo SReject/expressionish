@@ -1,21 +1,22 @@
 import type { EvaluateOptions } from '../../types';
 import type { ArgumentsTokenJSON } from '../../tojson-types';
+import type ComparisonToken from '../comparison/token';
+import type IfToken from '../if/token';
+import type LogicToken from '../logic/token';
+import type LookupToken from '../lookup/token';
+import type TextToken from '../text/token';
+import type VariableToken from '../variable/token';
 
 import BaseToken from '../base-token';
 import SequenceToken from '../sequence-token';
 
-import type { default as TextToken } from '../text/token';
-import type { default as LookupToken } from '../lookup/token';
-import type { default as IfToken } from '../if/token';
-import type { default as VariableToken } from '../variable/token';
-
 export interface ArgumentsTokenOptions {
     position: number;
-    value?: Array<LookupToken | IfToken | VariableToken | TextToken | SequenceToken>
+    value?: Array<LookupToken | IfToken | VariableToken | TextToken | SequenceToken | LogicToken | ComparisonToken>
 }
 
 export default class ArgumentsToken extends BaseToken {
-    value : Array<LookupToken | IfToken | VariableToken | TextToken | SequenceToken> = [];
+    value : Array<LookupToken | IfToken | VariableToken | TextToken | SequenceToken | LogicToken | ComparisonToken> = [];
 
     constructor(options: ArgumentsTokenOptions) {
         super({

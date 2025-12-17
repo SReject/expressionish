@@ -4,14 +4,14 @@ import type BaseToken from './parse/base-token';
 export type TokenizeResult<T = BaseToken> = [success: false] | [success: true, updatedCursor: number, result: T];
 
 /** Data to be passed to variables when they are to be evaluated */
-export type EvaluateMetaData = Record<string | number | symbol, unknown>;
+export type EvaluateData = Record<string | number | symbol, unknown>;
 
 /** Function to call to validate a variable's arguments
  * @throws {import("./errors.ts").ExpressionArgumentsError} If an argument or the arguments list is invalid
 */
 export type ArgsCheck = (
     /** meta data passed to the evaluate() call */
-    data: EvaluateMetaData,
+    data: EvaluateData,
 
     /** Arguments passed to the variable */
     ...args: unknown[]
@@ -20,7 +20,7 @@ export type ArgsCheck = (
 /** Function to call just prior to evaluating a variable or looked up variable */
 export type PreEval = (
     /** Options passed to the `<root>.evaluate()` function */
-    options: EvaluateOptions,
+    data: EvaluateData,
 
     /** Array of arguments to be passed to the variable's `evaluate()` function */
     ...args: unknown[]
@@ -36,7 +36,7 @@ export interface Variable {
     preeval?: PreEval;
 
     /** Function to call to evaluate the variable */
-    evaluate: (data: EvaluateMetaData, ...args: unknown[]) => Promise<unknown>;
+    evaluate: (data: EvaluateData, ...args: unknown[]) => Promise<unknown>;
 }
 
 /** Represents a Map of variables where
@@ -82,7 +82,7 @@ export interface EvaluateOptions extends TokenizeOptions {
     preeval?: PreEval;
 
     /** Data to be passed into variable and/or lookup evaluators */
-    metadata?: EvaluateMetaData;
+    data?: EvaluateData;
 }
 
 /** Represents a small portion of an expression's text that may or may not have significance to the parser */

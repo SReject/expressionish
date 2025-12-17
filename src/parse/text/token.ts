@@ -8,13 +8,14 @@ export interface TextTokenOptions {
 }
 
 export default class TextToken extends BaseToken {
-    value: string = '';
+    value: string;
 
     constructor(options: TextTokenOptions) {
         super({
             ...options,
             type: 'TEXT'
         });
+        this.value = options.value || '';
     }
 
     toJSON() : TextTokenJSON {

@@ -41,11 +41,11 @@ export default class VariableToken extends BaseToken {
         const variable = options.variables.get(this.value) as Variable;
 
         if (options.preeval) {
-            await options.preeval(options, variable);
+            await options.preeval(options.data || {}, variable);
         }
 
         if (variable.preeval) {
-            await variable.preeval(options, variable);
+            await variable.preeval(options.data || {}, variable);
         }
 
         let args : unknown[] = [];
@@ -54,9 +54,9 @@ export default class VariableToken extends BaseToken {
         }
 
         if (variable.argsCheck) {
-            await variable.argsCheck(options.metadata || {}, ...args);
+            await variable.argsCheck(options.data || {}, ...args);
         }
 
-        return variable.evaluate(options.metadata || {}, ...args);
+        return variable.evaluate(options.data || {}, ...args);
     }
 }

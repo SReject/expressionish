@@ -145,6 +145,7 @@ export const tokenize = (input: string) : GenericToken[] => {
         } else {
             inc += 1;
         }
+
         if (GRAPHEMS.has((input[idx + inc] + '').charCodeAt(0))) {
             inc += 1;
         }
@@ -169,17 +170,17 @@ export const tokenize = (input: string) : GenericToken[] => {
             escaped = false;
 
         // block-escape denoter
-        } else if (input.substring(idx, idx + 1) === '``') {
+        } else if (input.substring(idx, idx + 2) === '``') {
+            if (tok != null) {
+                result.push(tok);
+                tok = null;
+            }
             if (escaped) {
                 result.push({ position: idx, value: '`'});
                 escaped = false;
             } else {
-                if (tok != null) {
-                    result.push(tok);
-                    tok = null;
-                }
                 result.push({ position: idx, value: '``'});
-                inc += 2;
+                inc += 1;
             }
 
         // singular character escape denoter
