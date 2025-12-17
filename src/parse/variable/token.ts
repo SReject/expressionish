@@ -11,7 +11,7 @@ export interface VariableTokenOptions {
 }
 
 export default class VariableToken extends BaseToken {
-    value: string = '';
+    value: string;
     arguments?: ArgumentsToken;
 
     constructor(options: VariableTokenOptions) {
@@ -19,6 +19,7 @@ export default class VariableToken extends BaseToken {
             ...options,
             type: 'VARIABLE'
         });
+        this.value = options.value || '';
         if (options.arguments) {
             this.arguments = options.arguments;
         }

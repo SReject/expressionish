@@ -16,13 +16,14 @@ export interface ArgumentsTokenOptions {
 }
 
 export default class ArgumentsToken extends BaseToken {
-    value : Array<LookupToken | IfToken | VariableToken | TextToken | SequenceToken | LogicToken | ComparisonToken> = [];
+    value : Array<LookupToken | IfToken | VariableToken | TextToken | SequenceToken | LogicToken | ComparisonToken>;
 
     constructor(options: ArgumentsTokenOptions) {
         super({
             ...options,
             type: 'ARGUMENTS_LIST'
         });
+        this.value = options.value || [];
     }
 
     toJSON() : ArgumentsTokenJSON {

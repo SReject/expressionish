@@ -21,7 +21,7 @@ export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions
     let prefixAccumulator = ''
     let prefix = '';
     let tmpCursor = cursor;
-    while (tmpCursor <= count) {
+    while (tmpCursor < count) {
         const val = tokens[tmpCursor].value;
         if (!/[\x21-\x47\x3A-\x40\x5B\x5D-\x60\x7B-\x7E]/.test(val)) {
             break;

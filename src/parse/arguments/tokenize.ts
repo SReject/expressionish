@@ -19,7 +19,8 @@ export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions
         return [false];
     }
 
-    const start = cursor;
+    const start = tokens[cursor].position;
+    cursor += 1;
 
     const consumeWS = () => {
         const [wsRem, wsCursor, wsResult] = tokenizeWhitespace(tokens, cursor);
@@ -44,10 +45,11 @@ export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions
             throw new ExpressionSyntaxError('encountered missing or invalid argument', tokens[cursor].position);
         }
         cursor = aCursor as number;
+        args.push(aResult as (LookupToken | IfToken | VariableToken | TextToken | SequenceToken));
+
         if (cursor >= count) {
             break;
         }
-        args.push(aResult as (LookupToken | IfToken | VariableToken | TextToken | SequenceToken));
 
         // End of arguments list
         if (tokens[cursor].value === ']') {

@@ -23,7 +23,7 @@ export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions
         return [false];
     }
 
-    const start = cursor;
+    const start = tokens[cursor].position;
 
     const consumeWhitespace = () => {
         const [wsRem, wsCursor, wsResult] = tokenizeWhitespace(tokens, cursor);

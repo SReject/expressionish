@@ -4,6 +4,8 @@ import VariableToken from './token';
 
 import tokenizeArguments from '../arguments/tokenize';
 
+import { ExpressionVariableError } from '../../errors';
+
 export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions) : TokenizeResult<VariableToken> => {
 
     const count = tokens.length;
@@ -18,6 +20,9 @@ export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions
     const name = tokens[cursor].value;
     if (!/^[a-z][a-z\d]*/i.test(name)) {
         return [false];
+    }
+    if (!options.variables.has(name)) {
+        throw new ExpressionVariableError('unknown variable', tokens[cursor].position, name);
     }
     cursor += 1;
 

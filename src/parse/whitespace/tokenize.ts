@@ -3,6 +3,9 @@ import type { GenericToken, TokenizeResult } from '../../types';
 /** Consumes sequential whitespace from `tokens` beginning at `cursor` */
 export default ((tokens: GenericToken[], cursor: number) : TokenizeResult<string> => {
     const count = tokens.length;
+    if (cursor >= count) {
+        return [false];
+    }
 
     let ws = '';
     let index = cursor;
