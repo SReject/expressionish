@@ -1,22 +1,22 @@
 {
     "name": "expressionish",
     "version": "0.1.0",
-
+    "license": "ISC",
     "files": [
         "./dist/index.js",
         "./dist/index.d.ts",
         "./dist/index.js.map"
     ],
-
     "type": "module",
     "exports": {
         "types": "./dist/expressionish.d.ts",
         "import": "./dist/expressionish.mjs"
     },
-
     "scripts": {
+        "test": "npm run build && mocha",
+        "test:only": "mocha",
         "build": "npm run build:js && npm run build:types",
-        "build:js": "esbuild ./src/expressionish.ts --bundle --sourcemap --format=esm --outfile=dist/expressionish.mjs",
+        "build:js": "esbuild ./src/expressionish.ts --bundle --sourcemap --format=esm --minify --outfile=dist/expressionish.mjs",
         "build:types": "tsc --project ./tsconfig.json --declaration --emitDeclarationOnly --outFile ./dist/expressionish.d.ts"
     },
     "devDependencies": {
@@ -24,6 +24,7 @@
         "@tsconfig/node22": "^22.0.5",
         "esbuild": "^0.27.1",
         "eslint": "^9.39.2",
+        "mocha": "^11.7.5",
         "typescript": "^5.9.3",
         "typescript-eslint": "^8.49.0"
     }
