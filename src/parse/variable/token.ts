@@ -20,9 +20,7 @@ export default class VariableToken extends BaseToken {
             type: 'VARIABLE'
         });
         this.value = options.value || '';
-        if (options.arguments) {
-            this.arguments = options.arguments;
-        }
+        this.arguments = options.arguments;
     }
 
     toJSON() : VariableTokenJSON {

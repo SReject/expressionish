@@ -13,7 +13,7 @@ export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions
         return [false];
     }
 
-    const start = cursor;
+    const start = tokens[cursor].position;
 
     cursor += 1;
 
@@ -26,23 +26,24 @@ export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions
         if (!/[\x21-\x47\x3A-\x40\x5B\x5D-\x60\x7B-\x7E]/.test(val)) {
             break;
         }
-        if (options.lookups.has(prefixAccumulator + val)) {
-            prefix = prefixAccumulator + val;
-            cursor = tmpCursor + 1;
-        } else {
-            prefixAccumulator += val;
-        }
+        prefixAccumulator += val;
         tmpCursor += 1;
+
+        if (options.lookups.has(prefixAccumulator)) {
+            prefix = prefixAccumulator;
+            cursor = tmpCursor;
+        }
     }
-    if (!prefix) {
+    if (cursor >= count || !prefix) {
         return [false];
     }
 
     // Determine name
     let name = '';
-    if (/^[a-z]/i.test(tokens[cursor].value)) {
+    if (!/^[a-z]/i.test(tokens[cursor].value)) {
         return [false];
     }
+
     while (
         cursor < count && (
             /^[a-z\d]+$/i.test(tokens[cursor].value) ||

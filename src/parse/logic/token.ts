@@ -13,22 +13,25 @@ export interface LogicTokenOptions {
 }
 
 export default class LogicToken extends BaseToken {
+    value: string;
     arguments: ArgumentsToken;
-    value: string = '';
 
     constructor(options: LogicTokenOptions) {
         super({
             ...options,
             type: 'LOGIC'
         });
+        this.value = options.value;
         this.arguments = options.arguments;
     }
 
     toJSON() : LogicTokenJSON {
         return {
-            ...super.toJSON(),
+            position: this.position,
+            type: this.type,
+            value: this.value,
             arguments: this.arguments.toJSON()
-        } as LogicTokenJSON;
+        };
     }
 
     async evaluate(options: EvaluateOptions): Promise<unknown> {

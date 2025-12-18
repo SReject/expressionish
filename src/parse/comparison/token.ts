@@ -19,7 +19,7 @@ export interface ComparisonTokenOptions {
 }
 
 export default class ComparisonToken extends BaseToken {
-    value: string = '';
+    value: string;
     left: operand;
     right?: operand;
 
@@ -28,6 +28,7 @@ export default class ComparisonToken extends BaseToken {
             ...options,
             type: 'COMPARISON'
         });
+        this.value = options.value;
         this.left = options.left;
         this.right = options.right;
     }

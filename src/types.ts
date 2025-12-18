@@ -49,6 +49,8 @@ export type VariableMap = Map<string, Variable>;
  * @returns {undefined | Variable} A variable declaration or undefined
 */
 export type LookupFnc = (
+    data: EvaluateData,
+
     /** The variable name to look up */
     name: string
 ) => undefined | Variable;

@@ -27,7 +27,7 @@ export default class IfToken extends BaseToken {
         super({
             position: options.position,
             type: 'IF'
-        })
+        });
         this.value = options.value;
         this.whenTrue = options.whenTrue;
         this.whenFalse = options.whenFalse;

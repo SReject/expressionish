@@ -15,7 +15,7 @@ export interface LookupTokenOptions {
 
 export default class LookupToken extends BaseToken {
     prefix: string;
-    value: string = '';
+    value: string;
     arguments?: ArgumentsToken;
 
     constructor(options: LookupTokenOptions) {
@@ -23,6 +23,7 @@ export default class LookupToken extends BaseToken {
             ...options,
             type: 'LOOKUP'
         });
+        this.value = options.value;
         this.prefix = options.prefix;
         this.arguments = options.arguments;
     }
@@ -46,7 +47,7 @@ export default class LookupToken extends BaseToken {
             throw new ExpressionVariableError(`unknown lookup prefix`, this.position, this.prefix);
         }
 
-        const variable = lookup(this.value);
+        const variable = lookup(options.data || {}, this.value);
         if (variable == null) {
             return;
         }

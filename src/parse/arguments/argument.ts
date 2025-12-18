@@ -52,7 +52,9 @@ export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions
         }
 
         // Whitespace is between 'parts' so must be kept
-        parts.add(new TextToken({ position, value: whitespace}));
+        if (whitespace !== '') {
+            parts.add(new TextToken({ position, value: whitespace}));
+        }
 
         // Single-char escape
         const [eTokenized, eCursor, eResult] = tokenizeEscape(tokens, cursor, '"$,\\`]');
