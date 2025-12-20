@@ -45,7 +45,7 @@ export default class ComparisonToken extends BaseToken {
 
     async evaluate(options: EvaluateOptions): Promise<unknown> {
         if (!this.value || this.value === '') {
-            this.value = 'exists';
+            this.value = 'istruthy';
         }
 
         const operator = operators.get(this.value);
@@ -61,9 +61,8 @@ export default class ComparisonToken extends BaseToken {
         }
 
         if (options.onlyValidate) {
-            return false;
+            return;
         }
-
-        return operator(left, right);
+        return operator.evaluate(options.data || {}, left, right);
     }
 }

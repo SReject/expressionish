@@ -61,10 +61,10 @@ export default class SequenceToken extends BaseToken {
             return;
         }
         if (this.value.length === 1) {
-            return this.value[0].evaluate(options);
+            return this.value[0].evaluate(options || {});
         }
 
-        return (await Promise.all(this.value.map(token => token.evaluate(options)))).reduce((prev: unknown, curr) => {
+        return (await Promise.all(this.value.map(token => token.evaluate(options || {})))).reduce((prev: unknown, curr) => {
             if (prev == null) {
                 return curr;
             }

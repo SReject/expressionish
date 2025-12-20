@@ -27,53 +27,68 @@ export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions
         return [false];
     }
 
-    const start = cursor;
+    const start = tokens[cursor].position;
     cursor += 2;
 
-    if (cursor >= count || tokens[cursor].value !== '[') {
+    if (cursor >= count) {
+        throw new ExpressionArgumentsError('$if requires atleast 2 arguments', start, 0, 'if');
+    }
+
+    if (tokens[cursor].value !== '[') {
         throw new ExpressionArgumentsError('$if requires atleast 2 arguments', tokens[cursor].position, 0, 'if');
     }
     cursor += 1;
 
 
-    const consumeWS = () : undefined | string => {
+    const consumeWS = (notEnd?: boolean) : undefined | string => {
         const [tokenized, tCursor, ws] = tokenizeWhitespace(tokens, cursor);
         if (tokenized) {
             cursor = tCursor as number;
         }
+        if (notEnd && cursor >= count) {
+            throw new ExpressionSyntaxError('unexpected end of expression');
+        }
         return ws;
     }
-    consumeWS();
+    consumeWS(true);
 
     // condition
     let [tokenize, tCursor, tResult] : [tokenize: boolean, tCursor?: number, tResult?: ConditionToken ] = tokenizeLogicOperator(tokens, cursor, options);
     if (!tokenize) {
         [tokenize, tCursor, tResult] = tokenizeComparison(tokens, cursor, options);
-    }
-    if (!tokenize) {
-        throw new ExpressionArgumentsError('$if requires the first argument to be a conditional', tokens[cursor].position, 0, 'if');
+        if (!tokenize) {
+            throw new ExpressionArgumentsError('$if requires the first argument to be a conditional', tokens[cursor].position, 0, 'if');
+        }
     }
     const condition = tResult as ConditionToken;
     cursor = tCursor as number;
+
+    // , expected after condition
     if (cursor >= count) {
         throw new ExpressionSyntaxError('unexpected end of expression');
+    }
+    if (tokens[cursor].value === ']') {
+        throw new ExpressionArgumentsError('$if requires atleast 2 arguments', tokens[cursor].position, 2, 'if');
     }
     if (tokens[cursor].value !== ',') {
         throw new ExpressionSyntaxError('expected end of conditional', tokens[cursor].position);
     }
     cursor += 1;
-    consumeWS();
+    consumeWS(true);
 
     // whenTrue
+    if (cursor >= count) {
+        throw new ExpressionSyntaxError('unexpected end of expression');
+    }
     const [wtTokenize, wtCursor, whenTrue] = tokenizeArgument(tokens, cursor, options);
     if (!wtTokenize) {
         throw new ExpressionArgumentsError('$if must have atleast a condition and 1 parameter', tokens[cursor].position, 1, 'if');
 
-    } else if (<number>wtCursor >= count) {
-        throw new ExpressionSyntaxError('unexpected end of expression');
-
     } else {
         cursor = wtCursor as number;
+        if (cursor >= count) {
+            throw new ExpressionSyntaxError('unexpected end of expression');
+        }
     }
 
     // when false
@@ -81,19 +96,27 @@ export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions
         wfCursor: undefined | number,
         whenFalse: undefined | LookupToken | IfToken | VariableToken | TextToken | SequenceToken;
     if (tokens[cursor].value === ',') {
-        [wfTokenize, wfCursor, whenFalse] = tokenizeArgument(tokens, cursor + 1, options);
-        if (!wfTokenize) {
-            throw new ExpressionSyntaxError('expected 3rd parameter');
+
+        // consume , and trailing whitespace
+        cursor += 1;
+        consumeWS(true);
+
+        if (tokens[cursor].value !== ']') {
+            [wfTokenize, wfCursor, whenFalse] = tokenizeArgument(tokens, cursor, options);
+            if (!wfTokenize) {
+                throw new ExpressionSyntaxError('expected 3rd parameter');
+            }
+            cursor = wfCursor as number;
+            if (cursor >= count) {
+                throw new ExpressionSyntaxError('unexpected end of expression');
+            }
         }
-        if (<number>wfCursor >= count) {
-            throw new ExpressionSyntaxError('unexpected end of expression');
-        }
-        cursor = wfCursor as number;
     }
+
+    // end of arguments
     if (tokens[cursor].value !== ']') {
         throw new ExpressionSyntaxError('expected end of arguments list', tokens[cursor].position);
     }
-
     return [
         true,
         cursor + 1,

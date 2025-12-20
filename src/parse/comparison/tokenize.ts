@@ -1,6 +1,8 @@
-import type { GenericToken, TokenizeOptions, TokenizeResult } from '../../types';
+import type { ComparisonOperatorMap, GenericToken, TokenizeOptions, TokenizeResult } from '../../types';
 import type IfToken from '../if/token';
+import type LookupToken from '../lookup/token';
 import type VariableToken from '../variable/token';
+
 
 import ComparisonToken from './token';
 import SequenceToken from '../sequence-token';
@@ -14,28 +16,15 @@ import tokenizeVariable from '../variable/tokenize';
 import tokenizeWhitespace from '../whitespace/tokenize';
 
 import operators from './operators';
-import LookupToken from '../lookup/token';
+import { ExpressionArgumentsError, ExpressionSyntaxError } from '../../errors';
 
-const tokenizeOperator = (tokens: GenericToken[], cursor: number) : [success: false ] | [success: true, cursor: number, result: string ]=> {
-    const count = cursor;
-    if (cursor >= count) {
-        return [false];
-    }
 
-    const consumeWS = () => {
-        const [wsRem, wsCursor, wsResult] = tokenizeWhitespace(tokens, cursor);
-        if (wsRem) {
-            cursor = wsCursor as number;
-            return wsResult as string;
-        }
-        return ''
-    }
+interface TokenizeOperatorOptions extends TokenizeOptions {
+    operators: ComparisonOperatorMap
+}
 
-    let negated = false;
-    if (tokens[cursor].value === '!') {
-        negated = true;
-        cursor += 1;
-    }
+const tokenizeOperator = (tokens: GenericToken[], cursor: number, options: TokenizeOperatorOptions) : [success: false ] | [success: true, cursor: number, result: string ]=> {
+    const count = tokens.length;
     if (
         cursor >= count ||
         tokens[cursor].value === ',' ||
@@ -46,30 +35,47 @@ const tokenizeOperator = (tokens: GenericToken[], cursor: number) : [success: fa
     }
 
     let operator : string = '';
+    if (tokens[cursor].value === '!') {
+        operator = '!';
+        cursor += 1;
+        if (
+            cursor >= count ||
+            tokens[cursor].value === ',' ||
+            tokens[cursor].value === ']' ||
+            /^\s/.test(tokens[cursor].value)
+        ) {
+            return [false];
+        }
+    }
 
     // text operator, such as 'isnumber'
     if (/^[a-z]+$/i.test(tokens[cursor].value)) {
-        operator = (negated ? '!' : '') + tokens[cursor].value.toLowerCase();
+        operator += tokens[cursor].value.toLowerCase();
         cursor += 1;
 
     // punctuation operator, such as ==
     } else {
-        while (cursor < count) {
-            if (!/^[\x21-\x2F\x3A-\x40\x5E-\x60]$/.test(tokens[cursor].value)) {
-                return [false];
-            }
-            operator += tokens[cursor].value;
-            if (operators.has(operator)) {
-                operator += tokens[cursor].value
+        let operatorAccumulator = operator;
+        let tmpCursor = cursor;
+        while (tmpCursor < count) {
+            if (!/^[\x21-\x2F\x3A-\x40\x5E-\x60]$/.test(tokens[tmpCursor].value)) {
                 break;
             }
-            cursor += 1;
+
+            operatorAccumulator += tokens[tmpCursor].value;
+            tmpCursor += 1;
+
+            if (options.operators.has(operatorAccumulator)) {
+                operator = operatorAccumulator;
+                cursor = tmpCursor;
+            }
         }
     }
 
+
     if (
         cursor >= count ||
-        !operators.has(operator) ||
+        !options.operators.has(operator) ||
         (
             tokens[cursor].value !== ',' &&
             tokens[cursor].value !== ']' &&
@@ -79,22 +85,35 @@ const tokenizeOperator = (tokens: GenericToken[], cursor: number) : [success: fa
         return [false];
     }
 
-    consumeWS();
+
+    const [wsRem, wsCursor] = tokenizeWhitespace(tokens, cursor);
+    if (wsRem) {
+        cursor = wsCursor as number;
+    }
     return [true, cursor, operator];
 }
 
 export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions) : TokenizeResult<ComparisonToken> => {
     const count = tokens.length;
 
-    if (cursor >= count || tokens[cursor].value === ',' || tokens[cursor].value === ']') {
+    // nothing to parse
+    if (
+        cursor >= count ||
+        tokens[cursor].value === ',' ||
+        tokens[cursor].value === ']'
+    ) {
         return [false];
     }
 
-    const start = cursor;
+    const mergedOperators : ComparisonOperatorMap = new Map(operators);
+    if (options.comparisonOperators) {
+        options.comparisonOperators.forEach((operator, key) => {
+            mergedOperators.set(key, operator);
+        });
+    }
 
-    const left = new SequenceToken({ position: start });
-    let operator : undefined | string;
-    let right : undefined | SequenceToken;
+
+    const start = tokens[cursor].position;
 
     const consumeWS = () => {
         const [wsRem, wsCursor, wsResult] = tokenizeWhitespace(tokens, cursor);
@@ -104,23 +123,32 @@ export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions
         }
         return ''
     }
-    consumeWS();
+    // consumeWS(); - leading whitespace should have been consumed by caller
 
+
+    const left = new SequenceToken({ position: start });
+    let operator : undefined | string;
+    let right : SequenceToken | undefined;
     while (cursor < count) {
         const position = cursor;
-        const ws = consumeWS() || '';
+        const ws = consumeWS();
 
+        // end of conditional sequence
         if (
-            cursor >= count ||
-            tokens[cursor].value === ',' ||
-            tokens[cursor].value === ']'
+            cursor >= count
+            || tokens[cursor].value === ','
+            || tokens[cursor].value === ']'
         ) {
             break;
         }
 
-        if (operator == null && ws !== '') {
-            const [opTokenized, opCursor, opResult] = tokenizeOperator(tokens, cursor);
+        if (left.value.length > 0 && operator == null && ws !== '') {
+            const [opTokenized, opCursor, opResult] = tokenizeOperator(tokens, cursor, { ...options, operators: mergedOperators });
             if (opTokenized) {
+                if (left.value.length === 0) {
+                    throw new ExpressionSyntaxError('left operand not specified', start);
+                }
+
                 cursor = opCursor as number;
                 operator = opResult as string;
                 right = new SequenceToken({ position: cursor });
@@ -178,33 +206,39 @@ export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions
         cursor += 1;
 
     }
-    if (
-        cursor >= count ||
-        operator == null ||
-        (
-            tokens[cursor].value !== ',' &&
-            tokens[cursor].value !== ']'
-        )
-    ) {
+
+    if (!left.value.length) {
         return [false];
     }
+    operator = operator || 'istruthy';
 
-    let uright: undefined | LookupToken | IfToken | VariableToken | TextToken | SequenceToken;
-    if (right) {
-        uright = right.unwrap;
-        if (uright.type === 'UNDEFINED') {
-            uright = undefined;
-        }
+    if (
+        operators.get(operator)?.maxArgumentsCount === 1
+        && right != null
+        && (
+            !(right instanceof SequenceToken) ||
+            right.value.length !== 0
+        )
+    ) {
+        throw new ExpressionArgumentsError(`comparison operator ${operator} must not have a right-hand-side value`);
     }
-
+    if (
+        operators.get(operator)?.minArgumentsCount === 2
+        && (
+            right == null ||
+            (right instanceof SequenceToken && right.value.length === 0)
+        )
+    ) {
+        throw new ExpressionArgumentsError(`comparison operator ${operator} requires a right-hand-side value`);
+    }
     return [
         true,
         cursor,
         new ComparisonToken({
             position: start,
             value: operator,
-            left,
-            right: uright
+            left: left.unwrap,
+            right: right ? right.unwrap : undefined
         })
-    ];
+    ]
 }

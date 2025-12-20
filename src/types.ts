@@ -15,29 +15,30 @@ export type ArgsCheck = (
 
     /** Arguments passed to the variable */
     ...args: unknown[]
-) => Promise<never>;
+) => undefined | Promise<never>;
 
 /** Function to call just prior to evaluating a variable or looked up variable */
 export type PreEval = (
     /** Options passed to the `<root>.evaluate()` function */
     data: EvaluateData,
 
-    /** Array of arguments to be passed to the variable's `evaluate()` function */
-    ...args: unknown[]
-) => Promise<never>;
+    /** variable or lookup name */
+    variable: Variable,
+) => undefined | Promise<never>;
+
+type GeneralEvaluateFnc = (data: EvaluateData, ...args: unknown[]) => Promise<unknown>;
+
+export interface GeneralVariableDefinition<T = GeneralEvaluateFnc> {
+    minArgumentsCount?: number;
+    maxArgumentsCount?: number;
+    argsCheck?: ArgsCheck;
+    preeval?: PreEval;
+    evaluate: T;
+}
 
 /** Represents a variable definition */
-export interface Variable {
+export type Variable = GeneralVariableDefinition;
 
-    /** Function to call to validate arguments prior to evaluating the variable */
-    argsCheck?: ArgsCheck;
-
-    /** Function to call just prior to evaluating the variable */
-    preeval?: PreEval;
-
-    /** Function to call to evaluate the variable */
-    evaluate: (data: EvaluateData, ...args: unknown[]) => Promise<unknown>;
-}
 
 /** Represents a Map of variables where
  * - the key is the variable's name
@@ -53,13 +54,21 @@ export type LookupFnc = (
 
     /** The variable name to look up */
     name: string
-) => undefined | Variable;
+) => undefined | Variable | Promise<undefined | Variable>;
 
 /** Represents a Map of Lookup handlers where
  * * the key is the lookup variable-prefix
  * * the value is the function to handle the lookup
 */
 export type LookupMap = Map<string, LookupFnc>;
+
+export type LogicOperatorFnc = (data: EvaluateData, ...args: unknown[]) => boolean | Promise<boolean>;
+export type LogicOperatorDefinition = GeneralVariableDefinition<LogicOperatorFnc>
+export type LogicOperatorMap = Map<string, LogicOperatorDefinition>;
+
+export type ComparisonOperatorFnc = (data: EvaluateData, v1: unknown, v2?: unknown) => boolean | Promise<boolean>;
+export type ComparisonOperatorDefinition = GeneralVariableDefinition<ComparisonOperatorFnc>
+export type ComparisonOperatorMap = Map<string, ComparisonOperatorDefinition>;
 
 /** Options when Tokenizing an expression */
 export interface TokenizeOptions {
@@ -72,6 +81,12 @@ export interface TokenizeOptions {
 
     /** A map of variable handlers available to be accessed by the expression */
     variables: VariableMap;
+
+    /** A map of additional condition logical operators */
+    logicalOperators?: LogicOperatorMap;
+
+    /** A map of additional condition comparison operators */
+    comparisonOperators?: ComparisonOperatorMap;
 }
 
 /** Options when evaluating a tokenized expression */

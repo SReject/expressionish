@@ -1,4 +1,4 @@
-import type { EvaluateOptions } from '../../types';
+import type { EvaluateOptions, LogicOperatorDefinition } from '../../types';
 import type { LogicTokenJSON } from '../../tojson-types';
 import type ArgumentsToken from '../arguments/token';
 
@@ -35,17 +35,24 @@ export default class LogicToken extends BaseToken {
     }
 
     async evaluate(options: EvaluateOptions): Promise<unknown> {
-        const operator = operators.get(this.value);
-        if (!operator) {
+        let operator : LogicOperatorDefinition;
+        if (options.logicalOperators?.has(this.value)) {
+            operator = options.logicalOperators.get(this.value) as LogicOperatorDefinition;
+        } else if (operators.has(this.value)) {
+            operator = operators.get(this.value) as LogicOperatorDefinition;
+        } else {
             return false;
         }
 
         const args = await this.arguments.evaluate(options);
+        if (operator.argsCheck) {
+            operator.argsCheck(options.data || {}, ...args);
+        }
 
         if (options.onlyValidate) {
             return;
         }
 
-        return operator(...args);
+        return operator.evaluate(options.data || {}, ...args);
     }
 }

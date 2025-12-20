@@ -25,15 +25,17 @@ export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions
 
     const start = tokens[cursor].position;
 
-    const consumeWhitespace = () => {
-        const [wsRem, wsCursor, wsResult] = tokenizeWhitespace(tokens, cursor);
-        if (wsRem) {
-            cursor = wsCursor as number;
-            return wsResult as string;
+    const consumeWS = (notEnd?: boolean) : string => {
+        const [tokenized, tCursor, ws] = tokenizeWhitespace(tokens, cursor);
+        if (tokenized) {
+            cursor = tCursor as number;
         }
-        return '';
+        if (notEnd && cursor >= count) {
+            throw new ExpressionSyntaxError('unexpected end of expression');
+        }
+        return ws || '';
     }
-    consumeWhitespace();
+    consumeWS();
     if (cursor >= count) {
         return [false];
     }
@@ -41,7 +43,10 @@ export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions
     const parts = new SequenceToken({ position: start });
     while (cursor < count) {
         const position = tokens[cursor].position;
-        const whitespace = consumeWhitespace();
+        const whitespace = consumeWS();
+        if (cursor >= count) {
+            break;
+        }
 
         // End of argument
         if (

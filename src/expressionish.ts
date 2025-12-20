@@ -1,5 +1,5 @@
 import tokenizeRoot from './parse/root/tokenize';
-import { TokenizeOptions, LookupMap, EvaluateOptions } from './types';
+import { TokenizeOptions, LookupMap, EvaluateOptions, LogicOperatorMap, ComparisonOperatorMap } from './types';
 
 export { default as ArgumentsToken, ArgumentsTokenOptions } from './parse/arguments/token';
 export { default as BaseToken, BaseTokenOptions } from './parse/base-token';
@@ -35,7 +35,20 @@ export const tokenize = (
     if (options.lookups == null) {
         options.lookups = new Map() as LookupMap;
     } else if (!(options.lookups instanceof Map)) {
-        throw new TypeError('lookups map is not a Map instance');
+        throw new TypeError('lookups option specified but is not a Map instance');
+    }
+
+    // validate options.LogicalOperators
+    if (options.logicalOperators == null) {
+        options.logicalOperators = new Map() as LogicOperatorMap;
+    } else if (!(options.logicalOperators instanceof Map)) {
+        throw new TypeError('logical operators options specified but is not a Map instance');
+    }
+
+    if (options.comparisonOperators == null) {
+        options.comparisonOperators = new Map() as ComparisonOperatorMap;
+    } else if (!(options.comparisonOperators instanceof Map)) {
+        throw new TypeError('comparison operators options specified but is not a Map instance');
     }
 
     // validate options.expression

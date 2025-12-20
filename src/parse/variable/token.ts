@@ -56,6 +56,10 @@ export default class VariableToken extends BaseToken {
             await variable.argsCheck(options.data || {}, ...args);
         }
 
+        if (options.onlyValidate) {
+            return;
+        }
+
         return variable.evaluate(options.data || {}, ...args);
     }
 }

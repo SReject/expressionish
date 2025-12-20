@@ -31,8 +31,10 @@ export default class BaseToken {
         };
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     async evaluate(options: EvaluateOptions) : Promise<unknown> {
+        if (options.onlyValidate) {
+            return;
+        }
         return this.value;
     }
 }

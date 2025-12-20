@@ -45,7 +45,12 @@ export default class IfToken extends BaseToken {
 
     async evaluate(options: EvaluateOptions): Promise<unknown> {
         const result = await this.value.evaluate(options);
-        if (result) {
+        if (options.onlyValidate) {
+            await this.whenTrue.evaluate(options);
+            if (this.whenFalse) {
+                await this.whenFalse.evaluate(options);
+            }
+        } else if (result) {
             return this.whenTrue.evaluate(options);
         }
         if (this.whenFalse) {

@@ -12,8 +12,12 @@ export class ExpressionError extends Error {
     ) {
         super(message);
         Error.captureStackTrace(this, this.constructor);
+        this.name = 'ExpressionError';
         this.message = message;
         this.position = position;
+    }
+    static get name() {
+        return 'ExpressionError';
     }
 }
 
@@ -41,8 +45,13 @@ export class ExpressionArgumentsError extends ExpressionError {
     ) {
         super(message, position);
         Error.captureStackTrace(this, this.constructor);
+        this.name = 'ExpressionArgumentsError';
         this.index = index || -1;
         this.varname = varname;
+    }
+
+    static get name() {
+        return 'ExpressionArgumentsError';
     }
 }
 
@@ -64,7 +73,12 @@ export class ExpressionVariableError extends ExpressionError {
     ) {
         super(message, position);
         Error.captureStackTrace(this, this.constructor);
+        this.name = 'ExpressionVariableError';
         this.varname = varname;
+    }
+
+    static get name() {
+        return 'ExpressionVariableError';
     }
 }
 
@@ -87,6 +101,11 @@ export class ExpressionSyntaxError extends ExpressionError {
     ) {
         super(message, position);
         Error.captureStackTrace(this, this.constructor);
+        this.name = 'ExpressionSyntaxError';
         this.character = character;
+    }
+
+    static get name() {
+        return 'ExpressionSyntaxError';
     }
 }

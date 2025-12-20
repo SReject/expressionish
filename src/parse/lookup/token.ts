@@ -42,21 +42,23 @@ export default class LookupToken extends BaseToken {
         if (!options.lookups) {
             throw new ExpressionVariableError(`lookup map invalid`, this.position, this.value);
         }
+
         const lookup = options.lookups.get(this.prefix);
         if (lookup == null) {
             throw new ExpressionVariableError(`unknown lookup prefix`, this.position, this.prefix);
         }
 
-        const variable = lookup(options.data || {}, this.value);
+        const variable = await lookup(options.data || {}, this.value);
+
         if (variable == null) {
             return;
         }
 
         if (options.preeval) {
-            options.preeval(options.data || {}, variable);
+            await options.preeval(options.data || {}, variable);
         }
         if (variable.preeval) {
-            variable.preeval(options.data || {}, variable);
+            await variable.preeval(options.data || {}, variable);
         }
 
         let args : unknown[] = [];
