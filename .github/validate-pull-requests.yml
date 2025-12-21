@@ -1,0 +1,37 @@
+name: Validate Pull Request
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+    branches: ["*", "!master"]
+
+jobs:
+  job:
+    name: Lint, Build and Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Nodejs
+        uses: actions/setup-node@5
+        with:
+          node-verison: "22.19.0"
+
+      - name: Install correct NPM version
+        run: npm install -g npm@11.5.1
+
+      - name: Checkout branch
+        uses: actions/checkout@v6
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Build js
+        run: npm run build:js
+
+      - name: Build types & code-docs
+        run: npm run build:types
+
+      - name: Test
+        run: npm run test:only

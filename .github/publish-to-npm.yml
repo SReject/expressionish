@@ -1,0 +1,79 @@
+name: Publish Package
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master]
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  checkversion:
+    name: Check if version has corrosponding tag
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+      dobuild: ${{ steps.dobuild.outputs.dobuild }}
+
+    steps:
+      - name: Checkout SReject/expressionish
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Read package.json
+        id: package
+        uses: gregoranders/nodejs-project-info@v0.0.21
+
+      - name: Retrieve package.json version
+        id: version
+        run: echo "version=${{ steps.package.outputs.version }}" >> $GITHUB_OUTPUT
+
+      - name: "Check: package version has corrosponding git tag"
+        id: dobuild
+        shell: bash
+        run: echo dobuild=$(git show-ref --tags --verify --quiet -- "refs/tags/v${{ steps.version.outputs.version }}" && echo 0 || echo 1) >> $GITHUB_OUTPUT
+
+  buildandpublish:
+    name: Lint, Build, Test and Publish
+    needs: [checkversion]
+    if: needs.checkversion.outputs.dobuild == 1
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Nodejs
+        uses: actions/setup-node@5
+        with:
+          node-verison: "22.19.0"
+
+      - name: Update NPM version
+        run: npm install -g npm@11.5.1
+
+      - name: Checkout branch
+        uses: actions/checkout@v6
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Build js
+        run: npm run build:js
+
+      - name: Build types & code-docs
+        run: npm run build:types
+
+      - name: Test
+        run: npm run test:only
+
+      - name: Tag release
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag v${{ needs.checkversion.outputs.version }}
+          git push origin v${{ needs.checkoutversion.outputs.version }}
+
+      - name: Publish to NPM
+        run: npm publish
