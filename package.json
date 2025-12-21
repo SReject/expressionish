@@ -1,4 +1,5 @@
 {
+    "author": "SReject",
     "name": "expressionish",
     "version": "0.1.2",
     "license": "ISC",
@@ -17,8 +18,10 @@
         "import": "./dist/expressionish.mjs"
     },
     "scripts": {
+        "lint": "eslint -c ./eslint.config.mjs ./src/**/*.ts",
         "test": "npm run build && mocha",
         "test:only": "mocha",
+
         "build": "npm run build:js && npm run build:types",
         "build:js": "esbuild ./src/expressionish.ts --bundle --sourcemap --format=esm --minify --outfile=dist/expressionish.mjs",
         "build:types": "tsc --project ./tsconfig.json --declaration --emitDeclarationOnly --outFile ./dist/expressionish.d.ts"
