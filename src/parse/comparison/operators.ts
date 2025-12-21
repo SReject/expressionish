@@ -32,7 +32,7 @@ const isTruthy = (data: EvaluateData, v1: unknown) => {
         v1 !== '';
 };
 
-/** Comparison Operator Map */
+/** Built-in Comparison Operators Map */
 export default (new Map<string, ComparisonOperator>([
 
     ['istruthy',  {

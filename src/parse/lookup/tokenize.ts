@@ -4,7 +4,18 @@ import LookupToken from './token';
 
 import tokenizeArguments from '../arguments/tokenize';
 
-export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions) : TokenizeResult<LookupToken> => {
+/** Attempts to tokenize a Lookup from `tokens` starting at `cursor */
+export default (
+
+    /** List of generic tokens to be tokenized into Token instances */
+    tokens: GenericToken[],
+
+    /** Current position within the tokens list */
+    cursor: number,
+
+    /** Options passed to the `tokenize()` call */
+    options: TokenizeOptions
+) : TokenizeResult<LookupToken> => {
     const count = tokens.length;
     if (
         cursor + 1 >= count ||

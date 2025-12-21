@@ -5,7 +5,15 @@ import TextToken from './token';
 
 import { ExpressionSyntaxError } from '../../errors';
 
-export default (tokens: GenericToken[], cursor: number) : TokenizeResult<TextToken> => {
+/** Attempts to consume quoted text from `tokens` starting at `cursor` */
+export default (
+
+    /** List of generic tokens to be tokenized into Token instances */
+    tokens: GenericToken[],
+
+    /** Current position within the tokens list */
+    cursor: number
+) : TokenizeResult<TextToken> => {
     const count = tokens.length;
 
     if (

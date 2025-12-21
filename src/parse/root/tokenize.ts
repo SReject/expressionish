@@ -15,8 +15,11 @@ import tokenizeIf from '../if/tokenize';
 import tokenizeLookup from '../lookup/tokenize';
 import tokenizeVariable from '../variable/tokenize';
 
-
-export default (options: TokenizeOptions) : RootToken => {
+/** Attempts to tokenize the given expression into Token instances */
+export default (
+    /** Options passed to initial tokenize() call */
+    options: TokenizeOptions
+) : RootToken => {
 
     const result = new RootToken(options);
 

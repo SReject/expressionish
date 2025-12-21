@@ -12,7 +12,18 @@ import tokenizeWhitespace from '../whitespace/tokenize';
 
 import { ExpressionSyntaxError } from '../../errors';
 
-export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions) : TokenizeResult<ArgumentsToken> => {
+/** Attempts to consume an arguments-bloc from `tokens` starting at `cursor` */
+export default (
+
+    /** List of generic tokens to be tokenized into Token instances */
+    tokens: GenericToken[],
+
+    /** Current position within the tokens list */
+    cursor: number,
+
+    /** Options passed to the initial `tokenize()` call */
+    options: TokenizeOptions
+) : TokenizeResult<ArgumentsToken> => {
     const count = tokens.length;
 
     if (cursor >= count || tokens[cursor].value !== '[') {

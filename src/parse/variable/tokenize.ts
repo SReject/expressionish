@@ -6,7 +6,18 @@ import tokenizeArguments from '../arguments/tokenize';
 
 import { ExpressionVariableError } from '../../errors';
 
-export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions) : TokenizeResult<VariableToken> => {
+/** Attempts to consume a varaiable from `tokens` starting at `cursor` */
+export default (
+
+    /** List of generic tokens to be tokenized into Token instances */
+    tokens: GenericToken[],
+
+    /** Current position within the tokens list */
+    cursor: number,
+
+    /** Options passed to the `tokenize()` call */
+    options: TokenizeOptions
+) : TokenizeResult<VariableToken> => {
 
     const count = tokens.length;
     if (cursor + 1 >= count || tokens[cursor].value !== '$') {

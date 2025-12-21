@@ -6,16 +6,31 @@ import ArgumentsToken from '../arguments/token';
 
 import { ExpressionVariableError } from '../../errors';
 
+/** Represents the options for a new LookupToken instance */
 export interface LookupTokenOptions {
+
+    /** Position in the expression the token occurs */
     position: number;
+
+    /** The lookup's prefix */
     prefix: string;
+
+    /** The name following the prefix */
     value: string;
+
+    /** Arguments to pass to the lookup result's `evaluate()` function */
     arguments?: ArgumentsToken;
 }
 
 export default class LookupToken extends BaseToken {
+
+    /** Lookup's prefix */
     prefix: string;
+
+    /** The name - following the prefix - to be looked up */
     value: string;
+
+    /** Arguments to pass to the lookup result's `evaluate()` function */
     arguments?: ArgumentsToken;
 
     constructor(options: LookupTokenOptions) {
@@ -28,6 +43,7 @@ export default class LookupToken extends BaseToken {
         this.arguments = options.arguments;
     }
 
+    /** Converts the token to a JSON.stringify()-able object */
     toJSON() : LookupTokenJSON {
         return {
             position: this.position,
@@ -38,6 +54,7 @@ export default class LookupToken extends BaseToken {
         }
     }
 
+    /* Evaluates the token */
     async evaluate(options: EvaluateOptions): Promise<unknown> {
         if (!options.lookups) {
             throw new ExpressionVariableError(`lookup map invalid`, this.position, this.value);

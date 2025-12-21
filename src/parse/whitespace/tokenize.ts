@@ -1,7 +1,13 @@
 import type { GenericToken, TokenizeResult } from '../../types';
 
-/** Consumes sequential whitespace from `tokens` beginning at `cursor` */
-export default ((tokens: GenericToken[], cursor: number) : TokenizeResult<string> => {
+/** Attempts to consume sequential whitespace from `tokens` beginning at `cursor` */
+export default ((
+    /** List of generic tokens to be tokenized into Token instances */
+    tokens: GenericToken[],
+
+    /** Current position within the tokens list */
+    cursor: number
+) : TokenizeResult<string> => {
     const count = tokens.length;
     if (cursor >= count) {
         return [false];

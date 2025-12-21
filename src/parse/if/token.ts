@@ -11,16 +11,31 @@ type OperandToken = LookupToken | IfToken | VariableToken | TextToken | Sequence
 
 import BaseToken from '../base-token';
 
+/** Represents the options for a new IfToken instance */
 export interface IfTokenOptions {
+    /** Position of the if-bloc within the expression*/
     position: number;
+
+    /** The condition of the if-bloc */
     value: ConditionToken;
+
+    /** Token to evaluate if the condition is truthy */
     whenTrue: OperandToken;
+
+    /** Token to evaluate if the condition is not truthy */
     whenFalse?: OperandToken;
 }
 
+/** Represents an if token */
 export default class IfToken extends BaseToken {
+
+    /** The condition of the if-bloc */
     value: ConditionToken;
+
+    /** Token to evaluate if the condition is truthy */
     whenTrue: OperandToken
+
+    /** Token to evaluate if the condition is not truthy */
     whenFalse?: OperandToken;
 
     constructor(options: IfTokenOptions) {
@@ -33,6 +48,7 @@ export default class IfToken extends BaseToken {
         this.whenFalse = options.whenFalse;
     }
 
+    /** Converts the token to a JSON.stringify()-able object */
     toJSON() : IfTokenJSON {
         return {
             position: this.position,
@@ -43,6 +59,7 @@ export default class IfToken extends BaseToken {
         };
     }
 
+    /** Evaluates the token */
     async evaluate(options: EvaluateOptions): Promise<unknown> {
         const result = await this.value.evaluate(options);
         if (options.onlyValidate) {

@@ -10,7 +10,17 @@ import tokenizeLookup from '../lookup/tokenize';
 import tokenizeIf from '../if/tokenize';
 import tokenizeVariable from '../variable/tokenize';
 
-export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions) : TokenizeResult<LookupToken | IfToken | VariableToken | TextToken | SequenceToken> => {
+/** Attempts to consume a block-escape sequence from `tokens` starting at `cursor` */
+export default (
+    /** List of generic tokens to be tokenized into Token instances */
+    tokens: GenericToken[],
+
+    /** Current position within the tokens list */
+    cursor: number,
+
+    /** Options passed to initial tokenize() call */
+    options: TokenizeOptions
+) : TokenizeResult<LookupToken | IfToken | VariableToken | TextToken | SequenceToken> => {
     const count = tokens.length;
     if ((cursor + 1) >= count || tokens[cursor].value !== '``') {
         return [false];

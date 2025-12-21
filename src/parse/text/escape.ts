@@ -1,6 +1,17 @@
 import type { GenericToken, TokenizeResult } from '../../types';
 
-export default (tokens: GenericToken[], cursor: number, escapeChars?: string) : TokenizeResult<GenericToken> => {
+/** Attempts to consume an escape-sequence from `tokens` starting at `cursor` */
+export default (
+
+    /** List of generic tokens to be tokenized into Token instances */
+    tokens: GenericToken[],
+
+    /** Current position within the tokens list */
+    cursor: number,
+
+    /** Escapable character; defaults to "$[,]\\rnt and double backticks */
+    escapeChars?: string
+) : TokenizeResult<GenericToken> => {
     const count = tokens.length;
 
     if ((cursor + 1) >= count || tokens[cursor].value != '\\') {

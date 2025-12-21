@@ -16,7 +16,18 @@ import tokenizeWhitespace from '../whitespace/tokenize';
 
 import { ExpressionArgumentsError, ExpressionSyntaxError } from '../../errors';
 
-export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions) : TokenizeResult<IfToken> => {
+/** Attempts to consume an If Statement from `tokens` starting at `cursor` */
+export default (
+
+    /** List of generic tokens to be tokenized into Token instances */
+    tokens: GenericToken[],
+
+    /** Current position within the tokens list */
+    cursor: number,
+
+    /** Options passed to the `tokenize()` call */
+    options: TokenizeOptions
+) : TokenizeResult<IfToken> => {
     const count = tokens.length;
 
     if (

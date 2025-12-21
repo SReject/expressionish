@@ -11,16 +11,32 @@ import BaseToken from '../base-token';
 
 import operators from './operators';
 
+/** Represents the options for a new ComparisonToken instance */
 export interface ComparisonTokenOptions {
+
+    /** Position of the comparison within the expression */
     position: number;
+
+    /** Comparison operator used */
     value: string;
+
+    /** Left side of comparison */
     left: operand;
+
+    /** Right side of comparison */
     right?: operand;
 }
 
+/** Represents a Comparison Token */
 export default class ComparisonToken extends BaseToken {
+
+    /** Comparison operator used */
     value: string;
+
+    /** Left side of comparison */
     left: operand;
+
+    /** Right side of comparison */
     right?: operand;
 
     constructor(options: ComparisonTokenOptions) {
@@ -33,6 +49,7 @@ export default class ComparisonToken extends BaseToken {
         this.right = options.right;
     }
 
+    /** Converts the token to a JSON.stringify()-able object */
     toJSON() : ComparisonTokenJSON {
         return {
             position: this.position,
@@ -43,6 +60,7 @@ export default class ComparisonToken extends BaseToken {
         };
     }
 
+    /** Evaluates the token */
     async evaluate(options: EvaluateOptions): Promise<unknown> {
         if (!this.value || this.value === '') {
             this.value = 'istruthy';

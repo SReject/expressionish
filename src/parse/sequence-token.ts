@@ -52,7 +52,7 @@ export default class SequenceToken extends BaseToken {
         return this;
     }
 
-    /** Converts the sequence to a JSON.parse()-able object */
+    /** Converts the sequence to a JSON.stringify()-able object */
     toJSON() : SequenceTokenJSON | LookupTokenJSON | IfTokenJSON | VariableTokenJSON | TextTokenJSON {
         const unwrapped = this.unwrap;
         if (unwrapped !== this) {

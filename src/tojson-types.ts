@@ -82,8 +82,13 @@ export interface IfTokenJSON extends BaseTokenJSON {
     whenFalse?: GroupedTokensJSON;
 }
 
+/** Represents a Variable Token */
 export interface VariableTokenJSON extends BaseTokenJSON {
+
+    /** Variable name */
     value: string;
+
+    /** Arguments to pass to the variable's `evaluate()` function */
     arguments?: ArgumentsTokenJSON;
 }
 

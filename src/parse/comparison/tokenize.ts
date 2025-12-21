@@ -19,10 +19,21 @@ import { ExpressionArgumentsError, ExpressionSyntaxError } from '../../errors';
 
 
 interface TokenizeOperatorOptions extends TokenizeOptions {
-    operators: ComparisonOperatorMap
+    comparisonOperators: ComparisonOperatorMap
 }
 
-const tokenizeOperator = (tokens: GenericToken[], cursor: number, options: TokenizeOperatorOptions) : [success: false ] | [success: true, cursor: number, result: string ]=> {
+/** Attempts to consume a comparison operator from `tokens` starting at `cursor` */
+const tokenizeOperator = (
+
+    /** List of generic tokens to be tokenized into Token instances */
+    tokens: GenericToken[],
+
+    /** Current position within the tokens list */
+    cursor: number,
+
+    /** Options passed to initial tokenize() call */
+    options: TokenizeOperatorOptions
+) : [success: false ] | [success: true, cursor: number, result: string ]=> {
     const count = tokens.length;
     if (
         cursor >= count ||
@@ -47,6 +58,8 @@ const tokenizeOperator = (tokens: GenericToken[], cursor: number, options: Token
         }
     }
 
+    const operators = options.comparisonOperators;
+
     // text operator, such as 'isnumber'
     if (/^[a-z]+$/i.test(tokens[cursor].value)) {
         operator += tokens[cursor].value.toLowerCase();
@@ -64,7 +77,7 @@ const tokenizeOperator = (tokens: GenericToken[], cursor: number, options: Token
             operatorAccumulator += tokens[tmpCursor].value;
             tmpCursor += 1;
 
-            if (options.operators.has(operatorAccumulator)) {
+            if (operators.has(operatorAccumulator)) {
                 operator = operatorAccumulator;
                 cursor = tmpCursor;
             }
@@ -74,7 +87,7 @@ const tokenizeOperator = (tokens: GenericToken[], cursor: number, options: Token
 
     if (
         cursor >= count ||
-        !options.operators.has(operator) ||
+        !operators.has(operator) ||
         (
             tokens[cursor].value !== ',' &&
             tokens[cursor].value !== ']' &&
@@ -92,7 +105,18 @@ const tokenizeOperator = (tokens: GenericToken[], cursor: number, options: Token
     return [true, cursor, operator];
 }
 
-export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions) : TokenizeResult<ComparisonToken> => {
+/** Attempts to consume a comparison from `tokens` starting at `cursor` */
+export default (
+
+    /** List of generic tokens to be tokenized into Token instances */
+    tokens: GenericToken[],
+
+    /** Current position within the tokens list */
+    cursor: number,
+
+    /** Options passed to the initial `tokenize()` call */
+    options: TokenizeOptions
+) : TokenizeResult<ComparisonToken> => {
     const count = tokens.length;
 
     // nothing to parse
@@ -110,7 +134,7 @@ export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions
             mergedOperators.set(key, operator);
         });
     }
-
+    const tokOpOptions : TokenizeOperatorOptions = { ...options, comparisonOperators: mergedOperators };
 
     const start = tokens[cursor].position;
 
@@ -122,8 +146,6 @@ export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions
         }
         return ''
     }
-    // consumeWS(); - leading whitespace should have been consumed by caller
-
 
     const left = new SequenceToken({ position: start });
     let operator : undefined | string;
@@ -142,7 +164,7 @@ export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions
         }
 
         if (left.value.length > 0 && operator == null && ws !== '') {
-            const [opTokenized, opCursor, opResult] = tokenizeOperator(tokens, cursor, { ...options, operators: mergedOperators });
+            const [opTokenized, opCursor, opResult] = tokenizeOperator(tokens, cursor, tokOpOptions);
             if (opTokenized) {
                 if (left.value.length === 0) {
                     throw new ExpressionSyntaxError('left operand not specified', start);

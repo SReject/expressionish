@@ -1,7 +1,9 @@
 import type { EvaluateData, LogicOperator, LogicOperatorMap } from '../../types';
 
+/** Tests if `arg` is falsy */
 const not = (data: EvaluateData, arg: unknown) => (arg == null || arg === false || arg === 0 || arg === '');
 
+/** Built-in Logic Operators Map */
 export default (new Map<string, LogicOperator>([
     ['not', {
         minArgumentsCount: 1,

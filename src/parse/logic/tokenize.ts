@@ -15,7 +15,18 @@ import tokenizeComparison from '../comparison/tokenize';
 import operators from './operators';
 import { ExpressionArgumentsError, ExpressionSyntaxError } from '../../errors';
 
-const tokenizeLogicOperator = (tokens: GenericToken[], cursor: number, options: TokenizeOptions) : TokenizeResult<LogicToken> => {
+/** Attempts to consume a Logic Operator from `tokens` starting at `cursor` */
+const tokenizeLogicOperator = (
+
+    /** List of generic tokens to be tokenized into Token instances */
+    tokens: GenericToken[],
+
+    /** Current position within the tokens list */
+    cursor: number,
+
+    /** Options passed to the `tokenize()` call */
+    options: TokenizeOptions
+) : TokenizeResult<LogicToken> => {
     const count = tokens.length;
 
 
@@ -41,8 +52,6 @@ const tokenizeLogicOperator = (tokens: GenericToken[], cursor: number, options: 
     } else {
         return [false];
     }
-
-
 
     if (tokens[cursor].value !== '[') {
         throw new ExpressionSyntaxError('Logic Operators require atleast one argument', tokens[cursor].position);
