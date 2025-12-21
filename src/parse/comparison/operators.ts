@@ -1,4 +1,4 @@
-import type { ComparisonOperatorDefinition, EvaluateData } from '../../types';
+import type { ComparisonOperator, ComparisonOperatorMap, EvaluateData } from '../../types';
 
 /** Attempts to convert the two inputs into numeric values */
 const toNumber = (data: EvaluateData, v1: unknown, v2: unknown) : [unknown, unknown]|[number, number]=> {
@@ -33,28 +33,28 @@ const isTruthy = (data: EvaluateData, v1: unknown) => {
 };
 
 /** Comparison Operator Map */
-export default (new Map<string, ComparisonOperatorDefinition>([
+export default (new Map<string, ComparisonOperator>([
 
     ['istruthy',  {
-        maxArgumentsCount: 1,
+        right: 'never',
         evaluate: isTruthy
     }],
     ['!istruthy', {
-        maxArgumentsCount: 1,
+        right: 'never',
         evaluate: (data: EvaluateData, v1: unknown) => !isTruthy(data, v1)
     }],
 
     ['===', {
-        minArgumentsCount: 2,
+        right: 'required',
         evaluate: isStrictEqual
     }],
     ['!==', {
-        minArgumentsCount: 2,
+        right: 'required',
         evaluate: (data: EvaluateData, v1: unknown, v2: unknown) => !isStrictEqual(data, v1, v2)
     }],
 
     ['<', {
-        minArgumentsCount: 2,
+        right: 'required',
         evaluate: (data: EvaluateData, v1: unknown, v2: unknown) => {
             [v1, v2] = toNumber(data, v1, v2);
             if (typeof v1 !== 'number' || typeof v2 !== 'number') {
@@ -64,7 +64,7 @@ export default (new Map<string, ComparisonOperatorDefinition>([
         }
     }],
     ['<=', {
-        minArgumentsCount: 2,
+        right: 'required',
         evaluate: (data: EvaluateData, v1: unknown, v2: unknown) => {
             [v1, v2] = toNumber(data, v1, v2);
             if (typeof v1 !== 'number' || typeof v2 !== 'number') {
@@ -75,7 +75,7 @@ export default (new Map<string, ComparisonOperatorDefinition>([
     }],
 
     ['>', {
-        minArgumentsCount: 2,
+        right: 'required',
         evaluate: (data: EvaluateData, v1: unknown, v2: unknown) => {
             [v1, v2] = toNumber(data, v1, v2);
             if (typeof v1 !== 'number' || typeof v2 !== 'number') {
@@ -85,7 +85,7 @@ export default (new Map<string, ComparisonOperatorDefinition>([
         }
     }],
     ['>=', {
-        minArgumentsCount: 2,
+        right: 'required',
         evaluate: (data: EvaluateData, v1: unknown, v2: unknown) => {
             [v1, v2] = toNumber(data, v1, v2);
             if (typeof v1 !== 'number' || typeof v2 !== 'number') {
@@ -94,4 +94,4 @@ export default (new Map<string, ComparisonOperatorDefinition>([
             return v1 >= v2;
         }
     }]
-]));
+]) as ComparisonOperatorMap);

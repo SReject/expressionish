@@ -1,5 +1,12 @@
 import tokenizeRoot from './parse/root/tokenize';
+
+// because typescript is dumb
 import { TokenizeOptions, LookupMap, EvaluateOptions, LogicOperatorMap, ComparisonOperatorMap } from './types';
+export { TokenizeOptions, LookupMap, EvaluateOptions, LogicOperatorMap, ComparisonOperatorMap };
+
+// because typescript is dumb
+import { default as RootToken, RootTokenOptions, RootEvaluateOptions } from './parse/root/token'
+export { RootToken, RootTokenOptions, RootEvaluateOptions };
 
 export { default as ArgumentsToken, ArgumentsTokenOptions } from './parse/arguments/token';
 export { default as BaseToken, BaseTokenOptions } from './parse/base-token';
@@ -7,18 +14,16 @@ export { default as ComparisonToken, ComparisonTokenOptions } from './parse/comp
 export { default as IfToken, IfTokenOptions } from './parse/if/token';
 export { default as LogicToken, LogicTokenOptions } from './parse/logic/token';
 export { default as LookupToken, LookupTokenOptions } from './parse/lookup/token';
-export { default as RootToken, RootTokenOptions, RootEvaluateOptions } from './parse/root/token';
 export { default as SequenceToken } from './parse/sequence-token';
 export { default as TextToken, TextTokenOptions } from './parse/text/token';
 export { default as VariableToken, VariableTokenOptions } from './parse/variable/token';
 export { ExpressionError, ExpressionArgumentsError, ExpressionSyntaxError, ExpressionVariableError } from './errors';
 
-
 /** Parses a string expression into a usable Expressionish-Token instance */
 export const tokenize = (
     /** Options to use during tokenization */
     options: TokenizeOptions
-) => {
+) : RootToken => {
     if (options == null) {
         throw new TypeError('options not specified');
     }

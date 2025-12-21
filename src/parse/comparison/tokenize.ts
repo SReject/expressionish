@@ -3,7 +3,6 @@ import type IfToken from '../if/token';
 import type LookupToken from '../lookup/token';
 import type VariableToken from '../variable/token';
 
-
 import ComparisonToken from './token';
 import SequenceToken from '../sequence-token';
 import TextToken from '../text/token';
@@ -213,7 +212,7 @@ export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions
     operator = operator || 'istruthy';
 
     if (
-        operators.get(operator)?.maxArgumentsCount === 1
+        operators.get(operator)?.right === 'never'
         && right != null
         && (
             !(right instanceof SequenceToken) ||
@@ -223,7 +222,7 @@ export default (tokens: GenericToken[], cursor: number, options: TokenizeOptions
         throw new ExpressionArgumentsError(`comparison operator ${operator} must not have a right-hand-side value`);
     }
     if (
-        operators.get(operator)?.minArgumentsCount === 2
+        operators.get(operator)?.right === 'required'
         && (
             right == null ||
             (right instanceof SequenceToken && right.value.length === 0)

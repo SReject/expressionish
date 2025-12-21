@@ -8,12 +8,16 @@ import type { default as VariableToken } from './variable/token';
 
 import BaseToken from './base-token';
 
+/** Options used to create a new SequenceToken instance */
 export interface SequenceTokenOptions {
+    /** Position in the expression where the sequence started */
     position: number;
-    value?: LookupToken | IfToken | VariableToken | TextToken | SequenceToken
 }
 
+/** Represents a sequence of tokens from the expression */
 export default class SequenceToken extends BaseToken {
+
+    /* List of tokens comprising the sequence */
     value : Array<LookupToken | IfToken | VariableToken | TextToken | SequenceToken>;
 
     constructor(options: SequenceTokenOptions) {
@@ -24,7 +28,11 @@ export default class SequenceToken extends BaseToken {
         this.value = [];
     }
 
-    add(token: LookupToken | IfToken | VariableToken | TextToken | SequenceToken) {
+    /** Adds a token to the end of sequence */
+    add(
+        /** Token instance to add to the sequence */
+        token: LookupToken | IfToken | VariableToken | TextToken | SequenceToken
+    ) {
         if (
             token.type !== 'TEXT' ||
             !this.value.length ||
@@ -36,6 +44,7 @@ export default class SequenceToken extends BaseToken {
         }
     }
 
+    /** If the sequence contains a singular token it returns that token otherwise returns `this` */
     get unwrap() : SequenceToken | TextToken | LookupToken | IfToken | VariableToken {
         if (this.value.length === 1) {
             return this.value[0];
@@ -43,6 +52,7 @@ export default class SequenceToken extends BaseToken {
         return this;
     }
 
+    /** Converts the sequence to a JSON.parse()-able object */
     toJSON() : SequenceTokenJSON | LookupTokenJSON | IfTokenJSON | VariableTokenJSON | TextTokenJSON {
         const unwrapped = this.unwrap;
         if (unwrapped !== this) {
@@ -56,6 +66,7 @@ export default class SequenceToken extends BaseToken {
         }
     }
 
+    /** Evaluates the sequence  */
     async evaluate(options: EvaluateOptions) : Promise<unknown> {
         if (this.value == null || this.value.length === 0) {
             return;

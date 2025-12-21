@@ -1,4 +1,4 @@
-import type { GenericToken, LogicOperatorDefinition, TokenizeOptions, TokenizeResult } from '../../types';
+import type { GenericToken, LogicOperator, TokenizeOptions, TokenizeResult } from '../../types';
 import type ComparisonToken from '../comparison/token';
 import type IfToken from '../if/token';
 import type LookupToken from '../lookup/token';
@@ -87,7 +87,7 @@ const tokenizeLogicOperator = (tokens: GenericToken[], cursor: number, options: 
         }
 
         if (tokens[cursor].value === ']') {
-            const opDef = operators.get(operator) as LogicOperatorDefinition;
+            const opDef = operators.get(operator) as LogicOperator;
             if (opDef.minArgumentsCount != null && args.length < opDef.minArgumentsCount) {
                 throw new ExpressionArgumentsError(`$${operator} expects atleast ${opDef.minArgumentsCount} argument(s)`);
             }
