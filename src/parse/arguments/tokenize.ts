@@ -7,7 +7,7 @@ import type VariableToken from '../variable/token';
 
 import ArgumentsToken from './token'
 
-import tokenizeArgument from './argument';
+import tokenizeArgument from '../argument/tokenize';
 import tokenizeWhitespace from '../whitespace/tokenize';
 
 import { ExpressionSyntaxError } from '../../errors';

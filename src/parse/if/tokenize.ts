@@ -9,7 +9,7 @@ type ConditionToken = ComparisonToken | LogicToken;
 
 import IfToken from './token';
 
-import tokenizeArgument from '../arguments/argument';
+import tokenizeArgument from '../argument/tokenize';
 import tokenizeComparison from '../comparison/tokenize';
 import tokenizeLogicOperator from '../logic/tokenize';
 import tokenizeWhitespace from '../whitespace/tokenize';
