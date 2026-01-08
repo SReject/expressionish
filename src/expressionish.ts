@@ -1,8 +1,43 @@
 import tokenizeRoot from './parse/root/tokenize';
 
 // because typescript is dumb
-import { TokenizeOptions, LookupMap, EvaluateOptions, LogicOperatorMap, ComparisonOperatorMap } from './types';
-export { TokenizeOptions, LookupMap, EvaluateOptions, LogicOperatorMap, ComparisonOperatorMap };
+import {
+    TokenizeOptions,
+    ArgsCheck,
+    PreEval,
+    EvaluateData,
+    EvaluateOptions,
+    LookupFnc,
+    LookupMap,
+    LogicOperatorFnc,
+    LogicOperator,
+    LogicOperatorMap,
+    ComparisonOperatorFnc,
+    ComparisonOperator,
+    ComparisonOperatorMap,
+    VariableEvaluateFnc,
+    Variable,
+    VariableMap
+} from './types';
+
+export {
+    TokenizeOptions,
+    ArgsCheck,
+    PreEval,
+    EvaluateData,
+    EvaluateOptions,
+    LookupFnc,
+    LookupMap,
+    LogicOperatorFnc,
+    LogicOperator,
+    LogicOperatorMap,
+    ComparisonOperatorFnc,
+    ComparisonOperator,
+    ComparisonOperatorMap,
+    VariableEvaluateFnc,
+    Variable,
+    VariableMap
+};
 
 // because typescript is dumb
 import { default as RootToken, RootTokenOptions, RootEvaluateOptions } from './parse/root/token'
