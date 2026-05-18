@@ -56,9 +56,15 @@ async function evaluate(options) {
     // evaluate
     const result = [];
     for (let idx = 0; idx < tokens.length; idx += 1) {
+        const tokenType = tokens[idx].tokenType
         let token = await tokens[idx].evaluate(options);
-        if (options.postProcessVariable) {
-            let post = await options.postProcessVariable(token);
+
+        if (options.postProcessVariable && (
+            tokenType === tokenTypes.IF ||
+            tokenType === tokenTypes.LOOKUP ||
+            tokenType === tokenTypes.VARIABLE
+        )) {
+            const post = await options.postProcessVariable(token);
             if (post !== undefined) {
                 token = post;
             }
