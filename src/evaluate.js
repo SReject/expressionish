@@ -5,6 +5,8 @@ const {
     ExpressionArgumentsError
 } = require('./errors.js');
 
+const tokenTypes = require('./helpers/token-types.js');
+
 const tokenize = require('./tokens/index.js');
 
 /**
@@ -14,6 +16,7 @@ const tokenize = require('./tokens/index.js');
 ** @param {string} options.expression
 ** @param {object} options.metadata
 ** @param {!any} options.trigger
+** @param {function} options.postProcessVariable
 */
 async function evaluate(options) {
 
@@ -43,6 +46,9 @@ async function evaluate(options) {
     if (typeof options.expression !== 'string') {
         throw new TypeError('expression must be a string');
     }
+    if (options.postProcessVariable && typeof options.postProcessVariable !== 'function') {
+        throw new TypeError('post processor must be a function');
+    }
 
     // tokenize expression
     const tokens = tokenize(options.expression, [ ...options.lookups.keys() ]);
@@ -51,7 +57,12 @@ async function evaluate(options) {
     const result = [];
     for (let idx = 0; idx < tokens.length; idx += 1) {
         let token = await tokens[idx].evaluate(options);
-
+        if (options.postProcessVariable) {
+            let post = await options.postProcessVariable(token);
+            if (post !== undefined) {
+                token = post;
+            }
+        }
         if (token == null) {
             result.push('');
 
