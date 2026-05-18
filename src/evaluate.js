@@ -56,7 +56,7 @@ async function evaluate(options) {
     // evaluate
     const result = [];
     for (let idx = 0; idx < tokens.length; idx += 1) {
-        const tokenType = tokens[idx].tokenType
+        const tokenType = tokens[idx].type
         let token = await tokens[idx].evaluate(options);
 
         if (options.postProcessVariable && (
