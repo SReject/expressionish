@@ -64,7 +64,7 @@ async function evaluate(options) {
             tokenType === tokenTypes.LOOKUP ||
             tokenType === tokenTypes.VARIABLE
         )) {
-            const post = await options.postProcessVariable(token);
+            const post = await options.postProcessVariable(token, tokens[idx].value);
             if (post !== undefined) {
                 token = post;
             }
