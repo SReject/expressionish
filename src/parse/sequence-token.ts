@@ -75,7 +75,23 @@ export default class SequenceToken extends BaseToken {
             return this.value[0].evaluate(options || {});
         }
 
-        return (await Promise.all(this.value.map(token => token.evaluate(options || {})))).reduce((prev: unknown, curr) => {
+        let result: unknown[];
+        if (this.type === 'ROOT' && options.postProcessRootToken != null) {
+            const values: Array<Promise<unknown>> = this.value.map(async (token) => {
+                const evaluatedValue = await token.evaluate(options || {});
+                const processedValue = await options.postProcessRootToken!(evaluatedValue, token);
+                if (processedValue !== undefined) {
+                    return Promise.resolve(processedValue);
+                }
+                return Promise.resolve(evaluatedValue)
+            });
+            result = await Promise.all(values);
+
+        } else {
+            result = await Promise.all(this.value.map(token => token.evaluate(options || {})))
+        }
+
+        return result.reduce((prev: unknown, curr: unknown) => {
             if (prev == null) {
                 return curr;
             }
@@ -84,7 +100,6 @@ export default class SequenceToken extends BaseToken {
             }
             //eslint-disable-next-line @typescript-eslint/no-explicit-any
             return (prev as any) + (curr as any);
-        })
+        });
     }
-
 }

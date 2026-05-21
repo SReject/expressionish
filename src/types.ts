@@ -241,6 +241,9 @@ export interface TokenizeOptions {
     comparisonOperators?: ComparisonOperatorMap;
 }
 
+/** Post processing callback called for each root token */
+export type PostProcessRootToken = (result: unknown, token: BaseToken) => Promise<unknown>
+
 /** Options when evaluating a tokenized expression */
 export interface EvaluateOptions extends TokenizeOptions {
 
@@ -252,4 +255,7 @@ export interface EvaluateOptions extends TokenizeOptions {
 
     /** Data to be passed into variable and/or lookup evaluators */
     data?: EvaluateData;
+
+    /** Function to be called after each root token is evaluated */
+    postProcessRootToken?: PostProcessRootToken;
 }
